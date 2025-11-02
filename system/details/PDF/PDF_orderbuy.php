@@ -35,7 +35,7 @@ $mpdf = new \Mpdf\Mpdf([
 
 $svgqr = file_get_contents(__DIR__ . '/../../../db/QR-code.svg');
 
-$conn = new mysqli("localhost", "root", "", "rokok_stock");
+$conn = new mysqli("localhost", "root", "", "smokker_stock");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
