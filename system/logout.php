@@ -11,7 +11,7 @@
 
     <?php
     include('../link/link-2.php');
-    session_name("session_rokok");
+    session_name("session_smokker");
   session_start();
     session_destroy();
     echo "

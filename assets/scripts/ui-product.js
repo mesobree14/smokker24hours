@@ -107,7 +107,7 @@ $(document).on("click", "#confirmTrashProductName", function (e) {
     if (result.isConfirmed) {
       try {
         //const responseapi = await fetch(
-        //  `http://localhost/Rokok24Jam/system/backend/api/order.php?order_id=${ID}`,
+        //  `http://localhost/smokker24hours/system/backend/api/order.php?order_id=${ID}`,
         //  {
         //    method: "DELETE",
         //    credentials: "include",

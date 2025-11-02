@@ -178,7 +178,7 @@ class ModelPayOffDebt extends HTMLElement {
     const $seleted = $("#is_ordersell_ids");
     try {
       const response = await fetch(
-        `http://localhost/Rokok24Jam/system/backend/api/list_orderdebt.php?customers=${custom_names}`,
+        `http://localhost/smokker24hours/system/backend/api/list_orderdebt.php?customers=${custom_names}`,
         {
           method: "GET",
           credentials: "include",
@@ -375,7 +375,7 @@ $(document).on("click", "#confirmTrashPayOffDebt", function (e) {
     if (result.isConfirmed) {
       try {
         const responseapi = await fetch(
-          `http://localhost/Rokok24Jam/system/backend/api/customer_api.php`,
+          `http://localhost/smokker24hours/system/backend/api/customer_api.php`,
           {
             method: "DELETE",
             credentials: "include",

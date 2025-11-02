@@ -199,7 +199,7 @@ $html = '
         <div class="left">
           <div class="doc">
               <b class="label" style="font-size:17px;">ร้าน :</b>
-              <small class="value">Rokok24Jam</small>
+              <small class="value">smokker24hours</small>
           </div>
           <div class="doc">
           </div>

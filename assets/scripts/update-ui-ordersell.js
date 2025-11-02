@@ -158,7 +158,7 @@ class formOrDerSellUpdate extends HTMLElement {
   async loadDataStock() {
     try {
       const get_api_stock = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/stock.php",
+        "http://localhost/smokker24hours/system/backend/api/stock.php",
         {
           method: "GET",
           credentials: "include",
@@ -723,7 +723,7 @@ class modelUpdateOrderSell extends HTMLElement {
   async loadProduct(productId) {
     try {
       const responseapi = await fetch(
-        `http://localhost/Rokok24Jam/system/backend/api/stockordersell.php?ordersell_id=${productId}`,
+        `http://localhost/smokker24hours/system/backend/api/stockordersell.php?ordersell_id=${productId}`,
         {
           method: "GET",
           credentials: "include",
@@ -942,7 +942,7 @@ class ESelectPepleGroups extends HTMLElement {
   async loadDataPepleGroup() {
     try {
       const responses = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/peplegroup_api.php",
+        "http://localhost/smokker24hours/system/backend/api/peplegroup_api.php",
         {
           method: "GET",
           credentials: "include",
@@ -1133,7 +1133,7 @@ class ESelectCustomers extends HTMLElement {
   async loadDataCustomer() {
     try {
       const response = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/customer_api.php",
+        "http://localhost/smokker24hours/system/backend/api/customer_api.php",
         {
           method: "GET",
           credentials: "include",
@@ -1276,7 +1276,7 @@ $(document).on("click", "#edit_order_sell", function (e) {
   let component = document.querySelector("main-update-ordersell");
 
   fetch(
-    `http://localhost/Rokok24Jam/system/backend/api/ordersell.php?ordersell_id=${ordersell_id}`,
+    `http://localhost/smokker24hours/system/backend/api/ordersell.php?ordersell_id=${ordersell_id}`,
     {
       method: "GET",
       credentials: "include",
@@ -1363,7 +1363,7 @@ class EditSelectCustome extends HTMLElement {
   async loadData() {
     try {
       const response = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/customer_api.php",
+        "http://localhost/smokker24hours/system/backend/api/customer_api.php",
         {
           method: "GET",
           credentials: "include",

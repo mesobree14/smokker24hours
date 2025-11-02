@@ -194,7 +194,7 @@ class modelCreateOrder extends HTMLElement {
   async loadBeUseCapital() {
     try {
       const api_finance = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/api_capital_withdraw.php",
+        "http://localhost/smokker24hours/system/backend/api/api_capital_withdraw.php",
         {
           method: "GET",
           credentials: "include",
@@ -225,8 +225,8 @@ class modelCreateOrder extends HTMLElement {
   async loadProduct() {
     try {
       const api_data = await fetch(
-        //"http://localhost/Rokok24Jam/system/backend/api/stock.php",
-        "http://localhost/Rokok24Jam/system/backend/api/product_name.php",
+        //"http://localhost/smokker24hours/system/backend/api/stock.php",
+        "http://localhost/smokker24hours/system/backend/api/product_name.php",
         {
           method: "GET",
           credentials: "include",
@@ -242,7 +242,7 @@ class modelCreateOrder extends HTMLElement {
   async loadLotCode() {
     try {
       const api_lotcode = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/lot_order.php",
+        "http://localhost/smokker24hours/system/backend/api/lot_order.php",
         {
           method: "GET",
           credentials: "include",
@@ -741,7 +741,7 @@ class modelUpdateOrder extends HTMLElement {
   async loadBeUseCapital() {
     try {
       const api_finance = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/api_capital_withdraw.php",
+        "http://localhost/smokker24hours/system/backend/api/api_capital_withdraw.php",
         {
           method: "GET",
           credentials: "include",
@@ -772,8 +772,8 @@ class modelUpdateOrder extends HTMLElement {
   async loadProductAll() {
     try {
       const api_data = await fetch(
-        //"http://localhost/Rokok24Jam/system/backend/api/stock.php",
-        "http://localhost/Rokok24Jam/system/backend/api/product_name.php",
+        //"http://localhost/smokker24hours/system/backend/api/stock.php",
+        "http://localhost/smokker24hours/system/backend/api/product_name.php",
         {
           method: "GET",
           credentials: "include",
@@ -791,7 +791,7 @@ class modelUpdateOrder extends HTMLElement {
   // async loadLotCode() {
   //   try {
   //     const api_lotcode = await fetch(
-  //       "http://localhost/Rokok24Jam/system/backend/api/lot_order.php",
+  //       "http://localhost/smokker24hours/system/backend/api/lot_order.php",
   //       {
   //         method: "GET",
   //         credentials: "include",
@@ -1008,7 +1008,7 @@ class modelUpdateOrder extends HTMLElement {
   async loadOrder(productId) {
     try {
       const response = await fetch(
-        `http://localhost/Rokok24Jam/system/backend/api/order.php?order_id=${productId}`,
+        `http://localhost/smokker24hours/system/backend/api/order.php?order_id=${productId}`,
         {
           method: "GET",
           credentials: "include",
@@ -1342,7 +1342,7 @@ $(document).on("click", "#confirmTrashOrder", function (e) {
     if (result.isConfirmed) {
       try {
         const responseapi = await fetch(
-          `http://localhost/Rokok24Jam/system/backend/api/order.php?order_id=${ID}`,
+          `http://localhost/smokker24hours/system/backend/api/order.php?order_id=${ID}`,
           {
             method: "DELETE",
             credentials: "include",

@@ -345,7 +345,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `fullname`, `username`, `password`, `create_at`) VALUES
 (1, 'admin', 'admin.com', 'P@ssw0rd', '2025-08-16 11:32:10'),
-(2, 'rokok data', 'rokok24jam.com', 'P@ssw0rd', '2025-10-13 10:21:01');
+(2, 'rokok data', 'smokker24hours.com', 'P@ssw0rd', '2025-10-13 10:21:01');
 
 -- --------------------------------------------------------
 

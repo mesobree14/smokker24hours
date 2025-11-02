@@ -217,7 +217,7 @@ $(document).on("click", "#confirmTrashCapital", function (e) {
     if (result.isConfirmed) {
       try {
         const responseapi = await fetch(
-          `http://localhost/Rokok24Jam/system/backend/api/finances.php`,
+          `http://localhost/smokker24hours/system/backend/api/finances.php`,
           {
             method: "DELETE",
             credentials: "include",
@@ -422,7 +422,7 @@ $(document).on("click", "#confirmTrashWithroaw", function (e) {
     if (result.isConfirmed) {
       try {
         const responseapi = await fetch(
-          `http://localhost/Rokok24Jam/system/backend/api/finances.php`,
+          `http://localhost/smokker24hours/system/backend/api/finances.php`,
           {
             method: "DELETE",
             credentials: "include",

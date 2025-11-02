@@ -1,5 +1,5 @@
 <?php
-  session_name("session_rokok");
+  session_name("session_smokker");
   session_start();
   include_once("../../backend/config.php");
   include_once("../../link/link-2.php");

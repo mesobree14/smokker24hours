@@ -153,7 +153,7 @@ class formOrDerSell extends HTMLElement {
   async loadDataStock() {
     try {
       const get_api_stock = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/stock.php",
+        "http://localhost/smokker24hours/system/backend/api/stock.php",
         {
           method: "GET",
           credentials: "include",
@@ -823,7 +823,7 @@ class SelectPepleGroup extends HTMLElement {
   async loadDataPepleGroup() {
     try {
       const responses = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/peplegroup_api.php",
+        "http://localhost/smokker24hours/system/backend/api/peplegroup_api.php",
         {
           method: "GET",
           credentials: "include",
@@ -1000,7 +1000,7 @@ class SelectCustomers extends HTMLElement {
   async loadDataCustomer() {
     try {
       const response = await fetch(
-        "http://localhost/Rokok24Jam/system/backend/api/customer_api.php",
+        "http://localhost/smokker24hours/system/backend/api/customer_api.php",
         {
           method: "GET",
           credentials: "include",
@@ -1151,7 +1151,7 @@ $(document).on("click", "#confirmTrashOrderSell", function (e) {
     if (result.isConfirmed) {
       try {
         const responseapi = await fetch(
-          `http://localhost/Rokok24Jam/system/backend/api/stockordersell.php?ordersell_id=${idorder_sell}`,
+          `http://localhost/smokker24hours/system/backend/api/stockordersell.php?ordersell_id=${idorder_sell}`,
           {
             method: "DELETE",
             credentials: "include",

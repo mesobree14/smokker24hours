@@ -492,7 +492,7 @@ function status_deliver($shippingnote, $sender, $wages){
         <div>
           <span class=\"col-12\">หลักฐานการโอน</span>
         </div>
-        <img src=\"http://localhost/Rokok24Jam/db/slip-sellorder/$img_slip \" class=\"img-sell\"/> ";
+        <img src=\"http://localhost/smokker24hours/db/slip-sellorder/$img_slip \" class=\"img-sell\"/> ";
     }
   }
 function status_pays($totalprice,$custompay,$countstuck){
