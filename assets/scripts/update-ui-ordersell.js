@@ -115,15 +115,12 @@ function updateGrandTotal() {
 
   let count_stuck = document.getElementById("s_count_stuck");
   counts.value = Number(totalPrice) - Number(count_stuck.value);
-  console.log("T12:", count_stuck.value);
   let result = document.getElementById("e-results");
   counts.addEventListener("input", () => {
-    console.log("counts.value=", counts.value);
     result.classList.add("text-danger");
 
     let re_price = Number(totalPrice) - Number(counts.value);
     result.textContent = `  ${Number(totalPrice) - Number(counts.value)} บาท`;
-    console.log({ re_price });
     count_stuck.value = re_price;
   });
 }
@@ -143,10 +140,14 @@ class formOrDerSellUpdate extends HTMLElement {
   input_prodcutname = "";
   input_cutommer = "";
   stockdata = [];
+  ratePrices = [];
+  level_rate = 1;
   type_price = 0;
   async connectedCallback() {
     await this.loadDataStock();
+    await this.loadRatePrice(this.data?.productname);
     this.renderCreateOrderSell();
+
     this.loadOption();
     this.updateData();
     this.scriptjs();
@@ -167,6 +168,25 @@ class formOrDerSellUpdate extends HTMLElement {
       const response = await get_api_stock.json();
       this.stockdata.push(...response.data);
       return response.data;
+    } catch (e) {
+      throw new Error(`Fetch Stock Is Error : ${e}`);
+    }
+  }
+  async loadRatePrice(productname = "") {
+    try {
+      if (productname !== "") {
+        const get_rateprice = await fetch(
+          `http://localhost/smokker24hours/system/backend/api/api_rate_price.php?id_productname=${productname}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        const response_rate = await get_rateprice.json();
+
+        this.ratePrices = response_rate.data;
+        return response_rate.data;
+      }
     } catch (e) {
       throw new Error(`Fetch Stock Is Error : ${e}`);
     }
@@ -208,11 +228,17 @@ class formOrDerSellUpdate extends HTMLElement {
     const filtered = this.stockdata.filter((item) =>
       item.is_productname.includes(productname)
     );
+    if (!this.level_rate) {
+      return;
+    }
+    const fileterlevels = this.ratePrices.filter((item) =>
+      item?.level_sell.includes(this.level_rate)
+    );
 
-    console.log({ filtered });
+    console.log({ filtered, fileterlevels });
 
-    if (filtered[0].price_customer_frontstore) {
-      frontstore_price.innerHTML = `ชิ้นละ ${filtered[0].price_customer_frontstore} บาท`;
+    if (fileterlevels[0]?.price_customer_frontstore) {
+      frontstore_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_frontstore} บาท`;
       price_customer_frontstores.classList.remove("disabledLi");
     } else {
       frontstore_price.innerHTML = "";
@@ -221,8 +247,8 @@ class formOrDerSellUpdate extends HTMLElement {
       res_price.innerHTML = "";
       price_result.innerHTML = "";
     }
-    if (filtered[0].price_levels_one) {
-      vip_price.innerHTML = `ชิ้นละ ${filtered[0].price_levels_one} บาท`;
+    if (fileterlevels[0]?.price_levels_one) {
+      vip_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_levels_one} บาท`;
       price_levels_ones.classList.remove("disabledLi");
     } else {
       vip_price.innerHTML = "";
@@ -231,8 +257,8 @@ class formOrDerSellUpdate extends HTMLElement {
       res_price.innerHTML = "";
       price_result.innerHTML = "";
     }
-    if (filtered[0].price_customer_dealer) {
-      dealer_price.innerHTML = `ชิ้นละ ${filtered[0].price_customer_dealer} บาท`;
+    if (fileterlevels[0]?.price_customer_dealer) {
+      dealer_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_dealer} บาท`;
       price_customer_dealers.classList.remove("disabledLi");
     } else {
       price_customer_dealers.classList.add("disabledLi");
@@ -241,8 +267,8 @@ class formOrDerSellUpdate extends HTMLElement {
       res_price.innerHTML = "";
       price_result.innerHTML = "";
     }
-    if (filtered[0].price_customer_deliver) {
-      deliver_price.innerHTML = `ชิ้นละ ${filtered[0].price_customer_deliver} บาท`;
+    if (fileterlevels[0]?.price_customer_deliver) {
+      deliver_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_deliver} บาท`;
       price_customer_delivers.classList.remove("disabledLi");
     } else {
       deliver_price.innerHTML = "";
@@ -252,13 +278,13 @@ class formOrDerSellUpdate extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (productname && customer) {
-      this.type_price = filtered[0][customer.replace(/-\d+$/, "")];
-      res_price.innerHTML = filtered[0][customer.replace(/-\d+$/, "")];
+      this.type_price = fileterlevels[0][customer.replace(/-\d+$/, "")];
+      res_price.innerHTML = fileterlevels[0][customer.replace(/-\d+$/, "")];
       distotal.disabled = false;
 
       let response =
         Number(is_totals.innerHTML) *
-        Number(filtered[0][customer.replace(/-\d+$/, "")]);
+        Number(fileterlevels[0][customer.replace(/-\d+$/, "")]);
       price_result.innerHTML = response;
       price_result.textContent = response;
       input_result.value = response;
@@ -267,7 +293,7 @@ class formOrDerSellUpdate extends HTMLElement {
         is_totals.textContent = this.value;
         let result =
           Number(this.value) *
-          Number(filtered[0][customer.replace(/-\d+$/, "")]);
+          Number(fileterlevels[0][customer.replace(/-\d+$/, "")]);
         price_result.innerHTML = result;
         price_result.textContent = result;
         input_result.value = result;
@@ -278,7 +304,7 @@ class formOrDerSellUpdate extends HTMLElement {
   }
 
   updateData(productname, idproductname) {
-    console.log("PLP [", this.numbers);
+    this.loadRatePrice(idproductname);
     let selectedIdData = document.querySelector(
       `.selectedIdData-${this.numbers}`
     );
@@ -288,10 +314,13 @@ class formOrDerSellUpdate extends HTMLElement {
     );
     const ul = document.querySelector("ul");
     const dropdown = this.querySelector(`.dropdown-${this.numbers}`);
+    const dropdownLevel = this.querySelector(`.dropdown-level-${this.numbers}`);
     if (productname) {
+      dropdownLevel.classList.remove("disableds");
       dropdown.classList.remove("disableds");
       this.isSelectPrice(idproductname, productname, this.type_price);
     } else {
+      dropdownLevel.classList.add("disableds");
       dropdown.classList.add("disableds");
     }
 
@@ -317,6 +346,7 @@ class formOrDerSellUpdate extends HTMLElement {
       `.searchInput-${this.numbers} input`
     );
     const dropdown = this.querySelector(`.dropdown-${this.numbers}`);
+    const dropdownLevel = this.querySelector(`.dropdown-level-${this.numbers}`);
     let ul = document.querySelector(`.options-${this.numbers} ul`);
     let customInputContainer = document.querySelector(
       `.customInputContainer-${this.numbers}`
@@ -399,6 +429,7 @@ class formOrDerSellUpdate extends HTMLElement {
       ul.innerHTML = "";
       if (searched_product.length === 0) {
         dropdown.classList.add("disableds");
+        dropdownLevel.classList.add("disableds");
         ul.innerHTML = `<p style='margin-top: 1rem;'>
                           ไม่มีข้อมูล
                         </p>`;
@@ -435,6 +466,11 @@ class formOrDerSellUpdate extends HTMLElement {
     });
   }
   scriptjs() {
+    const dropdownLevel = this.querySelector(`.dropdown-level-${this.numbers}`);
+    const dropdownMenuLevel = dropdownLevel.querySelector(
+      `.dropdown-menu-level-${this.numbers}`
+    );
+
     const dropdown = this.querySelector(`.dropdown-${this.numbers}`);
     const dropdownMenu = dropdown.querySelector(
       `.dropdown-menu-${this.numbers}`
@@ -442,6 +478,7 @@ class formOrDerSellUpdate extends HTMLElement {
 
     let ul = document.querySelector(`.options-${this.numbers} ul`);
     dropdown.classList.add("disableds");
+    dropdownLevel.classList.add("disableds");
 
     ul.querySelectorAll("li").forEach((li) => {
       li.addEventListener("click", (e) => {
@@ -451,10 +488,28 @@ class formOrDerSellUpdate extends HTMLElement {
         this.input_prodcutname = spanTxt;
         if (spanTxt === "") {
           dropdown.classList.add("disableds");
+          dropdownLevel.classList.add("disableds");
         } else {
           dropdown.classList.remove("disableds");
+          dropdownLevel.classList.remove("disableds");
         }
         this.isSelectPrice(spanIds, spanTxt, this.input_cutommer);
+        this.loadRatePrice(spanIds);
+      });
+    });
+    dropdownMenuLevel.querySelectorAll("li").forEach((lis) => {
+      lis.addEventListener("click", () => {
+        let spans = lis.querySelector("p")?.textContent.trim();
+        let typeLevel = dropdownLevel.querySelector(
+          `#type_level-${this.numbers}`
+        );
+        this.level_rate = spans;
+        typeLevel.value = spans;
+        this.isSelectPrice(
+          this.input_prodcutname,
+          this.input_idproductname,
+          this.input_cutommer
+        );
       });
     });
     dropdownMenu.querySelectorAll("li").forEach((li) => {
@@ -497,6 +552,7 @@ class formOrDerSellUpdate extends HTMLElement {
       btn.textContent = "❌ ลบ";
       btn.classList.add("ml-auto");
       btn.addEventListener("click", () => {
+        console.log("remove");
         this.remove();
         updateGrandTotal();
         document.dispatchEvent(new Event("recalculate"));
@@ -546,6 +602,7 @@ class formOrDerSellUpdate extends HTMLElement {
         let costommerdVal = dropdown.querySelector(
           `#costommerd-${this.numbers}`
         );
+        this.level_rate = 1;
         ProductId.value = product_data.list_sellid;
         selectedIdData.value = `${product_data.productname}`;
         selectedData.value = `${product_data?.product_name ?? ""}`;
@@ -560,6 +617,7 @@ class formOrDerSellUpdate extends HTMLElement {
           product_data?.product_name,
           product_data.type_custom
         );
+        //this.loadRatePrice(product_data?.productname);
       }
     }
   }
@@ -601,7 +659,45 @@ class formOrDerSellUpdate extends HTMLElement {
                    
                 </div>
               </div>
-              <div class="col-xl-3 col-lg-5">
+              <div class="col-xl-2 col-lg-5">
+                <div class="form-group mb-2">
+                  <label class="m-0 font-weight-bold text-dark col-12" id="xlevel-${
+                    this.numbers
+                  }">ระดับ</label>
+                  <div class="dropdown dropdown-level-${this.numbers}">
+                      <div class="select select-level-${this.numbers}">
+                        <span>เลือก level</span>
+                        <i class="fa fa-chevron-left"></i>
+                      </div>
+                      <input type="text" name="type_level[]" id="type_level-${
+                        this.numbers
+                      }" style="display:none;"/>
+                        <ul class="dropdown-menu-level-${
+                          this.numbers
+                        } dropdown-menu">
+                          <li id="levels_one-${this.numbers}" class="row mx-0">
+                             ระดับที่ 
+                             <p id="one1" class="mx-2 font-bold" style="display:block;">1</p>
+                          </li>
+
+                          <li id="levels_two-${this.numbers}" class="row mx-0">
+                              ระดับที่ 
+                              <p id="two2" class="mx-2 font-bold" style="display:block;">2</p>
+                          </li>
+                          
+                          <li id="level_tree-${this.numbers}" class="row mx-0">
+                              ระดับที่ 
+                              <p id="tree3" class="mx-2 font-bold" style="display:block;">3</p>
+                          </li>
+                          <li id="level_four-${this.numbers}" class="row mx-0">
+                             ระดับที่ 
+                             <p id="four4" class="mx-2 font-bold" style="display:block;">4</p>
+                          </li>
+                        </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-2 col-lg-5">
                 <div class="form-group mb-2">
                     <label class="m-0 font-weight-bold text-dark col-12" id="x-${
                       this.numbers
@@ -618,7 +714,7 @@ class formOrDerSellUpdate extends HTMLElement {
                           <li id="price_levels_one-${
                             this.numbers
                           }" class="row mx-0">
-                             ราคา ระดับ 1
+                             เรท 1 vip
                            <small id="vip_price-${
                              this.numbers
                            }" class="ml-auto"></small>
@@ -626,7 +722,7 @@ class formOrDerSellUpdate extends HTMLElement {
                           <li id="price_customer_frontstore-${
                             this.numbers
                           }" class="row mx-0">
-                              ราคา ระดับ 2
+                              เรท 2 หน้าร้าน
                               <small id="frontstore_price-${
                                 this.numbers
                               }" class="ml-auto"></small>
@@ -635,7 +731,7 @@ class formOrDerSellUpdate extends HTMLElement {
                           <li id="price_customer_dealer-${
                             this.numbers
                           }" class="row mx-0">
-                              ราคา ระดับ 3
+                              เรท 3 ตัวแทน
                               <small id="dealer_price-${
                                 this.numbers
                               }" class="ml-auto"></small>
@@ -643,7 +739,7 @@ class formOrDerSellUpdate extends HTMLElement {
                           <li id="price_customer_deliver-${
                             this.numbers
                           }" class="row mx-0">
-                             ราคา ระดับ 4
+                             เรท 4 จัดส่ง
                             <small id="deliver_price-${
                               this.numbers
                             }" class="ml-auto"></small>
@@ -667,21 +763,21 @@ class formOrDerSellUpdate extends HTMLElement {
                   </div>
                 </div>
               </div>
-              <div class="col-xl-4 col-lg-8">
+              <div class="col-xl-3 col-lg-8">
                   <div class="form-group mb-2">
                     <label class="m-0 font-weight-bold text-dark col-12">จำนวนชิ้น x ราคาต่อชิ้น = ผลลัพธ์ </label>
                     <div class="form-control">
                       <span id="is_totals-${
                         this.numbers
-                      }" class="px-3">&nbsp;</span>
+                      }" class="px-1">&nbsp;</span>
                         <i class="fas fa-times mt-1"></i>
                       <span id="is_count-${
                         this.numbers
-                      }" class="px-3" >&nbsp;</span>
+                      }" class="px-1" >&nbsp;</span>
                       <i class="fa fa-equals mt-1"></i> 
                       <span id="price_result-${
                         this.numbers
-                      }" class="px-3" >&nbsp;</span> บาทถ้วน
+                      }" class="px-1" >&nbsp;</span> บาทถ้วน
                     </div>
                     <input type="hidden" name="resutl_price[]" id="resutl_${
                       this.numbers
@@ -708,7 +804,6 @@ class modelUpdateOrderSell extends HTMLElement {
       await this.loadProduct(this.OrderSellId);
     });
     this.addEventListener("setIdPepleGroup", async (e) => {
-      console.log({ e });
       let divSelectGroup = this.querySelector("main-peple-group");
       divSelectGroup.setAttribute("peplegroup", e.detail.peplegroup);
       // this.OrderSellIds = e.detail.ordersell_id;
@@ -961,7 +1056,6 @@ class ESelectPepleGroups extends HTMLElement {
       .getElementById("edit_order_sell")
       .addEventListener("click", (e) => {
         e.preventDefault();
-        console.log("INI", this.Ispeplegroup);
       });
     const index = 1;
     let isForm = document.querySelector(".is-e-PepleGroup");
@@ -1030,7 +1124,7 @@ class ESelectPepleGroups extends HTMLElement {
     });
     serchInput.addEventListener("keyup", () => {
       let searchedVal = serchInput.value.toLowerCase();
-      console.log({ HHHH: this.Ispeplegroup });
+
       let searched_product = this.peplegroup[0].filter((data) =>
         data.name_peplegroup.toLowerCase().includes(searchedVal)
       );
@@ -1070,7 +1164,6 @@ class ESelectPepleGroups extends HTMLElement {
   }
 
   updateDataPepleGroup(id_peplegroup, data_peplegroup, index, group) {
-    console.log({ id_peplegroup });
     let selectGroupData = group.querySelector(`.IsGoupselectedData-${index}`);
     let selectGroupId = group.querySelector(`.IsGroupSelectId-${index}`);
 
@@ -1141,7 +1234,6 @@ class ESelectCustomers extends HTMLElement {
       );
       const responsedata = await response.json();
       this.customdata.push(responsedata.data);
-      console.log({ responsedata22: responsedata });
       return responsedata;
     } catch (e) {
       console.error(`Is Error ${e}`);
@@ -1203,7 +1295,6 @@ class ESelectCustomers extends HTMLElement {
     });
     serchInput.addEventListener("keyup", () => {
       let searchedVal = serchInput.value.toLowerCase();
-      console.log({ searchedVal });
       let searched_product = this.customdata[0].filter((data) =>
         data.custome_name.toLowerCase().includes(searchedVal)
       );
@@ -1301,7 +1392,7 @@ $(document).on("click", "#edit_order_sell", function (e) {
       // $("#ereason").val(ordersell.reason);
       $("#s_count_stuck").val(ordersell.count_stuck);
       $("#s_count_totalpays").val(ordersell.count_totalpays);
-      console.log("KM:", ordersell.count_totalpays);
+
       $("#e-results").html(ordersell.count_stuck);
 
       $("#img_default").val(ordersell.slip_ordersell);
@@ -1440,7 +1531,6 @@ class EditSelectCustome extends HTMLElement {
     ul.querySelectorAll("li").forEach((li) => {
       li.addEventListener("click", () => {
         let spanTxt = li.querySelector("span").innerText;
-        console.log({ spanTxt });
         this.scriptTell(spanTxt);
         this.scriptLocation(spanTxt);
         selectedData.value = spanTxt;
@@ -1456,7 +1546,6 @@ class EditSelectCustome extends HTMLElement {
       let searched_product = this.customdata[0].filter((data) =>
         data.custome_name.toLowerCase().includes(searchedVal)
       );
-      console.log({ searched_product });
       ul.innerHTML = "";
       if (searched_product.length === 0) {
         ul.innerHTML = "";
@@ -1474,7 +1563,6 @@ class EditSelectCustome extends HTMLElement {
   }
 
   updateDataTell(data_tell, index, group) {
-    console.log({ data_tell });
     let selectedData = group.querySelector(`.IsselectedTellData-${index}`);
     let customInputContainer = document.querySelector(
       `.IsTellInputContainer-${index}`
@@ -1569,7 +1657,6 @@ class EditSelectCustome extends HTMLElement {
           }
           searched_product.forEach((data) => {
             const li = document.createElement("li");
-            console.log({ data });
             li.textContent = data;
             li.addEventListener("click", (e) => {
               this.updateDataTell(e.target.textContent, index, getSelectTell);
@@ -1582,7 +1669,6 @@ class EditSelectCustome extends HTMLElement {
   }
 
   updateDataLocation(data_location, index, group) {
-    console.log({ data_location });
     let selectedLocationData = group.querySelector(
       `.IsselectedLocationData-${index}`
     );
@@ -1683,7 +1769,6 @@ class EditSelectCustome extends HTMLElement {
           }
           searched_product.forEach((data) => {
             const li = document.createElement("li");
-            console.log({ data });
             li.textContent = data;
             li.addEventListener("click", (e) => {
               this.updateDataLocation(

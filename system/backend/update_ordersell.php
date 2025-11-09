@@ -143,6 +143,7 @@
 
               $is_productnameID = $_POST['id_productnames'];
               $is_products = $_POST['product_name'];
+              $type_level = $_POST['type_level'];
               $is_costommerd = $_POST['costommerds'];
               $tatol_products = $_POST['tatol_product'];
               $resutl_prices = $_POST['resutl_price'];
@@ -152,6 +153,7 @@
                 $pid = !empty($product_id[$key]) ? $product_id[$key] : null;
                 
                 $res_idproductname = $is_productnameID[$key];
+                $is_levelsell = mysqli_real_escape_string($conn,trim($type_level[$key]));
                 $res_costommered = mysqli_real_escape_string($conn, trim(number_format((float)$is_costommerd[$key], 2, '.','')));
                 $res_total = mysqli_real_escape_string($conn, trim($tatol_products[$key]));
                 $res_prices = mysqli_real_escape_string($conn, trim(number_format((float)$resutl_prices[$key], 2, '.','')));
@@ -161,7 +163,7 @@
                 if($pid){
                  // echo "have id:";
                  // echo $pid;
-                  $sql_edit = "UPDATE list_productsell SET productname='$res_idproductname',rate_customertype='$res_costommered',type_custom='$res_custom',tatol_product='$res_total',price_to_pay='$res_prices' WHERE list_sellid='$pid' AND ordersell_id='$ordersell_id'";
+                  $sql_edit = "UPDATE list_productsell SET productname='$res_idproductname',level_selltype='$is_levelsell',rate_customertype='$res_costommered',type_custom='$res_custom',tatol_product='$res_total',price_to_pay='$res_prices' WHERE list_sellid='$pid' AND ordersell_id='$ordersell_id'";
                   $query_editproduct = mysqli_query($conn,$sql_edit) or die(mysqli_error($conn));
                   if($query_editproduct){
                     $coun_update++;
@@ -172,7 +174,7 @@
                   }
                 }else{
                   //echo "not id :";
-                  $sql_insert = "INSERT INTO list_productsell (ordersell_id,productname,rate_customertype,type_custom,tatol_product,price_to_pay,create_at) VALUES('$ordersell_id','$res_productname','$res_costommered','$res_custom','$res_total','$res_prices','$day_add')";
+                  $sql_insert = "INSERT INTO list_productsell (ordersell_id,productname,level_selltype,rate_customertype,type_custom,tatol_product,price_to_pay,create_at) VALUES('$ordersell_id','$res_idproductname','$is_levelsell','$res_costommered','$res_custom','$res_total','$res_prices','$day_add')";
                   $query_insert = mysqli_query($conn,$sql_insert) or die(mysqli_error($conn));
                   if($query_insert){
                     $count_insert++;

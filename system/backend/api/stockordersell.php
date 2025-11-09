@@ -84,7 +84,7 @@ include_once("../../../backend/config.php");
         print json_encode(array(
           'status'=> 201,
           'message'=> 'get data is success',
-          'data'=> null
+          'data'=> []
         ));
       }
 

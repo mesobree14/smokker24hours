@@ -136,9 +136,11 @@ foreach($res_acc as $rows){
                       </thead>
                       <tbody>
                           <?php
-                              $query_product = mysqli_query($conn,"SELECT * FROM list_productsell WHERE ordersell_id='$ordersell_id'") or die(mysqli_error($conn));
+                              $query_product = mysqli_query($conn,
+                                "SELECT LPS.list_sellid,LPS.productname,LPS.rate_customertype,LPS.type_custom,LPS.tatol_product,LPS.price_to_pay,NP.product_name FROM list_productsell LPS LEFT JOIN name_product NP ON LPS.productname = NP.id_name
+                                WHERE ordersell_id='$ordersell_id'") or die(mysqli_error($conn));
                               foreach($query_product as $key=>$res){
-                                listProductSell(($key+1), $res['list_sellid'], $res['productname'],$res['rate_customertype'],$res['type_custom'],$res['tatol_product'],$res['price_to_pay']);
+                                listProductSell(($key+1), $res['list_sellid'], $res['productname'],$res['product_name'],$res['rate_customertype'],$res['type_custom'],$res['tatol_product'],$res['price_to_pay']);
                               }
                           ?>
                       </tbody>

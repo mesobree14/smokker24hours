@@ -33,8 +33,10 @@ if(!isset($_SESSION['users_data'])){
     <link rel="stylesheet" href="../../assets/scripts/module/jquery.Thailand.js/jquery.Thailand.js/dist/jquery.Thailand.min.css">
     <link rel="stylesheet" href="../../assets/scss/navigationTrue-a-j.scss">
     <link rel="stylesheet" href="../../assets/scss/revenue.scss">
-    <link rel="stylesheet" href="../../assets/scss/index.u.scss">
+    <link rel="stylesheet" href="../../assets/scripts/module/test/test.scss">
+    <script src="../../assets/scripts/module/test/test.js"></script>
     <script src="../../assets/scripts/script-bash.js"></script>
+    <link rel="stylesheet" href="../../assets/scripts/module/select-picker/select.scss">
   <title>Document</title>
 </head>
 <body>
@@ -58,11 +60,12 @@ if(!isset($_SESSION['users_data'])){
                   <table class="table table-data2 mydataTablePatron">
                     <thead>
                        <tr>
-                          <th class="font-weight-bold">ลำดับ</th>
-                          <th class="font-weight-bold">ราคา ระดับที่ 1</th>
-                          <th class="font-weight-bold">ราคา ระดับที่ 2</th>
-                          <th class="font-weight-bold">ราคา ระดับที่ 3</th>
-                          <th class="font-weight-bold">ราคา ระดับที่ 4</th>
+                          <th></th>
+                          <th class="font-weight-bold">ระดับที่ : </th>
+                          <th class="font-weight-bold">ราคา เรท 1 vip</th>
+                          <th class="font-weight-bold">ราคา เรท 2 หน้าร้าน</th>
+                          <th class="font-weight-bold">ราคา เรท 3 ตัวแทน</th>
+                          <th class="font-weight-bold">ราคา เรท 4 จัดส่ง</th>
                           <th class="font-weight-bold">จัดการ</th>
                        </tr>
                     </thead>
@@ -73,13 +76,14 @@ if(!isset($_SESSION['users_data'])){
                           $query = mysqli_query($conn,$sql) or die(mysqli_error($conn));
                           $rate_acc_fetch = mysqli_fetch_assoc($query);
                           if($rate_acc_fetch){
+                            foreach($query as $key => $res_acc)
                             listRatePrice(
-                              $rate_acc_fetch['rate_id'],$rate_acc_fetch['price_customer_frontstore'],$rate_acc_fetch['price_levels_one'],
-                              $rate_acc_fetch['price_customer_dealer'],$rate_acc_fetch['price_customer_deliver'],$acc_name['product_name'],
+                              $res_acc['rate_id'],$res_acc['level_sell'],$res_acc['price_customer_frontstore'],$res_acc['price_levels_one'],
+                              $res_acc['price_customer_dealer'],$res_acc['price_customer_deliver'],$acc_name['product_name'],
                               $acc_name['price'],$acc_name['id_name'],$acc_name['price_center'],$acc_name['count_cord'],$acc_name['shipping_cost']
                             );
                           }else{
-                            listRatePrice("","","","","",$acc_name['product_name'],$acc_name['price'],$acc_name['id_name'],$acc_name['price_center'],$acc_name['count_cord'],$acc_name['shipping_cost']);
+                            listRatePrice("","","","","","",$acc_name['product_name'],$acc_name['price'],$acc_name['id_name'],$acc_name['price_center'],$acc_name['count_cord'],$acc_name['shipping_cost']);
                           }
                       ?>
                     </tbody>
@@ -163,6 +167,7 @@ if(!isset($_SESSION['users_data'])){
           </div>
       </div>
       <main-rate-price></main-rate-price>
+      <main-update-price></main-update-price>
     </main>
   </div>
   <script src="../../assets/scripts/ui-stock.js"></script>

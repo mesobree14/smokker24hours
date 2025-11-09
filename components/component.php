@@ -389,32 +389,46 @@ function detailStock($productname,$total_count,$count_cord,$total_price,$product
     echo $detail;
 }
 
-function listRatePrice($rate_id="",$rate_storefront_price="",$rate_onelevel_price="",$rate_dealer_price="ยังไม่ได้กำหนด",$rate_delivery_price="",$product_name, $price_product,$id_name,$productpricecenter,$countcords,$shipping_cost){
-    function status($id){
-        if($id){
-            return "<i class=\"fas fa-pencil-alt text-warning\"></i>";
-        }else{
-            return "<i class=\"fas fa-plus text-success\"></i>";
-        }
+function statusRatePrice($rate_id,$levelrate,$rate_storefront_price,$rate_onelevel_price,$rate_dealer_price,$rate_delivery_price,$product_name,$price_product,$id_name,$productpricecenter,$countcords,$shipping_cost){
+    if($rate_id){
+        return "
+            <div class=\"table-data-feature\" >
+                <button type=\"button\" id=\"setupdate_rate_price\" data-target=\"#modalFormUpdateRate\" data-toggle=\"modal\"  
+                   class=\"item\" data-id=\"$rate_id\" data-product=\"$product_name\" data-idname=\"$id_name\" data-level=\"$levelrate\" data-storefront=\"$rate_storefront_price\" data-vip=\"$rate_onelevel_price\" 
+                   data-dealers=\"$rate_dealer_price\" data-delivery=\"$rate_delivery_price\" data-productprice=\"$price_product\" data-productpricecenter=\"$productpricecenter\"
+                   data-countcord=\"$countcords\" data-shippingcost=\"$shipping_cost\"
+                >
+                    <i class=\"fas fa-pencil-alt text-warning\"></i>
+                </button>
+            </div>
+        ";
+    }else{
+        return "
+          <div class=\"table-data-feature\" >
+              <button type=\"button\" id=\"set_rate_price\" data-target=\"#modalFormCreateRate\" data-toggle=\"modal\"  
+                 class=\"item\" data-id=\"$rate_id\" data-product=\"$product_name\" data-idname=\"$id_name\" data-productprice=\"$price_product\" data-productpricecenter=\"$productpricecenter\"
+                 data-countcord=\"$countcords\" data-shippingcost=\"$shipping_cost\"
+              >
+                  <i class=\"fas fa-plus text-success\"></i>
+              </button>
+          </div>
+        ";
     }
+}
+
+function listRatePrice($rate_id="", $levelrate="", $rate_storefront_price="",$rate_onelevel_price="",$rate_dealer_price="ยังไม่ได้กำหนด",$rate_delivery_price="",$product_name, $price_product,$id_name,$productpricecenter,$countcords,$shipping_cost){
+    
     $list = "
         <form>
             <tr>
-                <td class=\"font-weight-bold\">เรทราคา :</td>
-                <td class=\"font-weight-bold\">$rate_onelevel_price</td>
-                <td class=\"font-weight-bold\">$rate_storefront_price</td>
-                <td class=\"font-weight-bold\">$rate_dealer_price</td>
-                <td class=\"font-weight-bold\">$rate_delivery_price</td>
+                <td></td>
+                <td class=\"font-weight-bold\">$levelrate</td>
+                <td class=\"font-weight-bold\">$rate_onelevel_price บาท</td>
+                <td class=\"font-weight-bold\">$rate_storefront_price บาท</td>
+                <td class=\"font-weight-bold\">$rate_dealer_price บาท</td>
+                <td class=\"font-weight-bold\">$rate_delivery_price บาท</td>
                 <td>
-                    <div class=\"table-data-feature\" >
-                        <button type=\"button\" id=\"set_rate_price\" data-target=\"#modalFormUpdateRate\" data-toggle=\"modal\"  
-                           class=\"item\" data-id=\"$rate_id\" data-product=\"$product_name\" data-idname=\"$id_name\" data-storefront=\"$rate_storefront_price\" data-vip=\"$rate_onelevel_price\" 
-                           data-dealers=\"$rate_dealer_price\" data-delivery=\"$rate_delivery_price\" data-productprice=\"$price_product\" data-productpricecenter=\"$productpricecenter\"
-                           data-countcord=\"$countcords\" data-shippingcost=\"$shipping_cost\"
-                        >
-                            ".status($rate_id)."
-                        </button>
-                    </div>
+                    ".statusRatePrice($rate_id,$levelrate,$rate_storefront_price,$rate_onelevel_price,$rate_dealer_price,$rate_delivery_price,$product_name,$price_product,$id_name,$productpricecenter,$countcords,$shipping_cost)."
                 </td>
             </tr>
         </form>
@@ -599,13 +613,13 @@ function boxCustom($titleText, $data, $type){
     echo $listData;
 }
 
-function listProductSell($number,$product_id, $product_anme, $rate_customerprice, $type_custom, $lotal_product, $price_topay){
+function listProductSell($number,$product_id, $product_nameid,$product_name, $rate_customerprice, $type_custom, $lotal_product, $price_topay){
 
 
   $list = "
     <tr>
       <td class=\"font-weight-bold\">$number</td>
-      <td class=\"font-weight-bold\">$product_anme</td>
+      <td class=\"font-weight-bold\">$product_name</td>
       <td class=\"font-weight-bold\">$rate_customerprice</td>
       <td class=\"font-weight-bold\">$lotal_product</td>
       <td class=\"font-weight-bold\">$price_topay</td>
@@ -613,7 +627,7 @@ function listProductSell($number,$product_id, $product_anme, $rate_customerprice
       <td class='text-center'>
             <div class=\"table-data-feature\" >
               <button type=\"button\" id=\"update_order_sell\" data-target=\"#modalFormUpdateOrderSell\" data-toggle=\"modal\"  
-                 class=\"item\" data-id=\"$product_id\" data-productname=\"$product_anme\" data-customerprice=\"$rate_customerprice\" 
+                 class=\"item\" data-id=\"$product_id\" data-productname=\"$product_nameid\" data-customerprice=\"$rate_customerprice\" 
                  data-totalproduct=\"$lotal_product\" data-pricetopay=\"$price_topay\" data-customtype=\"$type_custom\"
               >
                   <i class=\"fas fa-pencil-alt text-warning\"></i>
