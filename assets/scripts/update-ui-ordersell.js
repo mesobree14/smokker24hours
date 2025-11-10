@@ -222,12 +222,8 @@ class formOrDerSellUpdate extends HTMLElement {
     const selectSpan = dropdown.querySelector(`.select-${this.numbers} span`);
     let input_result = this.querySelector(`#resutl_${this.numbers}`);
     distotal.disabled = true;
-    if (!productname) {
-      return;
-    }
-    const filtered = this.stockdata.filter((item) =>
-      item.is_productname.includes(productname)
-    );
+
+    console.log("rate:", this.level_rate);
     if (!this.level_rate) {
       return;
     }
@@ -235,7 +231,7 @@ class formOrDerSellUpdate extends HTMLElement {
       item?.level_sell.includes(this.level_rate)
     );
 
-    console.log({ filtered, fileterlevels });
+    console.log({ fileterlevels });
 
     if (fileterlevels[0]?.price_customer_frontstore) {
       frontstore_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_frontstore} บาท`;
@@ -499,10 +495,12 @@ class formOrDerSellUpdate extends HTMLElement {
     });
     dropdownMenuLevel.querySelectorAll("li").forEach((lis) => {
       lis.addEventListener("click", () => {
+        console.log("clcik");
         let spans = lis.querySelector("p")?.textContent.trim();
         let typeLevel = dropdownLevel.querySelector(
           `#type_level-${this.numbers}`
         );
+        console.log({ spans, name: this.input_prodcutname });
         this.level_rate = spans;
         typeLevel.value = spans;
         this.isSelectPrice(
@@ -565,13 +563,13 @@ class formOrDerSellUpdate extends HTMLElement {
     const customtypes = (data_custom) => {
       switch (data_custom) {
         case "price_levels_one":
-          return "ราคา ระดับ 1";
+          return "เรท 1 vip";
         case "price_customer_frontstore":
-          return "ราคา ระดับ 2";
+          return "เรท 2 หน้าร้าน";
         case "price_customer_deliver":
-          return "ราคา ระดับ 4";
+          return "เรท 4 จัดส่ง";
         case "price_customer_dealer":
-          return "ราคา ระดับ 3";
+          return "เรท 3 ตัวแทน";
         default:
           return data_custom;
       }
@@ -579,7 +577,12 @@ class formOrDerSellUpdate extends HTMLElement {
     if (product_data) {
       if (product_data.productname) {
         let ProductId = document.getElementById(`product_id-${this.numbers}`);
+        const dropdownLevel = this.querySelector(
+          `.dropdown-level-${this.numbers}`
+        );
+        dropdownLevel.classList.remove("disableds");
         const dropdown = this.querySelector(`.dropdown-${this.numbers}`);
+
         dropdown.classList.remove("disableds");
         let selectedIdData = this.querySelector(
           `.selectedIdData-${this.numbers}`
@@ -589,8 +592,14 @@ class formOrDerSellUpdate extends HTMLElement {
           `.customInputContainer-${this.numbers}`
         );
         customInputContainer.classList.remove("show");
+        const levelSpan = dropdownLevel.querySelector(
+          `.select-level-${this.numbers} span`
+        );
         const selectSpan = dropdown.querySelector(
           `.select-${this.numbers} span`
+        );
+        const levelSell = dropdownLevel.querySelector(
+          `#type_level-${this.numbers}`
         );
         const typeCustoms = dropdown.querySelector(
           `#type_custom-${this.numbers}`
@@ -602,20 +611,27 @@ class formOrDerSellUpdate extends HTMLElement {
         let costommerdVal = dropdown.querySelector(
           `#costommerd-${this.numbers}`
         );
-        this.level_rate = 1;
-        ProductId.value = product_data.list_sellid;
-        selectedIdData.value = `${product_data.productname}`;
-        selectedData.value = `${product_data?.product_name ?? ""}`;
-        typeCustoms.value = `${product_data.type_custom ?? ""}`;
-        costommerdVal.value = product_data.rate_customertype;
-        selectSpan.innerHTML = customtypes(product_data.type_custom);
+        this.level_rate = product_data.level_selltype;
+        this.input_idproductname = product_data.productname;
+        this.input_prodcutname = product_data?.product_name;
+        this.input_cutommer = product_data?.type_custom;
 
-        tatolproduct.value = product_data.tatol_product;
-        is_totals.textContent = product_data.tatol_product;
+        ProductId.value = product_data?.list_sellid;
+        selectedIdData.value = `${product_data?.productname}`;
+        selectedData.value = `${product_data?.product_name ?? ""}`;
+        levelSell.value = product_data?.level_selltype;
+        typeCustoms.value = `${product_data?.type_custom ?? ""}`;
+        costommerdVal.value = product_data?.rate_customertype;
+        selectSpan.innerHTML = customtypes(product_data?.type_custom);
+        levelSpan.innerHTML = `ระดับที่ ${product_data?.level_selltype}`;
+        console.log("HHKK=", this.level_rate);
+
+        tatolproduct.value = product_data?.tatol_product;
+        is_totals.textContent = product_data?.tatol_product;
         this.isSelectPrice(
-          product_data.productname,
+          product_data?.productname,
           product_data?.product_name,
-          product_data.type_custom
+          product_data?.type_custom
         );
         //this.loadRatePrice(product_data?.productname);
       }
