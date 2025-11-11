@@ -148,13 +148,13 @@ if(!isset($_SESSION['users_data'])){
       // echo "</pre>";
         ?>
         <div class="col-12 row mt-2 bg-white">
-          <div class="col-md-12 border-right">
+          <div class="col-md-12 col-xl-11 border-right">
             <div class="table-responsive table-responsive-data2 mt-2">
                 <table class="table table-data2">
                     <thead class="alert alert-primary">
                         <tr>
                             <th></th>
-                            <th>Lot No.</th>
+                            <th style="width:17%;">Lot No.</th>
                             <th>รายการ</th>
                             <th>จำนวนในล็อต</th>
                             <th>จำนวนขาย</th>
@@ -164,7 +164,7 @@ if(!isset($_SESSION['users_data'])){
                             <th>ค่าส่ง</th>
                             <th>ราคาซื้อทั้งหมด</th>
                             <th>ราคาขาย</th>
-                            <th style="width:22%;">จัดการ</th>
+                            <th>จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
