@@ -40,10 +40,9 @@ if(!isset($_SESSION['users_data'])){
            
             <div class="col-12 shadow-lg row">
               <div class="col-12 row">
-                <a href="#" target="_blank" class="ml-auto px-5 mt-4">
-                   <i class="fas fa-file-code\"></i>
-                   Print PDF
-                </a>
+                <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="../details/PDF/PDF_detaillot.php?lot_number=<?php echo $lot_number ?>" target="_blank">
+            <i class="fas fa-file-code px-2"></i> PDF
+          </a>
                
               </div>
             </div>
