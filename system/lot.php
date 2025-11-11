@@ -1,6 +1,7 @@
 <?php
 session_name("session_smokker");
   session_start();
+  include_once("../backend/config.php");
 include_once("../link/link-2.php");
 include_once("../components/component.php");
 error_reporting(E_ALL);
@@ -39,7 +40,7 @@ if(!isset($_SESSION['users_data'])){
         $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
           SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
           LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
-          $query = mysqli_query($conn,$get_product);//$conn->query($get_product);
+          $query = $conn->query($get_product);
           $data = [];
           while($row = $query->fetch_assoc()){
             $data[] = $row;
@@ -48,7 +49,7 @@ if(!isset($_SESSION['users_data'])){
           $get_productsell = "SELECT LP.list_sellid, LP.productname, NP.product_name,
             LP.level_selltype,LP.rate_customertype,LP.tatol_product,LP.price_to_pay
             FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name ORDER BY LP.list_sellid ASC";
-            $query_sell = mysqli_query($conn,$get_productsell); //$conn->query($get_productsell);
+            $query_sell = $conn->query($get_productsell);
             $data_sell = [];
             while($is_row = $query_sell->fetch_assoc()){
               $data_sell[] = $is_row;
@@ -142,7 +143,9 @@ if(!isset($_SESSION['users_data'])){
         }
 
         $grouped = array_values($grouped);
-          
+          echo "<pre>";
+      print_r($grouped);
+      echo "</pre>";
         ?>
       </div>
     </main>
