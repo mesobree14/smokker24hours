@@ -151,7 +151,7 @@ if(!isset($_SESSION['users_data'])){
           <div class="col-md-12 border-right">
             <div class="table-responsive table-responsive-data2 mt-2">
                 <table class="table table-data2">
-                    <thead class="bg-light">
+                    <thead class="alert alert-primary">
                         <tr>
                             <th></th>
                             <th>Lot No.</th>
