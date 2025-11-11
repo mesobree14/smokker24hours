@@ -815,4 +815,31 @@ function listPepleGroup($number,$idgroup, $namegroup,$phonegroup,$status,$counts
   echo $list;
 }
 
+function listLotProduct($number, $lot_no, $listcount, $total_inlot, $totalsell, $remain, $price_all, $pricecenter_all, $shipping_cost,$expenses, $price_seller){
+  $list = "
+    <tr>
+      <td></td>
+      <td class=\"font-weight-bold\">$lot_no</td>
+      <td class=\"\">$listcount รายการ</td>
+      <td class=\"\">$total_inlot ชิ้น</td>
+      <td class=\"\">$totalsell ชิ้น</td>
+      <td class=\"\">$remain ชิ้น</td>
+      <td class=\"\">$price_all บาท</td>
+      <td class=\"\">$pricecenter_all บาท</td>
+      <td class=\"\">$shipping_cost บาท</td>
+      <td class=\"\">$expenses บาท</td>
+      <td class=\"\">$price_seller บาท</td>
+      
+      <td class=\"text-center\">
+        <div class=\"table-data-feature\">
+          <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"pdf\" target=\"_blank\" href=\"\">
+              <i class=\"fa-solid fa-file-pdf\"></i>
+            </a>
+        </div>
+      </td>
+    </tr>
+  ";
+  echo $list;
+}
+
 ?>

@@ -143,10 +143,44 @@ if(!isset($_SESSION['users_data'])){
         }
 
         $grouped = array_values($grouped);
-          echo "<pre>";
-      print_r($grouped);
-      echo "</pre>";
+      //     echo "<pre>";
+      // print_r($grouped);
+      // echo "</pre>";
         ?>
+        <div class="col-12 row mt-2 bg-white">
+          <div class="col-md-12 border-right">
+            <div class="table-responsive table-responsive-data2 mt-2">
+                <table class="table table-data2">
+                    <thead class="bg-light">
+                        <tr>
+                            <th></th>
+                            <th>Lot No.</th>
+                            <th>รายการ</th>
+                            <th>จำนวนในล็อต</th>
+                            <th>จำนวนขาย</th>
+                            <th>คงเหลือ</th>
+                            <th>ราคาเริ่มต้น</th>
+                            <th>ราคากลาง</th>
+                            <th>ค่าส่ง</th>
+                            <th>ราคาซื้อทั้งหมด</th>
+                            <th>ราคาขาย</th>
+                            <th style="width:22%;">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                        foreach($grouped as $key => $rows){
+                          listLotProduct(
+                            ($key+1),$rows['lot_code'],$rows['count'],$rows['total_inlot'],$rows['total_sell'],$rows['remain'],
+                            $rows['priceAll'],$rows['pricecenter_All'],$rows['shipping_cost'],$rows['expenses'],$rows['price_seller']
+                          );
+                        }
+                      ?>
+                    </tbody>
+                </table>
+            </div>
+          </div>
+      </div>
       </div>
     </main>
   </div>
