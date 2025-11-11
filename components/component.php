@@ -51,7 +51,7 @@ function navigationOfiicer($path = ""){
                         <li>
                           <a href=\"{$path}lot.php\">
                               <i class=\"fa-solid fa-cubes\"></i>
-                              <span>ล็อตสินค้า</span>
+                              <span>สต็อกสินค้า</span>
                           </a>
                         </li>
                         <li>
@@ -824,22 +824,46 @@ function listLotProduct($number, $lot_no, $listcount, $total_inlot, $totalsell, 
       <td class=\"\">$total_inlot ชิ้น</td>
       <td class=\"\">$totalsell ชิ้น</td>
       <td class=\"\">$remain ชิ้น</td>
-      <td class=\"\">$price_all บาท</td>
-      <td class=\"\">$pricecenter_all บาท</td>
-      <td class=\"\">$shipping_cost บาท</td>
+    
       <td class=\"\">$expenses บาท</td>
       <td class=\"\">$price_seller บาท</td>
       
       <td class=\"text-center\">
-        <div class=\"table-data-feature\">
-          <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"pdf\" target=\"_blank\" href=\"\">
-              <i class=\"fa-solid fa-file-pdf\"></i>
-            </a>
-        </div>
+        <div class=\"table-data-feature\" >
+              <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"detail lot\" href=\"details/detail_lot.php?lot_number=$lot_no\">
+                <i class=\"fas fa-list-alt\"></i>
+              </a>
+          </div>
       </td>
     </tr>
   ";
   echo $list;
+}
+
+function detailLotProduct(
+  $num,$id,$p_name,$id_pname,$lot_no,$countin_lot,$total_sell,$remainQty,$price_def,$priceall_def,$price_center,
+  $priceall_center,$shipping_one,$shipping_all,$expenses,$totalsell,$date
+){
+    $profit_center = $priceall_def - $price_center;
+    $profit_sell = $price_center - $totalsell;
+  $list = "
+    <tr>
+      <td></td>
+      <td class=\"font-weight-bold\">$p_name</td>
+      <td class=\"\">$countin_lot ชิ้น</td>
+      <td class=\"\">$total_sell ชิ้น</td>
+      <td class=\"\">$remainQty ชิ้น</td>
+      <td class=\"\">$expenses บาท</td>
+      <td class=\"\">$totalsell บาท</td>
+      <td class=\"\">$priceall_def บาท</td>
+      <td class=\"\">$profit_center บาท</td>
+      <td class=\"\">$profit_sell บาท</td>
+      <td class=\"\">$date</td>
+      
+    </tr>
+  ";
+  echo $list;
+  
 }
 
 ?>

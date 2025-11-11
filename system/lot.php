@@ -34,7 +34,7 @@ if(!isset($_SESSION['users_data'])){
   <div class="page-wrapper chiller-theme toggled">
     <?php  navigationOfiicer(); ?>
     <main class="page-content mt-0">
-      <?php navbar("ล็อตสินค้า"); ?>
+      <?php navbar("สต็อกสินค้า"); ?>
       <div class="container-fluid row">
         <?php
         $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
@@ -148,9 +148,9 @@ if(!isset($_SESSION['users_data'])){
       // echo "</pre>";
         ?>
         <div class="col-12 row mt-2 bg-white">
-          <div class="col-md-12 col-xl-11 border-right">
+          <div class="col-md-12">
             <div class="table-responsive table-responsive-data2 mt-2">
-                <table class="table table-data2">
+                <table class="table table-data2 border">
                     <thead class="alert alert-primary">
                         <tr>
                             <th></th>
@@ -159,9 +159,9 @@ if(!isset($_SESSION['users_data'])){
                             <th>จำนวนในล็อต</th>
                             <th>จำนวนขาย</th>
                             <th>คงเหลือ</th>
-                            <th>ราคาเริ่มต้น</th>
+                            <!-- <th>ราคาเริ่มต้น</th>
                             <th>ราคากลาง</th>
-                            <th>ค่าส่ง</th>
+                            <th>ค่าส่ง</th> -->
                             <th>ราคาซื้อทั้งหมด</th>
                             <th>ราคาขาย</th>
                             <th>จัดการ</th>
@@ -178,6 +178,7 @@ if(!isset($_SESSION['users_data'])){
                       ?>
                     </tbody>
                 </table>
+                || <?php echo count($grouped); ?>
             </div>
           </div>
       </div>

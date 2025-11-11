@@ -13,7 +13,7 @@
     if($_SERVER['REQUEST_METHOD'] === "GET"){
       $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
       SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
-      LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
+      LEFT JOIN name_product NP ON SP.product_name = NP.id_name WHERE SP.lot_number='LOT-A0001' GROUP BY SP.product_id, SP.lot_number";
       $query = $conn->query($get_product);
       $data = [];
       while($row = $query->fetch_assoc()){
