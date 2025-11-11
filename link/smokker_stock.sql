@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 02, 2025 at 06:25 PM
+-- Generation Time: Nov 11, 2025 at 09:26 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -44,7 +44,8 @@ CREATE TABLE `capital` (
 INSERT INTO `capital` (`capital_id`, `capital_balance`, `count_capital`, `slip_capital`, `date_time_ad`, `adder_id`, `create_at`) VALUES
 (26, 0.00, 50000.00, '', '2025-10-13 15:40:00', 2, '2025-10-13 15:40:11'),
 (27, 10000.00, 200000.00, '', '2025-10-15 20:30:00', 2, '2025-10-15 20:30:31'),
-(28, 32464.00, 500000.00, '', '2025-10-19 21:12:00', 1, '2025-10-19 21:12:24');
+(28, 32464.00, 500000.00, '', '2025-10-19 21:12:00', 1, '2025-10-19 21:12:24'),
+(29, 12150.35, 200000.00, '', '2025-11-08 17:22:00', 1, '2025-11-08 17:22:13');
 
 -- --------------------------------------------------------
 
@@ -85,6 +86,7 @@ CREATE TABLE `list_productsell` (
   `list_sellid` int(11) NOT NULL,
   `ordersell_id` int(15) NOT NULL,
   `productname` varchar(250) NOT NULL,
+  `level_selltype` int(7) NOT NULL,
   `rate_customertype` decimal(10,2) NOT NULL,
   `type_custom` varchar(100) NOT NULL,
   `tatol_product` int(11) NOT NULL,
@@ -96,15 +98,39 @@ CREATE TABLE `list_productsell` (
 -- Dumping data for table `list_productsell`
 --
 
-INSERT INTO `list_productsell` (`list_sellid`, `ordersell_id`, `productname`, `rate_customertype`, `type_custom`, `tatol_product`, `price_to_pay`, `create_at`) VALUES
-(673, 127, '1', 520.00, 'price_customer_frontstore', 10, 5200.00, '2025-10-24 17:15:40'),
-(674, 127, '5', 720.00, 'price_customer_frontstore', 7, 5040.00, '2025-10-24 17:15:40'),
-(675, 128, '7', 310.00, 'price_levels_one', 12, 3720.00, '2025-10-30 09:20:33'),
-(676, 128, '1', 511.00, 'price_levels_one', 12, 6132.00, '2025-10-30 09:20:33'),
-(677, 127, '10', 520.00, 'price_customer_frontstore', 10, 5200.00, '2025-10-30 13:24:56'),
-(678, 129, '9', 320.00, 'price_customer_frontstore', 20, 6400.00, '2025-10-30 17:35:34'),
-(679, 129, '8', 420.00, 'price_customer_frontstore', 15, 6300.00, '2025-10-30 17:35:34'),
-(680, 129, '7', 320.00, 'price_customer_frontstore', 12, 3840.00, '2025-10-30 17:35:34');
+INSERT INTO `list_productsell` (`list_sellid`, `ordersell_id`, `productname`, `level_selltype`, `rate_customertype`, `type_custom`, `tatol_product`, `price_to_pay`, `create_at`) VALUES
+(673, 127, '1', 1, 520.00, 'price_customer_frontstore', 10, 5200.00, '2025-10-24 17:15:40'),
+(674, 127, '5', 1, 720.00, 'price_customer_frontstore', 7, 5040.00, '2025-10-24 17:15:40'),
+(675, 128, '7', 1, 310.00, 'price_levels_one', 12, 3720.00, '2025-10-30 09:20:33'),
+(676, 128, '1', 1, 511.00, 'price_levels_one', 12, 6132.00, '2025-10-30 09:20:33'),
+(677, 127, '10', 1, 520.00, 'price_customer_frontstore', 10, 5200.00, '2025-10-30 13:24:56'),
+(678, 129, '9', 1, 320.00, 'price_customer_frontstore', 20, 6400.00, '2025-10-30 17:35:34'),
+(679, 129, '8', 1, 420.00, 'price_customer_frontstore', 15, 6300.00, '2025-10-30 17:35:34'),
+(680, 129, '7', 1, 320.00, 'price_customer_frontstore', 12, 3840.00, '2025-10-30 17:35:34'),
+(681, 131, '15', 3, 310.00, 'price_levels_one', 10, 3100.00, '2025-11-09 21:09:20'),
+(682, 131, '16', 2, 240.00, 'price_customer_deliver', 20, 4800.00, '2025-11-09 21:09:20'),
+(683, 132, '1', 4, 544.00, 'price_customer_deliver', 40, 21760.00, '2025-11-09 21:14:58'),
+(687, 130, '1', 4, 544.00, 'price_customer_deliver', 23, 12512.00, '2025-11-10 00:56:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lot_product`
+--
+
+CREATE TABLE `lot_product` (
+  `id_lot` int(11) NOT NULL,
+  `lot_numbers` varchar(50) NOT NULL,
+  `productname_id` int(11) NOT NULL,
+  `ordersell_id` int(11) NOT NULL,
+  `total_product` int(11) NOT NULL,
+  `price_total` decimal(10,2) NOT NULL,
+  `level_sell` varchar(70) NOT NULL,
+  `customer` varchar(200) NOT NULL,
+  `group_sell` varchar(200) NOT NULL,
+  `id_adder` int(11) NOT NULL,
+  `create_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -141,7 +167,10 @@ INSERT INTO `name_product` (`id_name`, `product_name`, `price`, `price_center`, 
 (10, '235เขียว', 400.00, 430.50, 50, 30.40, 1, 1, '2025-10-17 22:10:01'),
 (11, 'ม่อนรุ่ง', 300.00, 390.00, 50, 27.50, 1, 1, '2025-10-17 22:10:25'),
 (12, 'MASOSA', 500.00, 600.00, 50, 25.60, 2, 1, '2025-10-26 21:36:03'),
-(13, 'ROSS', 300.00, 400.00, 50, 25.00, 1, 1, '2025-11-02 13:03:13');
+(13, 'ROSS', 300.00, 400.00, 50, 25.00, 1, 1, '2025-11-02 13:03:13'),
+(14, 'SOSATSOSEE', 200.00, 300.00, 50, 30.00, 1, 1, '2025-11-08 17:21:29'),
+(15, 'PANDORA', 80.00, 100.00, 40, 25.00, 1, 1, '2025-11-08 17:26:41'),
+(16, 'TORAFE', 70.00, 100.00, 30, 25.00, 1, 1, '2025-11-08 17:30:40');
 
 -- --------------------------------------------------------
 
@@ -170,7 +199,10 @@ CREATE TABLE `orders_sell` (
 INSERT INTO `orders_sell` (`id_ordersell`, `ordersell_name`, `is_totalprice`, `custome_name`, `date_time_sell`, `sell_idpeplegroup`, `slip_ordersell`, `count_totalpays`, `count_stuck`, `adder_id`, `create_at`) VALUES
 (127, 'GQW1H58K3M', 15440.00, 'master dev TEST 2', '2025-10-30 17:15:00', 1, 'img_68fb51cc7849a.png', 15440.00, 0.00, 1, '2025-10-30 13:35:14'),
 (128, 'XVYAKMZ2JY', 9852.00, 'sora', '2025-10-30 09:20:00', 1, '', 9852.00, 0.00, 1, '2025-10-30 09:20:33'),
-(129, 'PL7I5FQYGF', 16540.00, 'HISOKA MONRROW', '2025-10-30 17:28:00', 3, '', 0.00, 16540.00, 1, '2025-10-30 17:35:34');
+(129, 'PL7I5FQYGF', 16540.00, 'HISOKA MONRROW', '2025-10-30 17:28:00', 3, '', 0.00, 16540.00, 1, '2025-11-09 21:21:10'),
+(130, 'YE7K01O2VW', 12512.00, 'HISOKA MONRROW', '2025-11-09 20:58:00', 3, '', 12512.00, 0.00, 1, '2025-11-10 00:56:44'),
+(131, 'FOJWVCVM0V', 7900.00, 'master dev TEST 2', '2025-11-09 21:09:00', 3, '', 7900.00, 0.00, 1, '2025-11-09 21:09:20'),
+(132, '1P6MTJCU83', 20560.00, 'monalisa red', '2025-11-09 21:14:00', 4, '', 20560.00, 0.00, 1, '2025-11-09 21:20:45');
 
 -- --------------------------------------------------------
 
@@ -201,7 +233,11 @@ INSERT INTO `order_box` (`order_id`, `order_name`, `lot_numbers`, `slip_order`, 
 (55, 'A894CZA7QC', 'LOT-A0004', '', 73560.50, 3, 1, '2025-11-02 13:03:00', '2025-11-02 13:04:28'),
 (56, 'OV8D8340AU', 'LOT-A0005', '', 27426.00, 2, 1, '2025-11-02 13:06:00', '2025-11-02 13:06:13'),
 (57, '64M8U5MUWC', 'LOT-A0006', '', 210240.00, 1, 1, '2025-11-02 13:06:00', '2025-11-02 13:06:34'),
-(58, 'WFY2PUTAGI', 'LOT-A0007', '', 76380.00, 3, 1, '2025-11-02 22:43:00', '2025-11-02 22:43:33');
+(58, 'WFY2PUTAGI', 'LOT-A0007', '', 76380.00, 3, 1, '2025-11-02 22:43:00', '2025-11-02 22:43:33'),
+(59, 'LH84LHXEUM', 'LOT-A0008', '', 14231.00, 3, 3, '2025-11-03 20:53:00', '2025-11-03 20:53:53'),
+(60, 'SY8SN5Y5QJ', 'LOT-A0009', '', 23000.00, 1, 1, '2025-11-08 17:22:00', '2025-11-08 17:22:43'),
+(61, 'HCWBHE62VU', 'LOT-A0010', '', 2100.00, 1, 1, '2025-11-08 17:26:00', '2025-11-08 17:27:18'),
+(62, 'K78VNMEU1P', 'LOT-A0011', '', 19000.00, 1, 1, '2025-11-08 17:30:00', '2025-11-08 17:31:06');
 
 -- --------------------------------------------------------
 
@@ -252,7 +288,8 @@ CREATE TABLE `peple_groups` (
 INSERT INTO `peple_groups` (`id_peplegroup`, `name_peplegroup`, `phone_group`, `status_group`, `id_adder`, `status_del`, `create_at`) VALUES
 (1, 'benjamint', '0896788898', 'ลูกจ้าง', 2, 1, '2025-10-26 21:34:39'),
 (2, 'issac netero', '', 'ลูกจ้าง', 2, 1, '2025-10-27 11:50:25'),
-(3, 'KARN FRESS', '0897865590', 'ลูกจ้าง', 1, 1, '2025-10-30 13:36:19');
+(3, 'KARN FRESS', '0897865590', 'ลูกจ้าง', 1, 1, '2025-10-30 13:36:19'),
+(4, 'BIG JOKKER', '', 'ลูกจ้าง', 1, 1, '2025-11-09 21:13:53');
 
 -- --------------------------------------------------------
 
@@ -265,6 +302,7 @@ CREATE TABLE `rate_price` (
   `id_productname` int(11) NOT NULL,
   `product_name` varchar(200) NOT NULL,
   `id_adder` int(11) NOT NULL,
+  `level_sell` int(11) NOT NULL,
   `price_levels_one` decimal(10,2) NOT NULL,
   `price_customer_frontstore` decimal(10,2) NOT NULL,
   `price_customer_deliver` decimal(10,2) NOT NULL,
@@ -276,14 +314,33 @@ CREATE TABLE `rate_price` (
 -- Dumping data for table `rate_price`
 --
 
-INSERT INTO `rate_price` (`rate_id`, `id_productname`, `product_name`, `id_adder`, `price_levels_one`, `price_customer_frontstore`, `price_customer_deliver`, `price_customer_dealer`, `create_at`) VALUES
-(38, 1, 'GUDAGARUN', 1, 511.00, 520.00, 540.00, 530.00, '2025-10-24 14:29:37'),
-(39, 10, '235เขียว', 1, 510.00, 520.00, 540.00, 530.00, '2025-10-24 16:24:40'),
-(40, 11, 'ม่อนรุ่ง', 1, 410.00, 420.00, 440.00, 430.00, '2025-10-24 16:58:17'),
-(41, 5, 'DOSSS', 1, 710.00, 720.00, 740.00, 730.00, '2025-10-24 16:59:10'),
-(42, 7, 'DORARE', 1, 310.00, 320.00, 340.00, 330.00, '2025-10-24 16:59:54'),
-(43, 8, 'คาปิตอล', 1, 410.00, 420.00, 440.00, 430.00, '2025-10-24 17:00:40'),
-(44, 9, '235 เเดง', 1, 310.00, 320.00, 340.00, 330.00, '2025-10-24 17:02:01');
+INSERT INTO `rate_price` (`rate_id`, `id_productname`, `product_name`, `id_adder`, `level_sell`, `price_levels_one`, `price_customer_frontstore`, `price_customer_deliver`, `price_customer_dealer`, `create_at`) VALUES
+(39, 10, '235เขียว', 1, 1, 510.00, 520.00, 540.00, 530.00, '2025-10-24 16:24:40'),
+(40, 11, 'ม่อนรุ่ง', 1, 1, 410.00, 420.00, 440.00, 430.00, '2025-10-24 16:58:17'),
+(41, 5, 'DOSSS', 1, 1, 710.00, 720.00, 740.00, 730.00, '2025-10-24 16:59:10'),
+(42, 7, 'DORARE', 1, 1, 310.00, 320.00, 340.00, 330.00, '2025-10-24 16:59:54'),
+(43, 8, 'คาปิตอล', 1, 1, 410.00, 420.00, 440.00, 430.00, '2025-10-24 17:00:40'),
+(44, 9, '235 เเดง', 1, 1, 310.00, 320.00, 340.00, 330.00, '2025-10-24 17:02:01'),
+(45, 12, 'MASOSA', 1, 1, 651.00, 701.00, 801.00, 751.00, '2025-11-08 16:02:40'),
+(46, 12, 'MASOSA', 1, 2, 662.00, 722.00, 822.00, 772.00, '2025-11-08 16:02:40'),
+(47, 12, 'MASOSA', 1, 3, 673.70, 733.70, 833.70, 783.70, '2025-11-08 17:20:17'),
+(48, 12, 'MASOSA', 1, 4, 684.50, 744.50, 844.50, 794.50, '2025-11-08 17:19:41'),
+(49, 14, 'SOSATSOSEE', 1, 1, 310.00, 320.00, 340.00, 330.00, '2025-11-08 17:24:37'),
+(50, 14, 'SOSATSOSEE', 1, 2, 410.00, 420.00, 440.00, 430.00, '2025-11-08 17:24:37'),
+(51, 14, 'SOSATSOSEE', 1, 3, 510.00, 520.00, 540.00, 530.00, '2025-11-08 17:24:37'),
+(52, 14, 'SOSATSOSEE', 1, 4, 610.00, 620.00, 640.00, 630.00, '2025-11-08 17:24:37'),
+(53, 15, 'PANDORA', 1, 1, 110.00, 120.00, 140.00, 130.00, '2025-11-08 17:28:21'),
+(54, 15, 'PANDORA', 1, 2, 210.00, 220.00, 240.00, 230.00, '2025-11-08 17:28:21'),
+(55, 15, 'PANDORA', 1, 3, 310.00, 320.00, 340.00, 330.00, '2025-11-08 17:28:21'),
+(56, 15, 'PANDORA', 1, 4, 410.00, 420.00, 440.00, 430.00, '2025-11-08 17:28:21'),
+(57, 16, 'TORAFE', 1, 1, 110.00, 120.00, 140.00, 130.00, '2025-11-08 17:32:10'),
+(58, 16, 'TORAFE', 1, 2, 210.00, 220.00, 240.00, 230.00, '2025-11-08 17:32:10'),
+(59, 16, 'TORAFE', 1, 3, 310.00, 320.00, 340.00, 330.00, '2025-11-08 17:32:10'),
+(60, 16, 'TORAFE', 1, 4, 410.00, 420.00, 440.00, 430.00, '2025-11-08 17:32:10'),
+(61, 1, 'GUDAGARUN', 1, 1, 511.00, 512.00, 514.00, 513.00, '2025-11-09 21:12:21'),
+(62, 1, 'GUDAGARUN', 1, 2, 521.00, 522.00, 524.00, 523.00, '2025-11-09 21:12:21'),
+(63, 1, 'GUDAGARUN', 1, 3, 531.00, 532.00, 534.00, 533.00, '2025-11-09 21:12:21'),
+(64, 1, 'GUDAGARUN', 1, 4, 541.00, 542.00, 544.00, 543.00, '2025-11-09 21:12:21');
 
 -- --------------------------------------------------------
 
@@ -306,7 +363,10 @@ INSERT INTO `sell_typepay` (`typepay_id`, `ordersell_id`, `list_typepay`, `creat
 (133, 127, 'จ่ายสด', '2025-10-24 17:15:40'),
 (134, 128, 'จ่ายสด', '2025-10-30 09:20:33'),
 (135, 127, 'โอน', '2025-10-30 13:24:56'),
-(136, 129, 'ติดค้าง', '2025-10-30 17:35:34');
+(136, 129, 'ติดค้าง', '2025-10-30 17:35:34'),
+(137, 130, 'จ่ายสด', '2025-11-09 20:59:06'),
+(138, 131, 'จ่ายสด', '2025-11-09 21:09:20'),
+(139, 132, 'จ่ายสด', '2025-11-09 21:14:58');
 
 -- --------------------------------------------------------
 
@@ -351,7 +411,13 @@ INSERT INTO `stock_product` (`product_id`, `product_name`, `product_count`, `pro
 (115, '10', 40, 400.00, 430.50, 2000, 1216.00, 17216.00, 1, 56, 'LOT-A0005', '2025-11-02 13:53:50'),
 (116, '5', 50, 570.00, 630.00, 2500, 1000.00, 29500.00, 1, 58, 'LOT-A0007', '2025-11-02 22:43:33'),
 (117, '13', 50, 300.00, 400.00, 2500, 1250.00, 16250.00, 1, 58, 'LOT-A0007', '2025-11-02 22:43:33'),
-(118, '2', 60, 500.00, 700.00, 3000, 630.00, 30630.00, 1, 58, 'LOT-A0007', '2025-11-02 22:45:18');
+(118, '2', 60, 500.00, 700.00, 3000, 630.00, 30630.00, 1, 58, 'LOT-A0007', '2025-11-02 22:45:18'),
+(119, '1', 10, 300.00, 400.00, 500, 75.00, 3075.00, 3, 59, 'LOT-A0008', '2025-11-03 20:53:53'),
+(120, '12', 10, 500.00, 600.00, 500, 256.00, 5256.00, 3, 59, 'LOT-A0008', '2025-11-03 20:53:53'),
+(121, '5', 10, 570.00, 630.00, 500, 200.00, 5900.00, 3, 59, 'LOT-A0008', '2025-11-03 20:53:53'),
+(122, '14', 100, 200.00, 300.00, 5000, 3000.00, 23000.00, 1, 60, 'LOT-A0009', '2025-11-08 17:22:43'),
+(123, '15', 20, 80.00, 100.00, 800, 500.00, 2100.00, 1, 61, 'LOT-A0010', '2025-11-08 17:27:18'),
+(124, '16', 200, 70.00, 100.00, 6000, 5000.00, 19000.00, 1, 62, 'LOT-A0011', '2025-11-08 17:31:06');
 
 -- --------------------------------------------------------
 
@@ -395,7 +461,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `fullname`, `username`, `password`, `create_at`) VALUES
 (1, 'admin', 'admin.com', 'P@ssw0rd', '2025-08-16 11:32:10'),
-(2, 'rokok data', 'rokok24jam.com', 'P@ssw0rd', '2025-10-13 10:21:01');
+(2, 'rokok data', 'rokok24jam.com', 'P@ssw0rd', '2025-10-13 10:21:01'),
+(3, 'admin smokker', 'smokker24hours.com', 'P@ssw0rd', '2025-11-02 18:32:59');
 
 -- --------------------------------------------------------
 
@@ -435,6 +502,12 @@ ALTER TABLE `custom_debtpaid`
 --
 ALTER TABLE `list_productsell`
   ADD PRIMARY KEY (`list_sellid`);
+
+--
+-- Indexes for table `lot_product`
+--
+ALTER TABLE `lot_product`
+  ADD PRIMARY KEY (`id_lot`);
 
 --
 -- Indexes for table `name_product`
@@ -510,7 +583,7 @@ ALTER TABLE `withdraw`
 -- AUTO_INCREMENT for table `capital`
 --
 ALTER TABLE `capital`
-  MODIFY `capital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `capital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `custom_debtpaid`
@@ -522,25 +595,31 @@ ALTER TABLE `custom_debtpaid`
 -- AUTO_INCREMENT for table `list_productsell`
 --
 ALTER TABLE `list_productsell`
-  MODIFY `list_sellid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=681;
+  MODIFY `list_sellid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=688;
+
+--
+-- AUTO_INCREMENT for table `lot_product`
+--
+ALTER TABLE `lot_product`
+  MODIFY `id_lot` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `name_product`
 --
 ALTER TABLE `name_product`
-  MODIFY `id_name` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_name` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `orders_sell`
 --
 ALTER TABLE `orders_sell`
-  MODIFY `id_ordersell` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `id_ordersell` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- AUTO_INCREMENT for table `order_box`
 --
 ALTER TABLE `order_box`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `order_was_paid`
@@ -552,25 +631,25 @@ ALTER TABLE `order_was_paid`
 -- AUTO_INCREMENT for table `peple_groups`
 --
 ALTER TABLE `peple_groups`
-  MODIFY `id_peplegroup` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_peplegroup` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `rate_price`
 --
 ALTER TABLE `rate_price`
-  MODIFY `rate_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `rate_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `sell_typepay`
 --
 ALTER TABLE `sell_typepay`
-  MODIFY `typepay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+  MODIFY `typepay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
 
 --
 -- AUTO_INCREMENT for table `stock_product`
 --
 ALTER TABLE `stock_product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT for table `type_paydebt`
@@ -582,7 +661,7 @@ ALTER TABLE `type_paydebt`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `withdraw`
