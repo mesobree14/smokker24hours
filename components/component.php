@@ -825,8 +825,6 @@ function listLotProduct($number, $lot_no, $listcount, $total_inlot, $totalsell, 
       <td class=\"\">$totalsell ชิ้น</td>
       <td class=\"\">$remain ชิ้น</td>
     
-      <td class=\"\">$expenses บาท</td>
-      <td class=\"\">$price_seller บาท</td>
       
       <td class=\"text-center\">
         <div class=\"table-data-feature\" >

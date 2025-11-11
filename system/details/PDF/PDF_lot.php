@@ -1,46 +1,127 @@
 <?php
-session_name("session_smokker");
-  session_start();
-  include_once("../backend/config.php");
-include_once("../link/link-2.php");
-include_once("../components/component.php");
-error_reporting(E_ALL);
-  ini_set('display_errors', 1);
-if(!isset($_SESSION['users_data'])){
-  echo "
-          <script>
-              alert('pless your login');
-              window.location = '../index.php';
-          </script>
-      ";
-}
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/css/uikit.css">
-    <link rel="stylesheet" href="../assets/scripts/module/jquery.Thailand.js/jquery.Thailand.js/dist/jquery.Thailand.min.css">
-    <link rel="stylesheet" href="../assets/scss/navigationTrue-a-j.scss">
-    <link rel="stylesheet" href="../assets/scss/revenue.scss">
-    <link rel="stylesheet" href="../assets/scripts/module/test/test.scss">
-    <script src="../assets/scripts/module/test/test.js"></script>
-    <script src="../assets/scripts/script-bash.js"></script>
-  <title>Document</title>
-</head>
-<body>
-  <div class="page-wrapper chiller-theme toggled">
-    <?php  navigationOfiicer(); ?>
-    <main class="page-content mt-0">
-      <?php navbar("สต็อกสินค้า"); ?>
-      <div class="container-fluid row">
-          <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_lot.php" target="_blank">
-            <i class="fas fa-file-code px-2"></i> PDF
-          </a>
-        <?php
-        $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require_once __DIR__ . '/../../../vendor/autoload.php';
+$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+$fontDirs = $defaultConfig['fontDir'];
+
+$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+$fontData = $defaultFontConfig['fontdata'];
+
+if (!class_exists(\Mpdf\Mpdf::class)) {
+    die("mPDF ไม่เจอ ลองเช็ค path vendor/autoload.php");
+}
+
+$mpdf = new \Mpdf\Mpdf([
+  'fontDir' => array_merge($fontDirs, [
+        __DIR__ . '/../../../font',
+    ]),
+    'fontdata' => $fontData + [
+        'thsarabunnew' => [
+            'R' => 'THSarabunNew.ttf',
+            'B' => 'THSarabunNew-Bold.ttf',
+            'I' => 'THSarabunNew-Italic.ttf',
+            'BI' => 'THSarabunNew-BoldItalic.ttf',
+        ]
+    ],
+    'default_font' => 'thsarabunnew',
+    'tempDir' => __DIR__ . '/../../../tmp',
+    'mode' => 'utf-8',
+    'format' => [240, 180],
+    'margin_left' => 5,
+    'margin_right' => 5,
+    'margin_top' => 5,
+]);
+
+$conn = new mysqli("localhost", "root", "", "smokker_stock");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$html = '
+ <style>
+      table.slip-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.slip-table th,
+  table.slip-table td {
+    border: 1px solid #000;
+    padding: 6px;
+    text-align: center;
+  }
+  table.slip-table th.num,
+  table.slip-table td.num {
+    width: 8%;
+  }
+
+  table.slip-table th.name,
+  table.slip-table td.name {
+    width: 20%;
+    text-align: left;
+  }
+
+  table.slip-table th.price,
+  table.slip-table td.price,
+  table.slip-table th.qty,
+  table.slip-table td.qty,
+  table.slip-table th.total,
+  table.slip-table td.total {
+    width: 17%;
+  }
+  table.slip-table td.result-name {
+    width: 25%;
+    text-align: left;
+    border:none;
+  }
+  table.slip-table td.resutl-qty{
+    width: 15%;
+    border:none;
+  }
+  table.slip-table td.resutl-qtys{
+    width: 15%;
+  }
+  .fontbold{
+    font-weight: bold;
+    color:blue;
+    font-size:18px;
+  }
+  table.price-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.price-table th,
+  table.price-table td {
+    border: 1px solid #000;
+    padding: 6px;
+    text-align: center;
+  }
+  </style>';
+
+$html .='
+<div>
+  <div class="" style="">
+    <div style="float: left; width: 55%; margin-left:5px">
+    </div>
+    <div style="float: right; width: 40%;">
+      <h3 style="text-align: right;">รายการในสต็อก(ล็อต)</h3>
+    </div>
+        <div style="width:100%">
+      <table class="slip-table">
+        <thead>
+          <tr style="background-color:#ffb3ff;">
+            <th class="name">Lot No</th>
+            <th class="price">รายการ</th>
+            <th class="qty">จำนวนในล็อต</th>
+            <th class="total">จำนวนขาย</th>
+            <th class="total">คงเหลือ</th>
+          </tr>
+        </thead>
+        <tbody>';
+      $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
           SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
           LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
           $query = $conn->query($get_product);
@@ -146,44 +227,24 @@ if(!isset($_SESSION['users_data'])){
         }
 
         $grouped = array_values($grouped);
-        ?>
-        <div class="col-12 row mt-2 bg-white">
-          <div class="col-md-12">
-            <div class="table-responsive table-responsive-data2 mt-2">
-                <table class="table table-data2 border">
-                    <thead class="alert alert-primary">
-                        <tr>
-                            <th></th>
-                            <th style="width:17%;">Lot No.</th>
-                            <th>รายการ</th>
-                            <th>จำนวนในล็อต</th>
-                            <th>จำนวนขาย</th>
-                            <th>คงเหลือ</th>
-                            <!-- <th>ราคาเริ่มต้น</th>
-                            <th>ราคากลาง</th>
-                            <th>ค่าส่ง</th> -->
-                            <!-- <th>ราคาซื้อทั้งหมด</th>
-                            <th>ราคาขาย</th> -->
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <?php 
-                        foreach($grouped as $key => $rows){
-                          listLotProduct(
-                            ($key+1),$rows['lot_code'],$rows['count'],$rows['total_inlot'],$rows['total_sell'],$rows['remain'],
-                            $rows['priceAll'],$rows['pricecenter_All'],$rows['shipping_cost'],$rows['expenses'],$rows['price_seller']
-                          );
-                        }
-                      ?>
-                    </tbody>
-                </table>
-                || <?php echo count($grouped); ?>
-            </div>
-          </div>
-      </div>
-      </div>
-    </main>
+        foreach($grouped as $res){
+    $html .= '
+            <tr>
+              <td class="fontbold name" >'.$res['lot_code'].'</td>
+              <td class="fontbold total">'.$res['count'].'</td>
+              <td class="fontbold total">'.$res['total_inlot'].'</td>
+              <td class="fontbold total">'.$res['total_sell'].'</td>
+              <td class="fontbold total">'.$res['remain'].'</td>
+            </tr>';
+      }
+    $html .='
+        </tbody>
+      </table>
   </div>
-</body>
-</html>
+  </div>
+</div>';
+
+$mpdf->WriteHTML($html);
+$mpdf->Output();
+
+?>
