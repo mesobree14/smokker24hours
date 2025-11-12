@@ -2,6 +2,7 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+//$lot_number = $_GET['lot_number'];
 require_once __DIR__ . '/../../../vendor/autoload.php';
 $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 $fontDirs = $defaultConfig['fontDir'];
@@ -104,24 +105,24 @@ $html = '
 $html .='
 <div>
   <div class="" style="">
-    <div style="float: left; width: 55%; margin-left:5px">
-    </div>
-    <div style="float: right; width: 40%;">
-      <h3 style="text-align: right;">รายการในสต็อก(ล็อต)</h3>
+    
+    <div style="float: left; width: 100%;">
+      <h2 style="text-align: left;">รายการในสต็อกทั้งหมด</h2>
     </div>
         <div style="width:100%">
       <table class="slip-table">
         <thead>
           <tr style="background-color:#ffb3ff;">
-            <th class="name">Lot No</th>
-            <th class="price">รายการ</th>
-            <th class="qty">จำนวนในล็อต</th>
+            <th class="price">Lot No</th>
+            <th class="price">สินค้า</th>
+            <th class="qty">จำนวนซื้อ</th>
             <th class="total">จำนวนขาย</th>
-            <th class="total">คงเหลือ</th>
+            <th class="total">จำนวนคงเหลือ</th>
+            <th class="total">วันที่สั่งซื้อ</th>
           </tr>
         </thead>
         <tbody>';
-      $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
+      $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name,SP.create_at,
           SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
           LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
           $query = $conn->query($get_product);
@@ -188,53 +189,20 @@ $html .='
             'shipping_cost' => $stock['shipping_cost'],
             'expenses' => $stock['expenses'],
             'sell' => 'sell',
-            'total_sell_value' => $totalSellValue
+            'total_sell_value' => $totalSellValue,
+            'create_at' => $stock['create_at']
           ];
         }
 
-        $grouped = [];
-        $lot_itemcount = [];
-        foreach($lot_resutl as $lot){
-          $code = $lot['lot_no'];
-          if(!isset($grouped[$code])){
-
-            $grouped[$code] = [
-              'lot_code' => $code,
-              'count' => 0,
-              'total_inlot' => 0,
-              'total_sell' => 0,
-              'remain' => 0,
-              'priceAll' =>0,
-              'pricecenter_All' => 0,
-              'shipping_cost' =>0,
-              'expenses' => 0,
-              'price_seller' => 0,
-            ];
-            $lot_itemcount[$code] = 0;
-          }
-          $lot_itemcount[$code]++;
-
-          $grouped[$code]['count'] = $lot_itemcount[$code];
-          $grouped[$code]['total_inlot'] += $lot['count_inlot'];
-          $grouped[$code]['total_sell'] += $lot['total_sell'];
-          $grouped[$code]['remain'] += $lot['remain_qty'];
-          $grouped[$code]['priceAll'] += $lot['product_priceAll'];
-          $grouped[$code]['pricecenter_All'] += $lot['price_centerAll'];
-          $grouped[$code]['shipping_cost'] += $lot['shipping_cost'];
-          $grouped[$code]['expenses'] += $lot['expenses'];
-          $grouped[$code]['price_seller'] += $lot['total_sell_value'];
-
-        }
-
-        $grouped = array_values($grouped);
-        foreach($grouped as $res){
+        foreach($lot_resutl as $res){
     $html .= '
             <tr>
-              <td class="fontbold name" >'.$res['lot_code'].'</td>
-              <td class="fontbold total">'.$res['count'].'</td>
-              <td class="fontbold total">'.$res['total_inlot'].'</td>
+              <td class="fontbold name" >'.$res['lot_no'].'</td>
+              <td class="fontbold name" >'.$res['p_name'].'</td>
+              <td class="fontbold total">'.$res['count_inlot'].'</td>
               <td class="fontbold total">'.$res['total_sell'].'</td>
-              <td class="fontbold total">'.$res['remain'].'</td>
+              <td class="fontbold total">'.$res['remain_qty'].'</td>
+              <td class="fontbold total">'.$res['create_at'].'</td>
             </tr>';
       }
     $html .='
