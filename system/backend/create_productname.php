@@ -41,15 +41,38 @@
           $count_cord = $_POST['count_cord'];
           $shipping_cost = $_POST['shipping_cost'];
           if(!$_POST['id_name']){
-              echo "insert:";
-              echo $_POST['id_name'];
+              
               $sql_select = mysqli_query($conn,"SELECT product_name FROM name_product WHERE product_name='$product_name' AND status_del=1");
               $num = mysqli_num_rows($sql_select);
                 if($num == 0){
+                  $checkstatus = [];
                   $sql = "INSERT INTO name_product(product_name,price,price_center,count_cord,shipping_cost,adder_id,status_del,create_at)
                   VALUES('$product_name','$price_default','$price_center','$count_cord','$shipping_cost','$id_user',1,'$day_add')";
                   $query = mysqli_query($conn,$sql) or die(mysqli_error($conn));
                   if($query){
+                    $is_idname = mysqli_insert_id($conn);
+                     $level_sell = $_POST['level_sell'];
+                      $rate_vip1 = $_POST['rate_vip1'];
+                      $rate_storefront2 = $_POST['rate_storefront2'];
+                      $rate_dealers3 = $_POST['rate_dealers3'];
+                      $rate_delivery4 = $_POST['rate_delivery4'];
+                      for($i = 0; $i < count($level_sell); $i++){
+                        $islevel_sell = mysqli_real_escape_string($conn,trim($level_sell[$i]));
+                        $israte_vip = mysqli_real_escape_string($conn,trim($rate_vip1[$i]));
+                        $israte_storefront = mysqli_real_escape_string($conn,trim($rate_storefront2[$i]));
+                        $israte_dealers = mysqli_real_escape_string($conn,trim($rate_dealers3[$i]));
+                        $israte_delivery = mysqli_real_escape_string($conn,trim($rate_delivery4[$i]));
+
+                        $sql_rate = "INSERT INTO rate_price (id_productname,product_name,id_adder,level_sell,price_levels_one,price_customer_frontstore,price_customer_deliver,price_customer_dealer,create_at)
+                          VALUES ('$is_idname','$product_name','$id_user','$islevel_sell','$israte_vip','$israte_storefront','$israte_delivery','$israte_dealers','$day_add')";
+                        $query_insert = mysqli_query($conn,$sql_rate) or die(mysqli_error($conn));
+                        if($query_insert){
+                          $checkstatus[] = "success level:".$i + 1;
+                        }
+                      }
+                      echo "<pre>"; 
+                        print_r($checkstatus);
+                      echo "</pre>";
                     echo "<script type=\"text/javascript\">
                             MySetSweetAlert(\"success\",\"เรียบร้อย\",\"เพิ่มชื่อสินค้าเรียบร้อยแล้ว\",\"../product.php\")
                         </script>";
