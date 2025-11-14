@@ -4,11 +4,120 @@ class modalCreateProduct extends HTMLElement {
   }
   connectedCallback() {
     this.renders();
+    this.setScript();
+  }
+  setScript() {
+    const container = document.querySelector(".form-is-level");
+    for (let i = 1; i <= 4; i++) {
+      const groupLevel = document.createElement("div");
+      const groupOne = document.createElement("div");
+      const groupTwo = document.createElement("div");
+      const groupTree = document.createElement("div");
+      const groupFour = document.createElement("div");
+      groupLevel.classList.add("input-goup", "col-md-2");
+      groupOne.classList.add("input-goup", "col-md-2");
+      groupTwo.classList.add("input-goup", "col-md-3");
+      groupTree.classList.add("input-goup", "col-md-3");
+      groupFour.classList.add("input-goup", "col-md-2");
+
+      const groupIn = document.createElement("div");
+      groupIn.classList.add("form-group", "mb-2");
+      const groupInOne = document.createElement("div");
+      groupInOne.classList.add("form-group", "mb-2");
+      const groupInTwo = document.createElement("div");
+      groupInTwo.classList.add("form-group", "mb-2");
+      const groupInTree = document.createElement("div");
+      groupInTree.classList.add("form-group", "mb-2");
+      const groupInFour = document.createElement("div");
+      groupInFour.classList.add("form-group", "mb-2");
+
+      const rateId = document.createElement("input");
+      rateId.id = "rate_id";
+      rateId.name = "rate_id[]";
+
+      const labelLevel = document.createElement("label");
+      labelLevel.textContent = `ระดับที่ ${i}`;
+      labelLevel.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      const levelInput = document.createElement("input");
+      levelInput.id = `level-rate-${i}`;
+      levelInput.classList.add("form-control");
+      levelInput.type = "number";
+      levelInput.name = "level_sell[]";
+      levelInput.value = i;
+      levelInput.readOnly = true;
+      levelInput.required = true;
+
+      const labelOne = document.createElement("label");
+      labelOne.textContent = `ราคา เรท 1 vip`;
+      labelOne.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      const rateOneInput = document.createElement("input");
+      rateOneInput.id = `rate_price_vip-${i}`;
+      rateOneInput.classList.add("form-control");
+      rateOneInput.name = "rate_vip1[]";
+      rateOneInput.type = "text";
+      rateOneInput.required = true;
+
+      const labelTwo = document.createElement("label");
+      labelTwo.textContent = `ราคา เรท 2 หน้าร้าน`;
+      labelTwo.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      const rateTwoInput = document.createElement("input");
+      rateTwoInput.id = `rate_price_storefront-${i}`;
+      rateTwoInput.classList.add("form-control");
+      rateTwoInput.type = "text";
+      rateTwoInput.name = "rate_storefront2[]";
+      rateTwoInput.required = true;
+
+      const labelTree = document.createElement("label");
+      labelTree.textContent = `ราคา เรท 3 ตัวแทน`;
+      labelTree.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      const rateTreeInput = document.createElement("input");
+      rateTreeInput.id = `rate_price_dealers-${i}`;
+      rateTreeInput.classList.add("form-control");
+      rateTreeInput.type = "text";
+      rateTreeInput.name = "rate_dealers3[]";
+      rateTreeInput.required = true;
+
+      const labelFour = document.createElement("label");
+      labelFour.textContent = `ราคา เรท 4 จัดส่ง`;
+      labelFour.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      const rateFourInput = document.createElement("input");
+      rateFourInput.id = `rate_price_delivery-${i}`;
+      rateFourInput.classList.add("form-control");
+      rateFourInput.type = "text";
+      rateFourInput.name = "rate_delivery4[]";
+      rateFourInput.required = true;
+
+      groupIn.appendChild(labelLevel);
+      groupIn.appendChild(levelInput);
+      groupLevel.appendChild(groupIn);
+
+      groupInOne.appendChild(labelOne);
+      groupInOne.appendChild(rateOneInput);
+      groupOne.appendChild(groupInOne);
+
+      groupInTwo.appendChild(labelTwo);
+      groupInTwo.appendChild(rateTwoInput);
+      groupTwo.appendChild(groupInTwo);
+
+      groupInTree.appendChild(labelTree);
+      groupInTree.appendChild(rateTreeInput);
+      groupTree.appendChild(groupInTree);
+
+      groupInFour.appendChild(labelFour);
+      groupInFour.appendChild(rateFourInput);
+      groupFour.appendChild(groupInFour);
+
+      container.appendChild(groupLevel);
+      container.appendChild(groupOne);
+      container.appendChild(groupTwo);
+      container.appendChild(groupTree);
+      container.appendChild(groupFour);
+    }
   }
   renders() {
     this.innerHTML = `
       <div class="modal fade bd-example-modal-xl" id="modalcreateformproduct" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-xl2 modal-dialog-centered" role="document">
           <div class="modal-content" id="">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มข้อมูลสินค้า</h5>
@@ -20,38 +129,40 @@ class modalCreateProduct extends HTMLElement {
               <div class="modal-body">
                 <input type="hidden" name="status_form" value="create" />
                 <input type="hidden" name="id_name" id="idnames" />
-                <div class="mt-2 row border">
-                  <div class="col-md-12">
+                <div class="mt-2 row">
+                  <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="form-group mb-2">
                       <label class="mt-0 mb-0 font-weight-bold text-dark">ชื่อสินค้า</label>
                       <input type="text" class="form-control" name="product_name" id="productname" placeholder="ชื่อสินค้า" required>
                     </div> 
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6 col-lg-4 col-xl-2">
                     <div class="form-group mb-2">
                       <label class="mt-0 mb-0 font-weight-bold text-dark">ราคาต้นทุนต่อลัง</label>
                       <input type="text" class="form-control" name="price_default" id="pricedefault" placeholder="ราคาต้นทุน" required>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6 col-lg-4 col-xl-2">
                     <div class="form-group mb-2">
                       <label class="mt-0 mb-0 font-weight-bold text-dark">ราคากลางต่อลัง</label>
                       <input type="text" class="form-control" name="price_center" id="pricecenter" placeholder="ราคากลาง" required>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6 col-lg-4 col-xl-2">
                     <div class="form-group mb-2">
                       <label class="mt-0 mb-0 font-weight-bold text-dark">จำนวนคอตต่อลัง</label>
                       <input type="number" class="form-control" name="count_cord" id="countcord" placeholder="จำนวนคอต" required>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="form-group mb-2">
                       <label class="mt-0 mb-0 font-weight-bold text-dark">ค่าส่งต่อลัง</label>
                       <input type="text" class="form-control" name="shipping_cost" id="shippingcost" placeholder="ค่าส่ง" required>
                     </div>
                   </div>
                 </div>
+                <div class="w-full text-center my-4"><h3>เรทราคาขาย</h3></div>
+                <div class="col-md-12 row mb-3 form-is-level"></div>
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-primary ml-auto mr-4">บันทึกข้อมูล</button>

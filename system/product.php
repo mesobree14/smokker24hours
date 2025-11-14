@@ -28,6 +28,7 @@ if(!isset($_SESSION['users_data'])){
     <link rel="stylesheet" href="../assets/scripts/module/test/test.scss">
     <script src="../assets/scripts/module/test/test.js"></script>
     <script src="../assets/scripts/script-bash.js"></script>
+    <link rel="stylesheet" href="../assets/scripts/module/select-picker/select.scss">
   <title>Document</title>
 </head>
 <body>

@@ -10,6 +10,9 @@ $fontDirs = $defaultConfig['fontDir'];
 $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
 $fontData = $defaultFontConfig['fontdata'];
 
+date_default_timezone_set("Asia/Bangkok");
+$day_add = date('Y-m-d H:i:s');
+
 if (!class_exists(\Mpdf\Mpdf::class)) {
     die("mPDF ไม่เจอ ลองเช็ค path vendor/autoload.php");
 }
@@ -100,6 +103,12 @@ $html = '
     padding: 6px;
     text-align: center;
   }
+
+  .fontboldtfoot{
+    font-weight: bold;
+    color:black;
+    font-size:18px;
+  }
   </style>';
 
 $html .='
@@ -117,7 +126,7 @@ $html .='
             <th class="qty">จำนวนซื้อ</th>
             <th class="total">จำนวนขาย</th>
             <th class="total">จำนวนคงเหลือ</th>
-            <th class="total">วันที่สั่งซื้อ</th>
+
           </tr>
         </thead>
         <tbody>';
@@ -192,7 +201,9 @@ $html .='
             'create_at' => $stock['create_at']
           ];
         }
-
+        $iscount_inlot = 0;
+        $istotal_sell = 0;
+        $isremain_qty = 0;
         foreach($lot_resutl as $res){
     $html .= '
             <tr>
@@ -200,12 +211,28 @@ $html .='
               <td class="fontbold total">'.$res['count_inlot'].'</td>
               <td class="fontbold total">'.$res['total_sell'].'</td>
               <td class="fontbold total">'.$res['remain_qty'].'</td>
-              <td class="fontbold total">'.$res['create_at'].'</td>
+              
             </tr>';
+            //$issum_count        += $res['count'];
+            $iscount_inlot  += $res['count_inlot'];
+            $istotal_sell   += $res['total_sell'];
+            $isremain_qty       += $res['remain_qty'];
       }
     $html .='
         </tbody>
+        <tfoot>
+          <tr style="background-color:#F5DEB3;">
+              <td class="fontboldtfoot name" >ทั้งหมด</td>
+              <td class="fontboldtfoot total">'.number_format($iscount_inlot).'</td>
+              <td class="fontboldtfoot total">'.number_format($istotal_sell).'</td>
+              <td class="fontboldtfoot total">'.number_format($isremain_qty).'</td>
+            </tr>
+        </tfoot>
       </table>
+  </div>
+  <br/>
+  <div style="width:100%;display:flex">
+      <b>ปริ้นเมื่อ : '.$day_add.'</b>
   </div>
   </div>
 </div>';

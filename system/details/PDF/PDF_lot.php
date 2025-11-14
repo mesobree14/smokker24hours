@@ -12,6 +12,8 @@ $fontData = $defaultFontConfig['fontdata'];
 if (!class_exists(\Mpdf\Mpdf::class)) {
     die("mPDF ไม่เจอ ลองเช็ค path vendor/autoload.php");
 }
+date_default_timezone_set("Asia/Bangkok");
+$day_add = date('Y-m-d H:i:s');
 
 $mpdf = new \Mpdf\Mpdf([
   'fontDir' => array_merge($fontDirs, [
@@ -86,6 +88,11 @@ $html = '
   .fontbold{
     font-weight: bold;
     color:blue;
+    font-size:18px;
+  }
+  .fontboldtfoot{
+    font-weight: bold;
+    color:black;
     font-size:18px;
   }
   table.price-table{
@@ -227,19 +234,42 @@ $html .='
         }
 
         $grouped = array_values($grouped);
+       $issum_count = 0;
+       $issum_inlot = 0;
+       $issum_totalsell = 0;
+       $issum_remain = 0;
+
         foreach($grouped as $res){
     $html .= '
             <tr>
               <td class="fontbold name" >'.$res['lot_code'].'</td>
-              <td class="fontbold total">'.$res['count'].'</td>
-              <td class="fontbold total">'.$res['total_inlot'].'</td>
-              <td class="fontbold total">'.$res['total_sell'].'</td>
-              <td class="fontbold total">'.$res['remain'].'</td>
+              <td class="fontbold total">'.number_format($res['count']).'</td>
+              <td class="fontbold total">'.number_format($res['total_inlot']).'</td>
+              <td class="fontbold total">'.number_format($res['total_sell']).'</td>
+              <td class="fontbold total">'.number_format($res['remain']).'</td>
             </tr>';
+            $issum_count        += $res['count'];
+            $issum_inlot  += $res['total_inlot'];
+            $issum_totalsell   += $res['total_sell'];
+            $issum_remain       += $res['remain'];
       }
     $html .='
+      
         </tbody>
+        <tfoot>
+          <tr style="background-color:#F5DEB3;">
+              <td class="fontboldtfoot name" >ทั้งหมด</td>
+              <td class="fontboldtfoot total">'.number_format($issum_count).'</td>
+              <td class="fontboldtfoot total">'.number_format($issum_inlot).'</td>
+              <td class="fontboldtfoot total">'.number_format($issum_totalsell).'</td>
+              <td class="fontboldtfoot total">'.number_format($issum_remain).'</td>
+            </tr>
+        </tfoot>
       </table>
+  </div>
+  <br/>
+  <div style="width:100%;display:flex">
+      <b>ปริ้นเมื่อ : '.$day_add.'</b>
   </div>
   </div>
 </div>';

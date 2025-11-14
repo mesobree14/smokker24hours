@@ -36,7 +36,7 @@ if(!isset($_SESSION['users_data'])){
     <main class="page-content mt-0">
       <?php navbar("สต็อกสินค้า"); ?>
       <div class="container-fluid row">
-        <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_allinlot.php" target="_blank">
+        <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_stocks.php" target="_blank">
             <i class="fas fa-file-code px-2"></i> PDF รวมสินค้า
           </a>
           <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_lot.php" target="_blank">

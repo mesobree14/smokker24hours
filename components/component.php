@@ -851,11 +851,6 @@ function detailLotProduct(
       <td class=\"\">$countin_lot ชิ้น</td>
       <td class=\"\">$total_sell ชิ้น</td>
       <td class=\"\">$remainQty ชิ้น</td>
-      <td class=\"\">$expenses บาท</td>
-      <td class=\"\">$totalsell บาท</td>
-      <td class=\"\">$priceall_def บาท</td>
-      <td class=\"\">$profit_center บาท</td>
-      <td class=\"\">$profit_sell บาท</td>
       <td class=\"\">$date</td>
       
     </tr>

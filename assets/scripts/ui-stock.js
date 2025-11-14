@@ -262,6 +262,7 @@ class modelCreateRatePrice extends HTMLElement {
                           ค่าส่งต่อลัง : <span id="shippingcost" class="font-weight-bold text-danger"></span> บาท
                         </div>
                     </div>
+
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary ml-auto mr-4">บันทึกข้อมูล</button>

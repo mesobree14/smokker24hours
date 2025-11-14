@@ -47,7 +47,7 @@ if(!isset($_SESSION['users_data'])){
               </div>
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-md-12 col-lg-8">
               <div id="tabC01" class="tab-contents">
                 <?php
                   $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name,SP.create_at, 
@@ -131,12 +131,6 @@ if(!isset($_SESSION['users_data'])){
                             <th>จำนวนซื้อ</th>
                             <th>จำนวนขาย</th>
                             <th>จำนวนคงเหลือ</th>
-                            <th>ราคาต้นทุน + ค่าส่ง</th>
-                            <th>ราคาขาย</th>
-                            <th>ราคาต้นทุน</th>
-                            
-                            <th>กำไรราคากลาง</th>
-                            <th>กำไรจากการขายไม่หักค่าสั่ง</th>
                             <th>วันที่สั่งซื้อ <i class="fa-solid fa-arrow-up"></i></th>
                         </tr>
                     </thead>
