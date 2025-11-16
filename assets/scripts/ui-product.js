@@ -2,9 +2,65 @@ class modalCreateProduct extends HTMLElement {
   constructor() {
     super();
   }
+  static get observedAttributes() {
+    return ["idProductname"];
+  }
+  get IsIdProductname() {
+    return this.getAttribute("idProductname");
+  }
   connectedCallback() {
+    this.addEventListener("getProduct", async (e) => {
+      const { id_productname, productname } = e.detail;
+      await this.getRateLevel(id_productname);
+      console.log("Get Product in Modal Create Product : ", productname);
+      // You can add additional logic here to handle the received data
+    });
     this.renders();
     this.setScript();
+  }
+  async getRateLevel(product_id) {
+    try {
+      const response = await fetch(
+        `backend/api/api_rate_price.php?id_productname=${product_id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      document
+        .querySelectorAll(".form-control-rate-id")
+        .forEach((el) => el.remove());
+      if (data.data && data.data.length > 0) {
+        data.data.forEach((rate, i) => {
+          const level = rate.level_sell;
+
+          const rateId = document.createElement("input");
+          rateId.classList.add("form-control-rate-id");
+          rateId.id = `rate_id-${i}`;
+          rateId.name = "rate_id[]";
+          rateId.value = rate.rate_id;
+          rateId.type = "text";
+
+          document.getElementById(`rate_price_vip-${level}`).value =
+            rate.price_levels_one;
+          document.getElementById(`rate_price_storefront-${level}`).value =
+            rate.price_customer_frontstore;
+          document.getElementById(`rate_price_dealers-${level}`).value =
+            rate.price_customer_deliver;
+          document.getElementById(`rate_price_delivery-${level}`).value =
+            rate.price_customer_deliver;
+          let lavel = document.querySelectorAll(`.is_level_${level}`);
+          lavel.forEach((element) => {
+            element.appendChild(rateId);
+          });
+        });
+      }
+      return data;
+    } catch (error) {
+      console.error("Error fetching rate level:", error);
+      return null;
+    }
   }
   setScript() {
     const container = document.querySelector(".form-is-level");
@@ -31,10 +87,6 @@ class modalCreateProduct extends HTMLElement {
       const groupInFour = document.createElement("div");
       groupInFour.classList.add("form-group", "mb-2");
 
-      const rateId = document.createElement("input");
-      rateId.id = "rate_id";
-      rateId.name = "rate_id[]";
-
       const labelLevel = document.createElement("label");
       labelLevel.textContent = `ระดับที่ ${i}`;
       labelLevel.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
@@ -49,7 +101,13 @@ class modalCreateProduct extends HTMLElement {
 
       const labelOne = document.createElement("label");
       labelOne.textContent = `ราคา เรท 1 vip`;
-      labelOne.classList.add("mt-0", "mb-0", "font-weight-bold", "text-dark");
+      labelOne.classList.add(
+        "mt-0",
+        "mb-0",
+        "font-weight-bold",
+        "text-dark",
+        `is_level_${i}`
+      );
       const rateOneInput = document.createElement("input");
       rateOneInput.id = `rate_price_vip-${i}`;
       rateOneInput.classList.add("form-control");
@@ -183,6 +241,22 @@ $(document).on("click", "#openModalFormNameProduct", function (e) {
   $("#pricecenter").val("");
   $("#countcord").val("");
   $("#shippingcost").val("");
+  for (let i = 1; i <= 4; i++) {
+    $(`#rate_id-${i}`).val("");
+    $(`#rate_price_vip-${i}`).val("");
+    $(`#rate_price_storefront-${i}`).val("");
+    $(`#rate_price_dealers-${i}`).val("");
+    $(`#rate_price_delivery-${i}`).val("");
+  }
+  // $(this)
+  //   .find("input, textarea, select")
+  //   .each(function () {
+  //     if (this.type === "checkbox" || this.type === "radio") {
+  //       this.checked = false;
+  //     } else {
+  //       this.value = "";
+  //     }
+  //   });
   e.preventDefault();
 });
 $(document).on("click", "#update_nameproduct", function (e) {
@@ -192,6 +266,7 @@ $(document).on("click", "#update_nameproduct", function (e) {
   let price = $(this).data("price");
   let pricecenter = $(this).data("pricecenter");
   let shippingcost = $(this).data("shippingcost");
+  let component = document.querySelector("main-create-product");
 
   $("#idnames").val(id_name);
   $("#productname").val(name_product);
@@ -199,7 +274,22 @@ $(document).on("click", "#update_nameproduct", function (e) {
   $("#pricecenter").val(pricecenter);
   $("#countcord").val(countcost);
   $("#shippingcost").val(shippingcost);
+
+  for (let i = 1; i <= 4; i++) {
+    $(`#rate_price_vip-${i}`).val("");
+    $(`#rate_price_storefront-${i}`).val("");
+    $(`#rate_price_dealers-${i}`).val("");
+    $(`#rate_price_delivery-${i}`).val("");
+  }
   e.preventDefault();
+  component.dispatchEvent(
+    new CustomEvent("getProduct", {
+      detail: {
+        id_productname: id_name,
+        productname: name_product,
+      },
+    })
+  );
 });
 
 $(document).on("click", "#confirmTrashProductName", function (e) {

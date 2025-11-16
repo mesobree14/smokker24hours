@@ -905,16 +905,12 @@ class modelUpdateOrderSell extends HTMLElement {
             txt_ui.textContent = "จำนวนเงินที่ยังติดค้าง";
             txt_ui.classList.remove("text-success");
             txt_ui.classList.add("text-danger");
-            //results.textContent = ` ${res.innerHTML} บาท`;
             results.classList.add("text-danger");
-            //count_stuck.value = Number(res.innerHTML);
           } else {
             txt_ui.textContent = "จ่ายครบถ้วน";
             txt_ui.classList.remove("text-danger");
             txt_ui.classList.add("text-success");
             results.textContent = "";
-            //ui_count.value = res.innerHTML;
-            //count_stuck.value = 0;
           }
         } else {
           divPn.style.display = "none";

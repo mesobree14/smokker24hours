@@ -19,55 +19,61 @@ function navigationOfiicer($path = ""){
                             <span>Menu</span>
                         </li>
                         <li>
-                          <a href=\"{$path}index.php\">
-                              <i class=\"fa fa-tachometer-alt\"></i>
+                          <a href=\"{$path}index.php\" class=\"text-white\">
+                              <i class=\"fa fa-tachometer-alt text-primary\"></i>
                               <span>หน้าแรก</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}finance.php\">
-                              <i class=\"fab fa-bitcoin\"></i>
-                              <span>การเงิน</span>
+                          <a href=\"{$path}finance.php\" class=\"text-white\">
+                              <i class=\"fab fa-bitcoin text-warning\"></i>
+                              <span>รายรับรายจ่าย</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}product.php\">
+                          <a href=\"{$path}finance.php\" class=\"text-white\">
+                              <i class=\"fa-solid fa-comments-dollar text-warning\"></i>
+                              <span>สรุปการเงิน</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href=\"{$path}product.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-cube\"></i>
                               <span>รายการสินค้า</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}orders.php\">
+                          <a href=\"{$path}orders.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-truck\"></i>
                               <span>คำสั่งซื้อ</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}stock.php\">
+                          <a href=\"{$path}stock.php\" class=\"text-white\">
                               <i class=\"fas fa-store\"></i>
                               <span>คลังสินค้า</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}lot.php\">
+                          <a href=\"{$path}lot.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-cubes\"></i>
                               <span>สต็อกสินค้า</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}ordersell.php\">
+                          <a href=\"{$path}ordersell.php\" class=\"text-white\">
                             <i class=\"fa-solid fa-truck-fast\"></i>
                               <span>สินค้าที่ขาย</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}peplegroup.php\">
+                          <a href=\"{$path}peplegroup.php\" class=\"text-white\">
                             <i class=\"fa-solid fa-users-rectangle\"></i>
                               <span>ข้อมูลสมาชิก</span>
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}customer.php\">
+                          <a href=\"{$path}customer.php\" class=\"text-white\">
                             <i class=\"fa-solid fa-people-group\"></i>
                               <span>ข้อมูลลูกค้า</span>
                           </a>
