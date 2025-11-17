@@ -109,7 +109,7 @@ function createGrandTotal() {
     const value = parseFloat(span.textContent.trim()) || 0;
     totalCount += value;
   });
-  document.getElementById("totalProducts").textContent = `${totalCount} ชิ้น`;
+  document.getElementById("totalProducts").textContent = `${totalCount} ลัง`;
   document.getElementById("totalPrice").textContent = totalPrice;
   document.getElementById("is_totalprice").value = totalPrice;
   let counts = document.getElementById("count_totalpays");
@@ -230,7 +230,7 @@ class formOrDerSell extends HTMLElement {
     );
 
     if (fileterlevel[0]?.price_customer_frontstore) {
-      frontstore_price.innerHTML = `ชิ้นละ ${fileterlevel[0].price_customer_frontstore} บาท`;
+      frontstore_price.innerHTML = `ลังละ ${fileterlevel[0].price_customer_frontstore} บาท`;
       price_customer_frontstores.classList.remove("disabledLi");
     } else {
       frontstore_price.innerHTML = "";
@@ -240,7 +240,7 @@ class formOrDerSell extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevel[0]?.price_levels_one) {
-      vip_price.innerHTML = `ชิ้นละ ${fileterlevel[0].price_levels_one} บาท`;
+      vip_price.innerHTML = `ลังละ ${fileterlevel[0].price_levels_one} บาท`;
       price_levels_ones.classList.remove("disabledLi");
     } else {
       vip_price.innerHTML = "";
@@ -250,7 +250,7 @@ class formOrDerSell extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevel[0]?.price_customer_dealer) {
-      dealer_price.innerHTML = `ชิ้นละ ${fileterlevel[0].price_customer_dealer} บาท`;
+      dealer_price.innerHTML = `ลังละ ${fileterlevel[0].price_customer_dealer} บาท`;
       price_customer_dealers.classList.remove("disabledLi");
     } else {
       price_customer_dealers.classList.add("disabledLi");
@@ -260,7 +260,7 @@ class formOrDerSell extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevel[0]?.price_customer_deliver) {
-      deliver_price.innerHTML = `ชิ้นละ ${fileterlevel[0].price_customer_deliver} บาท`;
+      deliver_price.innerHTML = `ลังละ ${fileterlevel[0].price_customer_deliver} บาท`;
       price_customer_delivers.classList.remove("disabledLi");
     } else {
       deliver_price.innerHTML = "";
@@ -850,7 +850,7 @@ class modelSetOrderSell extends HTMLElement {
                                           <span class="font-weight-bold" id="totalOrder">0 รายการ</span>
                                         </div>
                                         <div class="col-6 align-self-center row ml-auto">
-                                            <span class="font-weight-bold" id="totalProducts">0 ชิ้น</span>
+                                            <span class="font-weight-bold" id="totalProducts">0 ลัง</span>
                                         </div>
                                       </div>
                                       

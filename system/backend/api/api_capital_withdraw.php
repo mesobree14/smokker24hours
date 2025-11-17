@@ -49,8 +49,8 @@
           'total_profit' => number_format($total_profit ?? 0,2,'.',','), //กำไรทั้งหมด
           'already_withdrawn' => number_format($acc_useprofit['use_prefit'] ?? 0,2,'.',','), //เบิกถอนไปแล้ว
           'can_be_used'=>number_format($total_profit - $acc_useprofit['use_prefit'],2,'.',','), // สามารถใช้ได้
-          'average_cost' => number_format($average_cost ?? 0 ,2,'.',','), //เฉลี่ยทุนต่อชิ้น
-          'average_sell' => number_format($average_sell ?? 0,2,'.',',') //เฉลี่ยขายต่อชิ้น
+          'average_cost' => number_format($average_cost ?? 0 ,2,'.',','), //เฉลี่ยทุนต่อลัง
+          'average_sell' => number_format($average_sell ?? 0,2,'.',',') //เฉลี่ยขายต่อลัง
         )
       ));
       mysqli_close($conn);

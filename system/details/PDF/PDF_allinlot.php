@@ -60,7 +60,7 @@ $html = '
 
   table.slip-table th.name,
   table.slip-table td.name {
-    width: 20%;
+    width: 50%;
     text-align: left;
   }
 
@@ -181,7 +181,7 @@ $html .='
             'count_inlot' => $lotQty, //จำนวนฝน lot
             'total_sell' => $soldQtry, // จำนวนขาย
             'remain_qty' => $remainQty, //คงเหลือ
-            'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อชิ้น
+            'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อลัง
             'product_priceAll' => $stock['product_price'] * $lotQty,
             'price_center' => $stock['price_center'], // ราคากลาง
             'price_centerAll' => $stock['price_center'] * $lotQty,

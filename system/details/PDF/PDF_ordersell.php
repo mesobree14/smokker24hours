@@ -221,7 +221,7 @@ $html = '
     <thead>
       <tr style="background-color:#ffb3ff;">
         <th class="name">รายการสินค้า</th>
-        <th class="price">ราคาต่อชิ้น</th>
+        <th class="price">ราคาต่อลัง</th>
         <th class="qty">จำนวน</th>
         <th class="total">ราคารวม</th>
       </tr>
@@ -253,7 +253,7 @@ $unique = array_unique($type_customer);
           <b>'.$count_rows['total'].' รายการ</b>
         </td>
         <td class="qty" style="width:25%;border:none;">
-          <b>'.$count_rows['totalproduct'].' ชิ้น</b>
+          <b>'.$count_rows['totalproduct'].' ลัง</b>
         </td>
         <td class="total" style="width:25%;border:none;">
           <b>'.$count_rows['prices'].' บาท</b>

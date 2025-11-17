@@ -136,8 +136,8 @@ if ($conn->connect_error) {
           <tr style="background-color:#ffb3ff;">
             <th class="num">ลำดับ</th>
             <th class="name">สินค้า</th>
-            <th class="price">ทุนเฉลี่ยต่อชิ้น <span style="color:red">*</span></th>
-            <th class="qty">จำนวนชิ้นที่ขาย</th>
+            <th class="price">ทุนเฉลี่ยต่อลัง <span style="color:red">*</span></th>
+            <th class="qty">จำนวนลังที่ขาย</th>
             <th class="total">รายรับ</th>
             <th class="total">ต้นทุน</th>
             <th class="total">กำไร</th>
@@ -201,7 +201,7 @@ $html .= '
         </tbody>
       </table>
         <div style="width:100%;margin-top:5px;">
-          <span style="color:red;font-size:20px;">&#42;</span> การคำนวนค่าเฉลี่ยต้นทุนแต่ละชิ้น คือ เอาจำนวนสินค้าที่ซื้อมาทั้งหมดมาหารด้วยราคารวมทั้งทั้งหมด เช่นจำนวนสิ้นค้า J10 ทั้งหมด 10 ชิ้น รวมราคาทั้งหมด 10000 บาท 10000 / 10 = (1000) ราคาต้นทุนคือ1000 บ.
+          <span style="color:red;font-size:20px;">&#42;</span> การคำนวนค่าเฉลี่ยต้นทุนแต่ละลัง คือ เอาจำนวนสินค้าที่ซื้อมาทั้งหมดมาหารด้วยราคารวมทั้งทั้งหมด เช่นจำนวนสิ้นค้า J10 ทั้งหมด 10 ลัง รวมราคาทั้งหมด 10000 บาท 10000 / 10 = (1000) ราคาต้นทุนคือ1000 บ.
         </div>
         <div style="width:100%;display:flex;">
         <div style="width: 49%;float:left;">

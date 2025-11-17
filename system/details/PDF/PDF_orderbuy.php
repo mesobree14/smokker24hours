@@ -184,7 +184,7 @@ $html .='
       <thead>
         <tr style="background-color:#ffb3ff;">
           <th class="name">รายการสินค้า</th>
-          <th class="price">ราคาต้นทุนต่อชิ้น</th>
+          <th class="price">ราคาต้นทุนต่อลัง</th>
           <th class="qty">จำนวน</th>
           <th class="total">ราคารวม</th>
         </tr>
@@ -213,7 +213,7 @@ $html .= '
           <b>'.$count_rows['total'].' รายการ</b>
         </td>
         <td class="qty" style="width:25%;border:none;">
-          <b>'.$count_rows['product_count'].' ชิ้น</b>
+          <b>'.$count_rows['product_count'].' ลัง</b>
         </td>
         <td class="total" style="width:25%;border:none;">
           <b>'.$count_rows['count_expenses'].' บาท</b>

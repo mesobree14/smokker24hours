@@ -34,7 +34,7 @@ if(!isset($_SESSION['users_data'])){
   <div class="page-wrapper chiller-theme toggled">
     <?php  navigationOfiicer(); ?>
     <main class="page-content mt-0">
-      <?php navbar("การเงิน"); ?>
+      <?php navbar("รายรับรายจ่าย"); ?>
       <div class="container-fluid row">
         <div class="col-12 row">
           <?php
@@ -118,7 +118,7 @@ if(!isset($_SESSION['users_data'])){
             setData("สามารถใช้ได้",number_format($resutl_profit - $acc_useprofit['use_prefit'],2,'.',','));
             $res_buy = $sum_totalsell == 0 ? 0 : $sun_pricebuy / $sum_totalsell;
             $res_sell = $sum_totalsell == 0 ? 0 : $sum_pricesell / $sum_totalsell;
-            uiWorking("ค่าเฉลี่ยขาย ".number_format($sum_totalsell ?? 0) ." ชิ้น",number_format($res_buy ,2,'.',','),number_format($res_sell,2,'.',','));
+            uiWorking("ค่าเฉลี่ยขาย ".number_format($sum_totalsell ?? 0) ." ลัง",number_format($res_buy ,2,'.',','),number_format($res_sell,2,'.',','));
           ?>
         </div>
       

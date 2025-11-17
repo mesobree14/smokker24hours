@@ -108,7 +108,7 @@ function updateGrandTotal() {
     const value = parseFloat(span.textContent.trim()) || 0;
     totalCount += value;
   });
-  document.getElementById("etotalProducts").textContent = `${totalCount} ชิ้น`;
+  document.getElementById("etotalProducts").textContent = `${totalCount} ลัง`;
   document.getElementById("etotalPrice").textContent = totalPrice;
   document.getElementById("eis_totalprice").value = totalPrice;
   let counts = document.getElementById("s_count_totalpays");
@@ -234,7 +234,7 @@ class formOrDerSellUpdate extends HTMLElement {
     console.log({ fileterlevels });
 
     if (fileterlevels[0]?.price_customer_frontstore) {
-      frontstore_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_frontstore} บาท`;
+      frontstore_price.innerHTML = `ลังละ ${fileterlevels[0]?.price_customer_frontstore} บาท`;
       price_customer_frontstores.classList.remove("disabledLi");
     } else {
       frontstore_price.innerHTML = "";
@@ -244,7 +244,7 @@ class formOrDerSellUpdate extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevels[0]?.price_levels_one) {
-      vip_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_levels_one} บาท`;
+      vip_price.innerHTML = `ลังละ ${fileterlevels[0]?.price_levels_one} บาท`;
       price_levels_ones.classList.remove("disabledLi");
     } else {
       vip_price.innerHTML = "";
@@ -254,7 +254,7 @@ class formOrDerSellUpdate extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevels[0]?.price_customer_dealer) {
-      dealer_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_dealer} บาท`;
+      dealer_price.innerHTML = `ลังละ ${fileterlevels[0]?.price_customer_dealer} บาท`;
       price_customer_dealers.classList.remove("disabledLi");
     } else {
       price_customer_dealers.classList.add("disabledLi");
@@ -264,7 +264,7 @@ class formOrDerSellUpdate extends HTMLElement {
       price_result.innerHTML = "";
     }
     if (fileterlevels[0]?.price_customer_deliver) {
-      deliver_price.innerHTML = `ชิ้นละ ${fileterlevels[0]?.price_customer_deliver} บาท`;
+      deliver_price.innerHTML = `ลังละ ${fileterlevels[0]?.price_customer_deliver} บาท`;
       price_customer_delivers.classList.remove("disabledLi");
     } else {
       deliver_price.innerHTML = "";
@@ -392,7 +392,7 @@ class formOrDerSellUpdate extends HTMLElement {
       } else if (products.remaining_product < 0) {
         small.textContent = `สินค้าติดลบ ${products.remaining_product}`;
       } else {
-        small.textContent = `เหลืออีก ${products.remaining_product} ชิ้น`;
+        small.textContent = `เหลืออีก ${products.remaining_product} ลัง`;
       }
       small.classList.add("ml-auto");
       row.appendChild(span);
@@ -769,19 +769,19 @@ class formOrDerSellUpdate extends HTMLElement {
               </div>
               <div class="col-xl-2 col-lg-4">
                 <div class="form-group mb-2">
-                  <label class="m-0 font-weight-bold text-dark col-12">จำนวนขายกี่ชิ้น <span class="totalc-${
+                  <label class="m-0 font-weight-bold text-dark col-12">จำนวนขายกี่ลัง <span class="totalc-${
                     this.numbers
                   }"></span></label>
                   <div class="d-flex">
                     <input type="number" class="form-control mr-2 distotal" name="tatol_product[]" id="tatolproduct-${
                       this.numbers
-                    }" placeholder="กรอกจำนวนขาย" required>ชิ้น
+                    }" placeholder="กรอกจำนวนขาย" required>ลัง
                   </div>
                 </div>
               </div>
               <div class="col-xl-3 col-lg-8">
                   <div class="form-group mb-2">
-                    <label class="m-0 font-weight-bold text-dark col-12">จำนวนชิ้น x ราคาต่อชิ้น = ผลลัพธ์ </label>
+                    <label class="m-0 font-weight-bold text-dark col-12">จำนวนลัง x ราคาต่อลัง = ผลลัพธ์ </label>
                     <div class="form-control">
                       <span id="is_totals-${
                         this.numbers
@@ -965,7 +965,7 @@ class modelUpdateOrderSell extends HTMLElement {
                                             <span class="font-weight-bold" id="etotalOrder">0 รายการ</span>
                                           </div>
                                           <div class="col-6 align-self-center row ml-auto">
-                                              <span class="font-weight-bold" id="etotalProducts">0 ชิ้น</span>
+                                              <span class="font-weight-bold" id="etotalProducts">0 ลัง</span>
                                           </div>
                                         </div>
                                         

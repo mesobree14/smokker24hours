@@ -1068,7 +1068,7 @@ class modelUpdateOrder extends HTMLElement {
                     <label class="mt-0 mb-0 font-weight-bold text-dark">ต้นทุน/ลัง</label>
                     <input type="text" class="u_price_product form-control" name="price_product[]" value="${
                       stock?.product_price
-                    }"  placeholder="ต้นทุนต่อชิ้น" required>
+                    }"  placeholder="ต้นทุนต่อลัง" required>
                   </div>
               </div>
               <div class="col-md-2">

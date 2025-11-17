@@ -47,7 +47,7 @@ if(!isset($_SESSION['users_data'])){
               </div>
             </div>
           </div>
-          <div class="col-md-12 col-lg-8">
+          <div class="col-md-12">
               <div id="tabC01" class="tab-contents">
                 <?php
                   $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name,SP.create_at, 
@@ -74,6 +74,7 @@ if(!isset($_SESSION['users_data'])){
                     $lotQty = $stock['sum_product'];
                     $remainQty = $lotQty;
                     $soldQtry = 0;
+                    $rate_costometype = 0;
                     $totalSellValue = 0;
                     $lot_code = $stock['lot_number'];
                     $p_idname = $stock['product_name'];
@@ -85,22 +86,31 @@ if(!isset($_SESSION['users_data'])){
                       if($remainQty <= 0) break;
                     
                       $saleQty = (int)$sales['tatol_product'];
-                      $saleRate = (float)$sales['rate_customertype'];
+                      
                       if($saleQty > 0){
+                        
                         if($remainQty >= $saleQty){
                           $soldFromLot = $saleQty;
                           $remainQty -= $saleQty;
                           $sales['tatol_product'] = 0;
+                          
                         }else{
                           $soldFromLot = $remainQty;
                           $sales['tatol_product'] -= $remainQty;
                           $remainQty = 0;
+                          
+                          
                         }
+                        $rate_costometype = (int)$sales['rate_customertype'];
                         $soldQtry += $soldFromLot;
-                        $totalSellValue += $soldFromLot * $saleRate;
+                        $totalSellValue += $soldFromLot * $rate_costometype;
+                      }else{
+                        echo "sell zero";
+                        $rate_costometype = 0;
                       }
                     
                     }
+                    $shipping_one = $stock['shipping_cost'] / $lotQty;
                     $lot_resutl[] = [
                       'id' => $p_id,
                       'p_name' =>$p_name,
@@ -109,15 +119,19 @@ if(!isset($_SESSION['users_data'])){
                       'count_inlot' => $lotQty, //จำนวนฝน lot
                       'total_sell' => $soldQtry, // จำนวนขาย
                       'remain_qty' => $remainQty, //คงเหลือ
-                      'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อลัง
-                      'product_priceAll' => $stock['product_price'] * $lotQty,
+                      'product_price' => $stock['product_price'] + $shipping_one, //ราคาเริ่มต้นต่อลัง
+                      'product_priceAll' => ($stock['product_price'] + $shipping_one) * $soldQtry,
+                      'capital_using' => ($stock['product_price'] + $shipping_one) * $remainQty,
+                      'capital_received' => ($stock['product_price'] + $shipping_one) * $soldQtry,
                       'price_center' => $stock['price_center'], // ราคากลาง
-                      'price_centerAll' => $stock['price_center'] * $lotQty,
-                      'shipping_one' => $stock['shipping_cost'] / $lotQty,
+                      'price_centerAll' => $stock['price_center'] * $soldQtry,
+                      'pricecenter_delcaptialshipping' => ($stock['price_center'] * $soldQtry) - (($stock['product_price'] + $shipping_one) * $soldQtry),
+                      'shipping_one' => $shipping_one,
                       'shipping_cost' => $stock['shipping_cost'],
-                      'expenses' => $stock['expenses'],
-                      'sell' => 'sell',
-                      'total_sell_value' => $totalSellValue,
+                      'expenses' => $rate_costometype * $soldQtry,
+                      'profit' => ($rate_costometype * $soldQtry) - ($stock['price_center'] * $soldQtry),
+                      'price_seller' => $rate_costometype, // ราคาขายต่อลัง
+                      'total_sell_value' => $totalSellValue, //cancel
                       'create_at' => $stock['create_at']
                     ];
                   }
@@ -131,15 +145,24 @@ if(!isset($_SESSION['users_data'])){
                             <th>จำนวนซื้อ</th>
                             <th>จำนวนขาย</th>
                             <th>จำนวนคงเหลือ</th>
-                            <th>วันที่สั่งซื้อ <i class="fa-solid fa-arrow-up"></i></th>
+                            <th>(ซื่อ+ค่าส่ง)ต่อลัง</th>
+                            <th>ราคาซื้อ + ค่าส่ง</th>
+                            <th>ราคากลาง</th>
+                            <th>ส่วนต่าง</th>
+                            <th>ขายต่อลัง</th>
+                            
+                            
+                            <th>ราคาขาย</th>
+                            <th>กำไร</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
                       <?php
                         foreach($lot_resutl as $key => $res){
-                          detailLotProduct(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
-                          $res['product_price'],$res['product_priceAll'],$res['price_center'],$res['price_centerAll'],$res['shipping_one'],$res['shipping_cost'],
-                          $res['expenses'],$res['total_sell_value'],$res['create_at']);
+                          detailLotFinance(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
+                          $res['product_price'],$res['product_priceAll'],$res['price_center'],$res['price_centerAll'],$res['pricecenter_delcaptialshipping'],$res['shipping_one'],$res['shipping_cost'],
+                          $res['price_seller'],$res['expenses'],$res['total_sell_value'],$res['profit'],$res['create_at']);
                         }
                       ?>
                     </tbody>

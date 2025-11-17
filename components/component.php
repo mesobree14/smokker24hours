@@ -31,7 +31,7 @@ function navigationOfiicer($path = ""){
                           </a>
                         </li>
                         <li>
-                          <a href=\"{$path}finance.php\" class=\"text-white\">
+                          <a href=\"{$path}resutl_finance.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-comments-dollar text-warning\"></i>
                               <span>สรุปการเงิน</span>
                           </a>
@@ -193,8 +193,8 @@ function setData($titleText, $number){
                         <div class=\"text-xs font-weight-bold text-primary text-uppercase mb-1\">
                             $titleText
                         </div>
-                        <div class=\"small mb-2 font-weight-bold text-danger\">ทุนตกชิ้นละ: $average_cost บาท</div>
-                        <div class=\"small mb-0 font-weight-bold text-success\">ขายตกชิ้นละ: $average_sell บาท</div>
+                        <div class=\"small mb-2 font-weight-bold text-danger\">ทุนตกลังละ: $average_cost บาท</div>
+                        <div class=\"small mb-0 font-weight-bold text-success\">ขายตกลังละ: $average_sell บาท</div>
                     </div>
                 </div>
             </div>
@@ -338,7 +338,7 @@ function tableDetailStockSell($number, $product_id,$productname,$ordername, $pro
               <td class=\"font-weight-bold\">$ordername</td>
               <td class=\"font-weight-bold\">". typecustomse($rate_custom) ."</td> 
               <td class=\"font-weight-bold\">$productprice บาท</td> 
-              <td class=\"font-weight-bold\">$productcount ชิ้น</td> 
+              <td class=\"font-weight-bold\">$productcount ลัง</td> 
               <td class=\"font-weight-bold\">$toal_all</td> 
               <td class=\"font-weight-bold\">$datetime_order</td> 
             </tr>
@@ -826,15 +826,45 @@ function listLotProduct($number, $lot_no, $listcount, $total_inlot, $totalsell, 
     <tr>
       <td></td>
       <td class=\"font-weight-bold\">$lot_no</td>
+      
+      <td class=\"\">$total_inlot ลัง</td>
+      <td class=\"\">$totalsell ลัง</td>
+      <td class=\"\">$remain ลัง</td>
       <td class=\"\">$listcount รายการ</td>
-      <td class=\"\">$total_inlot ชิ้น</td>
-      <td class=\"\">$totalsell ชิ้น</td>
-      <td class=\"\">$remain ชิ้น</td>
     
       
       <td class=\"text-center\">
         <div class=\"table-data-feature\" >
               <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"detail lot\" href=\"details/detail_lot.php?lot_number=$lot_no\">
+                <i class=\"fas fa-list-alt\"></i>
+              </a>
+          </div>
+      </td>
+    </tr>
+  ";
+  echo $list;
+}
+
+function listResutlFinance(
+  $number, $lot_no, $listcount, $total_inlot, $totalsell, $remain, $price_all, $pricecenter_all, $shipping_cost,$expenses,
+  $capital_using,$capital_received,$capital_delshipping,$captial_shipping, $pricecenter_using, $pricecenter_received,
+  $pricecenter_delcaptialshiipin, $profit
+  ){
+  $list = "
+    <tr>
+      <td></td>
+      <td class=\"font-weight-bold\">$lot_no</td>
+      <td class=\"\">$total_inlot ลัง <br/> ขาย $totalsell ลัง <br/> เหลือ $remain ลัง</td>
+      <td class=\"\">".number_format($price_all ?? 0,2,'.',',')." บาท</td>
+      
+      <td class=\"\">".number_format($capital_received ?? 0,2,'.',',')." บาท</td>
+      <td class=\"\">".number_format($pricecenter_received ?? 0,2,'.',',')." บาท</td>
+      <td class=\"\">".number_format($pricecenter_delcaptialshiipin ?? 0,2,'.',',')." บาท</td> 
+      <td class=\"\">".number_format($expenses ?? 0,2,'.',',')." บาท</td>
+      <td class=\"\">".number_format($profit ?? 0,2,'.',',')." บาท</td>
+      <td class=\"text-center\">
+        <div class=\"table-data-feature\" >
+              <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"detail lot\" href=\"details/detail_resultfinance.php?lot_number=$lot_no\">
                 <i class=\"fas fa-list-alt\"></i>
               </a>
           </div>
@@ -854,10 +884,36 @@ function detailLotProduct(
     <tr>
       <td></td>
       <td class=\"font-weight-bold\">$p_name</td>
-      <td class=\"\">$countin_lot ชิ้น</td>
-      <td class=\"\">$total_sell ชิ้น</td>
-      <td class=\"\">$remainQty ชิ้น</td>
+      <td class=\"\">$countin_lot ลัง</td>
+      <td class=\"\">$total_sell ลัง</td>
+      <td class=\"\">$remainQty ลัง</td>
       <td class=\"\">$date</td>
+      
+    </tr>
+  ";
+  echo $list;
+  
+}
+
+function detailLotFinance(
+  $num,$id,$p_name,$id_pname,$lot_no,$countin_lot,$total_sell,$remainQty,$price_def,$priceall_def,$price_center,
+  $priceall_center,$pricecenter_delcaptialshipping,$shipping_one,$shipping_all,$price_seller,$expenses,$totalsell,$profit,$date
+){
+  $list = "
+    <tr>
+      <td></td>
+      <td class=\"font-weight-bold\">$p_name</td>
+      <td class=\"\">$countin_lot ลัง</td>
+      <td class=\"\">$total_sell ลัง</td>
+      <td class=\"\">$remainQty ลัง</td>
+      <td class=\"\">$price_def บาท</td>
+
+      <td class=\"\">$priceall_def บาท</td>
+      <td class=\"\">$priceall_center บาท</td>
+      <td class=\"\">$pricecenter_delcaptialshipping บาท</td>
+      <td class=\"\">$price_seller บาท</td>
+      <td class=\"\">$expenses บาท</td>
+      <td class=\"\">$profit บาท</td>
       
     </tr>
   ";

@@ -33,14 +33,14 @@ if(!isset($_SESSION['users_data'])){
 <body>
   <div class="page-wrapper chiller-theme toggled">
     <?php  navigationOfiicer(); ?>
-    <main class="page-content mt-0">
-      <?php navbar("สต็อกสินค้า"); ?>
+    <main class="page-content mt-0 mx-0">
+      <?php navbar("สรุปการเงิน"); ?>
       <div class="container-fluid row">
         <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_stocks.php" target="_blank">
-            <i class="fas fa-file-code px-2"></i> PDF รวมสินค้า
+            <i class="fas fa-file-code px-2"></i> PDF สรุปสินค้าทั้งหมด
           </a>
           <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_lot.php" target="_blank">
-            <i class="fas fa-file-code px-2"></i> PDF สต็อกสินค้า
+            <i class="fas fa-file-code px-2"></i> PDF สรุปสต็อกสินค้า
           </a>
         <?php
         $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
@@ -67,18 +67,20 @@ if(!isset($_SESSION['users_data'])){
           $lotQty = $stock['sum_product'];
           $remainQty = $lotQty;
           $soldQtry = 0;
+          $rate_costometype = 0;
           $totalSellValue = 0;
           $lot_code = $stock['lot_number'];
           $p_idname = $stock['product_name'];
           $p_name = $stock['in_productname'];
           $p_id = $stock['product_id'];
+          
         
           foreach($data_sell as &$sales){
             if($sales['productname'] !== $p_idname) continue;
             if($remainQty <= 0) break;
 
             $saleQty = (int)$sales['tatol_product'];
-            $saleRate = (float)$sales['rate_customertype'];
+            $rate_costometype = (float)$sales['rate_customertype'];
             if($saleQty > 0){
               if($remainQty >= $saleQty){
                 $soldFromLot = $saleQty;
@@ -90,10 +92,21 @@ if(!isset($_SESSION['users_data'])){
                 $remainQty = 0;
               }
               $soldQtry += $soldFromLot;
-              $totalSellValue += $soldFromLot * $saleRate;
+              //$totalSellValue += $soldFromLot * $saleRate;
             }
           
           }
+          $price_shipping = $stock['product_price'] + ($stock['shipping_cost'] / $lotQty);
+          $capital_received = ($price_shipping * $lotQty) - ($price_shipping * $remainQty); //ทุนที่ได้กลับมา
+          
+          $shipping_sell = ($stock['shipping_cost'] / $lotQty) * $soldQtry; //ค่าส่งที่ขายไป
+          
+          $capital_sell = $price_shipping * $soldQtry; //ทุนที่ขายไป + ค่าส่ง
+          $expenses = $rate_costometype * $soldQtry; //ราคาขายทั้งหมด
+          $pricecenter_delcaptialshiipin = ($stock['price_center'] * $soldQtry) - $capital_sell; //ส่วนต่าง (ราคากต้นทุน + ค่าส่ง ลบ ราคากลาง)
+          $profit = $expenses - ($stock['price_center'] * $soldQtry); //กำไร = ราคาขาย - ราคากลาง
+
+
           $lot_resutl[] = [
             'id' => $p_id,
             'p_name' =>$p_name,
@@ -102,15 +115,29 @@ if(!isset($_SESSION['users_data'])){
             'count_inlot' => $lotQty, //จำนวนฝน lot
             'total_sell' => $soldQtry, // จำนวนขาย
             'remain_qty' => $remainQty, //คงเหลือ
-            'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อลัง
-            'product_priceAll' => $stock['product_price'] * $lotQty,
+            
+            'product_price' => $stock['product_price'], //ราคาต้นทุนต่อลัง
+            'price_shipping' => $price_shipping, // ราคาต้นทุน + ค่าส่ง ต่อลัง
+            'product_priceAll' => $stock['product_price'] * $lotQty, //ราคาซื้อทั้งหมด
+            'pricebuy_shippingAll' => $price_shipping * $lotQty, // ราคาต้นทุน + ค่าส่ง ทั้งหมด
+            'capital_using'=> $price_shipping * $remainQty, //ทุนกำลังใช้
+            'capital_received' => $capital_received,  //ทุนที่ได้รับกลับมา สูทธิ์
+            'capital_delshipping' => $capital_received, // ทุนที่ได้ไม่รวมค่าส่ง
+            'captial_shipping' => $capital_received + $shipping_sell, // ทุนที่ได้รวม ค่าส่งสั่งซื้อ
+             
             'price_center' => $stock['price_center'], // ราคากลาง
-            'price_centerAll' => $stock['price_center'] * $lotQty,
-            'shipping_one' => $stock['shipping_cost'] / $lotQty,
-            'shipping_cost' => $stock['shipping_cost'],
-            'expenses' => $stock['expenses'],
+            'price_centerAll' => $stock['price_center'] * $lotQty, // ราคากลางทั้งหมด
+            'pricecenter_using' => $stock['price_center'] * $remainQty, // ราคากลางกำลังใช้
+            'pricecenter_received' => $stock['price_center'] * $soldQtry, // ราคากลางที่ได้รับกลับมา
+            'pricecenter_delcaptialshiipin' => $pricecenter_delcaptialshiipin, // ส่วนต่าง ราคากลาง - (ต้นทุน + ค่าส่งสั่งซื้อ)
+            'shipping_one' => $stock['shipping_cost'] / $lotQty, // ค่าส่งสั่งซื้อทั้งหมด / จำนวน
+            'shipping_cost' => $stock['shipping_cost'], //ค่าส่งทั้งหมดจากสั่งซื้อ
+            
+            'profit' => $expenses - ($stock['price_center'] * $soldQtry), //กำไร = ราคาขาย - ราคากลาง
+            'expenses' => $expenses, //ราคาขายทั้งหมด
             'sell' => 'sell',
-            'total_sell_value' => $totalSellValue
+            
+            //'total_sell_value' => $totalSellValue 
           ];
         }
 
@@ -127,10 +154,19 @@ if(!isset($_SESSION['users_data'])){
               'total_sell' => 0,
               'remain' => 0,
               'priceAll' =>0,
+              'pricebuy_shippingAll' => 0,
               'pricecenter_All' => 0,
               'shipping_cost' =>0,
               'expenses' => 0,
               'price_seller' => 0,
+              'capital_using' => 0,
+              'capital_received' => 0,
+              'capital_delshipping' => 0,
+              'captial_shipping' => 0,
+              'pricecenter_using' => 0,
+              'pricecenter_received' => 0,
+              'pricecenter_delcaptialshiipin' => 0,
+              'profit' => 0,
             ];
             $lot_itemcount[$code] = 0;
           }
@@ -141,41 +177,53 @@ if(!isset($_SESSION['users_data'])){
           $grouped[$code]['total_sell'] += $lot['total_sell'];
           $grouped[$code]['remain'] += $lot['remain_qty'];
           $grouped[$code]['priceAll'] += $lot['product_priceAll'];
+          $grouped[$code]['pricebuy_shippingAll'] += $lot['pricebuy_shippingAll'];
           $grouped[$code]['pricecenter_All'] += $lot['price_centerAll'];
           $grouped[$code]['shipping_cost'] += $lot['shipping_cost'];
           $grouped[$code]['expenses'] += $lot['expenses'];
-          $grouped[$code]['price_seller'] += $lot['total_sell_value'];
+
+          $grouped[$code]['capital_using'] += $lot['capital_using'];
+          $grouped[$code]['capital_received'] += $lot['capital_received'];
+          $grouped[$code]['capital_delshipping'] += $lot['capital_delshipping'];
+          $grouped[$code]['captial_shipping'] += $lot['captial_shipping'];
+          $grouped[$code]['pricecenter_using'] += $lot['pricecenter_using'];
+          $grouped[$code]['pricecenter_received'] += $lot['pricecenter_received'];
+          $grouped[$code]['pricecenter_delcaptialshiipin'] += $lot['pricecenter_delcaptialshiipin'];
+          $grouped[$code]['profit'] += $lot['profit'];
+          //$grouped[$code]['price_seller'] += $lot['total_sell_value'];
 
         }
 
         $grouped = array_values($grouped);
         ?>
-        <div class="col-12 row mt-2 bg-white">
+        <div class="col-12 row mt-2 bg-white mx-0 p-0">
           <div class="col-md-12">
             <div class="table-responsive table-responsive-data2 mt-2">
-                <table class="table table-data2 border">
+                <table class="table table-data2 border p-0">
                     <thead class="alert alert-primary">
                         <tr>
                             <th></th>
-                            <th style="width:17%;">Lot No.</th>
-                            <th>รายการ</th>
-                            <th>จำนวนในล็อต</th>
-                            <th>จำนวนขาย</th>
-                            <th>คงเหลือ</th>
-                            <!-- <th>ราคาเริ่มต้น</th>
+                            <th>Lot No.</th>
+                            <th>จำนวน</th>
+                            <th>ทุนทั้งหมด + ค่าส่ง</th>
+                            <!-- <th>ต้นทุนที่กำลังใช้</th> -->
+                            <th>ต้นทุนที่ได้กลับมา</th>
                             <th>ราคากลาง</th>
-                            <th>ค่าส่ง</th> -->
-                            <!-- <th>ราคาซื้อทั้งหมด</th>
-                            <th>ราคาขาย</th> -->
-                            <th>จัดการ</th>
+                            <th>ส่วนต่าง</th>
+                            <th>ราคาขาย</th>
+                            <th>กำไร</th>
+                            <th style="width:5%;">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
                       <?php 
                         foreach($grouped as $key => $rows){
-                          listLotProduct(
+                          listResutlFinance(
                             ($key+1),$rows['lot_code'],$rows['count'],$rows['total_inlot'],$rows['total_sell'],$rows['remain'],
-                            $rows['priceAll'],$rows['pricecenter_All'],$rows['shipping_cost'],$rows['expenses'],$rows['price_seller']
+                            $rows['pricebuy_shippingAll'],$rows['pricecenter_All'],$rows['shipping_cost'],$rows['expenses'],$rows['capital_using'],
+                            $rows['capital_received'],$rows['capital_delshipping'],$rows['captial_shipping'],
+                            $rows['pricecenter_using'],$rows['pricecenter_received'],$rows['pricecenter_delcaptialshiipin'],
+                            $rows['profit']
                           );
                         }
                       ?>
