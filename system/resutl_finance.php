@@ -39,7 +39,7 @@ if(!isset($_SESSION['users_data'])){
         <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_stocks.php" target="_blank">
             <i class="fas fa-file-code px-2"></i> PDF สรุปสินค้าทั้งหมด
           </a>
-          <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_lot.php" target="_blank">
+          <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_financelot.php" target="_blank">
             <i class="fas fa-file-code px-2"></i> PDF สรุปสต็อกสินค้า
           </a>
         <?php
