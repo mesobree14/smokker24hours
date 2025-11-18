@@ -76,6 +76,13 @@ $html = '
   table.slip-table th.total,
   table.slip-table td.total {
     width: 10%;
+    color:black;
+  }
+  
+  table.slip-table th.total-blue,
+  table.slip-table td.total-blue {
+    width: 10%;
+    color:blue;
   }
   table.slip-table td.result-name {
     width: 25%;
@@ -137,9 +144,9 @@ $html .='
             <th class="total">ค่าจัดส่งทั้งหมด</th>
             <th class="total">ราคาสั่งซื้อ</th>
             <th class="total">ทุนที่กำลังใช้</th>
-            <th class="total">รายรับ</th>
+            <th class="total-blue">รายรับ</th>
             <th class="total">คืนทุน</th>
-            <th class="total">กำไร</th>
+            <th class="total-blue">กำไร</th>
           </tr>
         </thead>
         <tbody>';
@@ -257,9 +264,9 @@ $html .='
               <td class="fontbold total">'.number_format($res['shipping_cost'],2).'</td>
               <td class="fontbold total">'.number_format($res['capital_all'],2).'</td>
               <td class="fontbold total">'.number_format($res['capital_using'],2).'</td>
-              <td class="fontbold total">'.number_format($res['capitalall_return'],2).'</td>
+              <td class="fontbold total-blue">'.number_format($res['capitalall_return'],2).'</td>
               <td class="fontbold total">'.number_format($res['price_center_return'],2).'</td>
-              <td class="fontbold total">'.number_format($res['profit_all'],2).'  
+              <td class="fontbold total-blue">'.number_format($res['profit_all'],2).'  
             </tr>';
             //$issum_count        += $res['count'];
             $iscount_inlot  += $res['count_inlot'];

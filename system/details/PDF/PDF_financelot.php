@@ -74,6 +74,12 @@ $html = '
   table.slip-table th.total,
   table.slip-table td.total {
     width: 10%;
+    color:black;
+  }
+  table.slip-table th.total-blue,
+  table.slip-table td.total-blue {
+    width: 10%;
+    color:black;
   }
   table.slip-table td.result-name {
     width: 25%;
@@ -134,8 +140,8 @@ $html .='
             <th class="total">ราคากลางกำลังใช้</th>
             <th class="total">ราคากลางที่ได้</th>
             <th class="total">ส่วนต่าง</th>
-            <th class="total">รายได้จากการขาย</th>
-            <th class="total">กำไรสุทธิ</th>
+            <th class="total-blue">รายได้จากการขาย</th>
+            <th class="total-blue">กำไรสุทธิ</th>
           </tr>
         </thead>
         <tbody>';
