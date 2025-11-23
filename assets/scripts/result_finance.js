@@ -39,13 +39,13 @@ $(document).on("click", "#selct_datestock", function (e) {
   });
 });
 
-$(document).on("click", "#select_dateinstock", function (e) {
+$(document).on("click", "#select_stcokdate", function (e) {
   Swal.fire({
     showConfirmButton: false,
     html: `
       
       
-      <form id="isPopupForm" class="mt-4 row text-center" method="POST" action="backend/PDF_resultfinanedate.php" enctype="multipart/form-data" target="_blank">
+      <form id="isPopupForm" class="mt-4 row text-center" method="POST" action="backend/PDF_financestockdate.php" enctype="multipart/form-data" target="_blank">
         <div class="form-group col-6">
           <label for="" class="mr-auto str_date">Start Date</label>
           <input type="datetime-local" name="start_date" class="form-control" placeholder="Start Date" required>
@@ -63,7 +63,7 @@ $(document).on("click", "#select_dateinstock", function (e) {
     didOpen: () => {
       // เมื่อ popup เปิด ให้ผูก event ให้ปุ่ม submit
       document
-        .getElementById("popupForm")
+        .getElementById("isPopupForm")
         .addEventListener("submit", function (e) {
           e.preventDefault(); // กันไม่ให้ submit ก่อนเวลา
           Swal.close(); // 🔥 ปิด SweetAlert ก่อน
