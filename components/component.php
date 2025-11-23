@@ -860,8 +860,7 @@ function listResutlFinance(
       <td class=\"\">".number_format($capital_received ?? 0,2,'.',',')." บาท</td>
       <td class=\"\">".number_format($pricecenter_received ?? 0,2,'.',',')." บาท</td>
       <td class=\"\">".number_format($pricecenter_delcaptialshiipin ?? 0,2,'.',',')." บาท</td> 
-      <td class=\"\">".number_format($expenses ?? 0,2,'.',',')." บาท</td>
-      <td class=\"\">".number_format($profit ?? 0,2,'.',',')." บาท</td>
+      
       <td class=\"text-center\">
         <div class=\"table-data-feature\" >
               <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"detail lot\" href=\"details/detail_resultfinance.php?lot_number=$lot_no\">
@@ -903,17 +902,15 @@ function detailLotFinance(
     <tr>
       <td></td>
       <td class=\"font-weight-bold\">$p_name</td>
-      <td class=\"\">$countin_lot ลัง</td>
-      <td class=\"\">$total_sell ลัง</td>
-      <td class=\"\">$remainQty ลัง</td>
-      <td class=\"\">$price_def บาท</td>
+      <td class=\"\">".number_format($countin_lot)." ลัง</td>
+      <td class=\"\">".number_format($total_sell)." ลัง</td>
+      <td class=\"\">".number_format($remainQty)." ลัง</td>
+      <td class=\"\">".number_format($price_def)." บาท</td>
 
-      <td class=\"\">$priceall_def บาท</td>
-      <td class=\"\">$priceall_center บาท</td>
-      <td class=\"\">$pricecenter_delcaptialshipping บาท</td>
-      <td class=\"\">$price_seller บาท</td>
-      <td class=\"\">$expenses บาท</td>
-      <td class=\"\">$profit บาท</td>
+      <td class=\"\">".number_format($priceall_def)." บาท</td>
+      <td class=\"\">".number_format($priceall_center)." บาท</td>
+      <td class=\"\">".number_format($pricecenter_delcaptialshipping)." บาท</td>
+    
       
     </tr>
   ";

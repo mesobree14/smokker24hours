@@ -68,12 +68,24 @@ $html = '
     color:purple;
     font-weight: bold;
   }
-
-  table.slip-table th.price,
-  table.slip-table td.price,
-  table.slip-table th.qty,
-  table.slip-table td.qty,
+  table.slip-table td.name-black{
+    width: 30%;
+    text-align: left;
+    color:black;
+    font-weight: bold;
+  }
+  
+  table.slip-table th.name-black
   table.slip-table th.total,
+  table.slip-table th.qty,
+  table.slip-table th.price{
+  width: 10%;
+    color:black;
+  }
+
+  
+  table.slip-table td.price,
+  table.slip-table td.qty,
   table.slip-table td.total {
     width: 10%;
     color:black;
@@ -130,7 +142,7 @@ $html .='
         <div style="width:100%">
       <table class="slip-table">
         <thead>
-          <tr style="background-color:#ffb3ff;">
+          <tr style="background-color:#ff9933;">
             <th class="price">สินค้า</th>
             <th class="qty">ซื้อ</th>
             <th class="total">ขาย</th>
@@ -251,7 +263,7 @@ $html .='
         foreach($lot_resutl as $res){
     $html .= '
             <tr>
-              <td class="fontbold name" >'.$res['p_name'].'</td>
+              <td class="fontbold name-black" >'.$res['p_name'].'</td>
               <td class="fontbold total">'.$res['count_inlot'].'</td>
               <td class="fontbold total">'.$res['total_sell'].'</td>
               <td class="fontbold total">'.$res['remain_qty'].'</td>
@@ -260,13 +272,13 @@ $html .='
               <td class="fontbold total">'.number_format($res['one_capital'],2).'</td>
               <td class="fontbold total">'.number_format($res['price_center'],2).'</td>
               <td class="fontbold total">'.number_format($res['difference_one'],2).'</td>
-              <td class="fontbold total">'.number_format($res['product_priceAll'],2).'</td>
-              <td class="fontbold total">'.number_format($res['shipping_cost'],2).'</td>
-              <td class="fontbold total">'.number_format($res['capital_all'],2).'</td>
-              <td class="fontbold total">'.number_format($res['capital_using'],2).'</td>
-              <td class="fontbold total-blue">'.number_format($res['capitalall_return'],2).'</td>
-              <td class="fontbold total">'.number_format($res['price_center_return'],2).'</td>
-              <td class="fontbold total-blue">'.number_format($res['profit_all'],2).'  
+              <td class="fontbold total">'.number_format($res['product_priceAll']).'</td>
+              <td class="fontbold total">'.number_format($res['shipping_cost']).'</td>
+              <td class="fontbold total">'.number_format($res['capital_all']).'</td>
+              <td class="fontbold total">'.number_format($res['capital_using']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['price_center_return']).'</td>
+              <td class="fontbold total">'.number_format($res['capitalall_return']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['difference']).'  
             </tr>';
             //$issum_count        += $res['count'];
             $iscount_inlot  += $res['count_inlot'];
@@ -279,13 +291,13 @@ $html .='
             $is_capitalusing   += $res['capital_using'];
             $is_capital_return  += $res['capitalall_return'];
             $is_pricecenter_return += $res['price_center_return'];
-            $is_profit_all += $res['profit_all'];
+            $is_profit_all += $res['difference'];
       }
     $html .='
         </tbody>
         <tfoot>
           <tr style="background-color:#F5DEB3;">
-              <td class="fontboldtfoot name" >ทั้งหมด</td>
+              <td class="fontboldtfoot name-black" >ทั้งหมด</td>
               <td class="fontboldtfoot total">'.number_format($iscount_inlot).'</td>
               <td class="fontboldtfoot total">'.number_format($istotal_sell).'</td>
               <td class="fontboldtfoot total">'.number_format($isremain_qty).'</td>
@@ -294,13 +306,14 @@ $html .='
               <td class="fontboldtfoot total"></td>
               <td class="fontboldtfoot total"></td>
               <td class="fontboldtfoot total">'.number_format($is_difference_one,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_priceAll,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_shippingcost,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_capitalall,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_capitalusing,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_capital_return,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_pricecenter_return,2).'</td>
-              <td class="fontboldtfoot total">'.number_format($is_profit_all,2).'</td> 
+              <td class="fontboldtfoot total">'.number_format($is_priceAll).'</td>
+              <td class="fontboldtfoot total">'.number_format($is_shippingcost).'</td>
+              <td class="fontboldtfoot total">'.number_format($is_capitalall).'</td>
+              <td class="fontboldtfoot total">'.number_format($is_capitalusing).'</td>
+              <td class="fontboldtfoot total-blue">'.number_format($is_pricecenter_return).'</td>
+              <td class="fontboldtfoot total">'.number_format($is_capital_return).'</td>
+              
+              <td class="fontboldtfoot total-blue">'.number_format($is_profit_all).'</td> 
               
             </tr>
         </tfoot>

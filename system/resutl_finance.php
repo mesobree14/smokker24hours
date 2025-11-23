@@ -41,6 +41,9 @@ if(!isset($_SESSION['users_data'])){
           </a>
           
           <button type="button" class="px-4 mx-4 py-1 w-22 btn-print" id="selct_datestock">PDF สรุปสต็อกสินค้า</button>
+          <a class=" px-4 mx-4 py-1 w-22 text-primary btn-print" href="details/PDF/PDF_financelot.php" target="_blank">
+           <i class="fas fa-file-code px-2"></i> PDF สรุปสต็อกสินค้าทั้งหมด
+      </a>
         <?php
         $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
           SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
@@ -206,11 +209,11 @@ if(!isset($_SESSION['users_data'])){
                             <th>จำนวน</th>
                             <th>ทุนทั้งหมด + ค่าส่ง</th>
                             <!-- <th>ต้นทุนที่กำลังใช้</th> -->
-                            <th>ต้นทุนที่ได้กลับมา</th>
-                            <th>ราคากลาง</th>
-                            <th>ส่วนต่าง</th>
-                            <th>ราคาขาย</th>
+                            <th>คืนทุน</th> <!-- ต้นทุนที่ได้กลับมา -->
+                            <th>รายรับ </th> <!-- <th>ราคากลาง</th> -->
                             <th>กำไร</th>
+                            <!-- <th>ราคาขาย</th>
+                            <th>กำไร</th> -->
                             <th style="width:5%;">จัดการ</th>
                         </tr>
                     </thead>

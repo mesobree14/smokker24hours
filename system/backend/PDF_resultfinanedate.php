@@ -82,7 +82,7 @@ $html = '
   table.slip-table th.total-blue,
   table.slip-table td.total-blue {
     width: 10%;
-    color:black;
+    color:blue;
   }
   table.slip-table td.result-name {
     width: 25%;
@@ -133,7 +133,7 @@ $html .='
       <div style="width:100%">
       <table class="slip-table">
         <thead>
-          <tr style="background-color:#ffb3ff;">
+          <tr style="background-color:#ff9933;">
             <th class="name">Lot No</th>
             <th class="price">รายการ</th>
             <th class="qty">จำนวนในสต็อก</th>
@@ -141,13 +141,12 @@ $html .='
             <th class="total">คงเหลือ</th>
             <th class="total">ต้นทุนทั้งหมด</th>
             <th class="total">ต้นทุนกำลังใช้</th>
-            <th class="total">ต้นทุนที่ได้คืนมา</th>
+            
             <th class="total">ราคากลางทั้งหมด</th>
-            <th class="total">ราคากลางกำลังใช้</th>
-            <th class="total">ราคากลางที่ได้</th>
-            <th class="total">ส่วนต่าง</th>
-            <th class="total-blue">รายได้จากการขาย</th>
-            <th class="total-blue">กำไรสุทธิ</th>
+            <th class="total-blue">คืนทุน</th>
+            <th class="total">รายรับ</th>
+            <th class="total-blue">กำไร</th>
+            
           </tr>
         </thead>
         <tbody>';
@@ -318,13 +317,12 @@ $html .='
               <td class="fontbold total">'.number_format($res['remain']).'</td>
               <td class="fontbold total">'.number_format($res['priceAll']).'</td>
               <td class="fontbold total">'.number_format($res['capital_using']).'</td>
-              <td class="fontbold total">'.number_format($res['capitalall_return']).'</td>
+              
               <td class="fontbold total">'.number_format($res['pricecenter_All']).'</td>
-              <td class="fontbold total">'.number_format($res['price_cnter_using']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['capitalall_return']).'</td>
               <td class="fontbold total">'.number_format($res['price_center_return']).'</td>
-              <td class="fontbold total">'.number_format($res['pricecenter_delcaptialshiipin']).'</td>
-              <td class="fontbold total">'.number_format($res['expenses']).'</td>
-              <td class="fontbold total">'.number_format($res['profit_all']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['pricecenter_delcaptialshiipin']).'</td>
+              
             </tr>';
             $issum_count        += $res['count'];
             $issum_inlot  += $res['total_inlot'];
@@ -352,13 +350,12 @@ $html .='
               <td class="fontboldtfoot total">'.number_format($issum_remain).'</td>
               <td class="fontboldtfoot total">'.number_format($iscapital_all).'</td>
               <td class="fontboldtfoot total">'.number_format($iscapital_using).'</td>
-              <td class="fontboldtfoot total">'.number_format($iscapital_return).'</td>
+              
               <td class="fontboldtfoot total">'.number_format($ispricecenter_all).'</td>
-              <td class="fontboldtfoot total">'.number_format($ispricecenter_using).'</td>
+              <td class="fontboldtfoot total-blue">'.number_format($iscapital_return).'</td>
               <td class="fontboldtfoot total">'.number_format($ispricecenter_return).'</td>
-              <td class="fontboldtfoot total">'.number_format($ispricecenter_delcaptialshiipin).'</td>
-              <td class="fontboldtfoot total">'.number_format($isseller_all).'</td>
-              <td class="fontboldtfoot total">'.number_format($isprofit_all).'</td>
+              <td class="fontboldtfoot total-blue">'.number_format($ispricecenter_delcaptialshiipin).'</td>
+              
             </tr>
         </tfoot>
       </table>
