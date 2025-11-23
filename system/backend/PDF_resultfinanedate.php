@@ -162,7 +162,8 @@ $html .='
           $get_productsell = "SELECT LP.list_sellid, LP.productname, NP.product_name,
             LP.level_selltype,LP.rate_customertype,LP.tatol_product,LP.price_to_pay
             FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name 
-            WHERE LP.create_at BETWEEN '$start_date' AND '$end_date'
+            LEFT JOIN orders_sell OS ON OS.id_ordersell = LP.ordersell_id
+            WHERE OS.date_time_sell BETWEEN '$start_date' AND '$end_date'
             ORDER BY LP.list_sellid ASC";
             $query_sell = $conn->query($get_productsell);
             $data_sell = [];

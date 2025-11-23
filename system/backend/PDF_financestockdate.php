@@ -48,7 +48,9 @@ $sql = "SELECT SP.product_name,NP.product_name AS get_productname,SP.price_cente
  SUM(SP.product_count * SP.product_price) AS resutl_price,SUM(SP.shipping_cost) AS sum_cost,
  COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay 
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
- SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell WHERE create_at BETWEEN '$start_date' AND '$end_date' GROUP BY productname) PS 
+ SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell 
+ LEFT JOIN orders_sell ON orders_sell.id_ordersell = list_productsell.ordersell_id
+ WHERE orders_sell.date_time_sell BETWEEN '$start_date' AND '$end_date' GROUP BY productname) PS 
  ON SP.product_name = PS.productname GROUP BY SP.product_name";
  $selectStockProduct = $conn->query($sql);
 
