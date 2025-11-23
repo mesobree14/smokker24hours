@@ -41,6 +41,7 @@ class modalCreateProduct extends HTMLElement {
           rateId.name = "rate_id[]";
           rateId.value = rate.rate_id;
           rateId.type = "text";
+          rateId.style.display = "none";
 
           document.getElementById(`rate_price_vip-${level}`).value =
             rate.price_levels_one;

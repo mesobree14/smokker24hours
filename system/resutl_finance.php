@@ -39,9 +39,8 @@ if(!isset($_SESSION['users_data'])){
         <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_stocks.php" target="_blank">
             <i class="fas fa-file-code px-2"></i> PDF สรุปสินค้าทั้งหมด
           </a>
-          <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_financelot.php" target="_blank">
-            <i class="fas fa-file-code px-2"></i> PDF สรุปสต็อกสินค้า
-          </a>
+          
+          <button type="button" class="px-4 mx-4 py-1 w-22 btn-print" id="selct_datestock">PDF สรุปสต็อกสินค้า</button>
         <?php
         $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
           SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
@@ -235,6 +234,7 @@ if(!isset($_SESSION['users_data'])){
       </div>
       </div>
     </main>
+    <script type="module" src="../assets/scripts/result_finance.js"></script>
   </div>
 </body>
 </html>
