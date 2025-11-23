@@ -41,8 +41,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT SP.product_name,NP.product_name AS get_productname,SP.price_center,SP.product_price,SP.shipping_cost,
- SUM(SP.product_count * SP.product_price) AS resutl_price, SUM(SP.product_count) AS total_count,
+$sql = "SELECT SP.product_name,NP.product_name AS get_productname,SP.price_center,SP.product_price,SP.shipping_cost,SUM(SP.product_count ) AS total_count,
+ SUM(SP.product_count * SP.product_price) AS resutl_price,SUM(SP.shipping_cost) AS sum_cost,
  COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay 
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
  SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell GROUP BY productname) PS 
@@ -87,26 +87,28 @@ $html = '
     width: 12%;
   }
 
-  .footer {
-    font-size:20px;
+  .fontboldtfoot{
     font-weight: bold;
-    margin-top:5px;
+    color:black;
+    font-size:18px;
   }
 
 </style>
 
 <h2>รายการสินค้า</h2>
-<table class="slip-table">
-  <thead>
+<div style="width:100%;">
+  <table class="slip-table">
+    <thead>
       <tr style="background-color:#ff9933;">
         <th class="name">สินค้า</th>
         
         <th class="qty">จำนวนที่ขาย</th>
         
         <th class="total">ราคาต่อชิ้น</th>
-        <th class="total">ราคากลางต่อชิ้น</th>
+        
         <th class="total">ค่าส่ง/ชิ้น</th>
         <th class="total">ราคา+ค่าส่ง</th>
+        <th class="total">ราคากลางต่อชิ้น</th>
         <th class="total-blue">คืนทุน</th>
         <th class="total">รายรับ</th>
         <th class="total-blue">กำไร</th>
@@ -125,7 +127,7 @@ $html = '
   $sum_difference = 0;
   $sum_shipping = 0;
   while($rows = $selectStockProduct->fetch_assoc()){
-    $shipping_one = $rows['shipping_cost'] / $rows['total_count'];
+    $shipping_one = $rows['sum_cost'] / $rows['total_count'];
     $payback = $rows['total_product'] * ($rows['product_price'] + $shipping_one);
     $payback_center = $rows['total_product'] * $rows['price_center'];
     $difference = $payback_center - $payback;
@@ -145,9 +147,10 @@ $html = '
         <td class=\"qty\">".number_format($rows['total_product'])."</td>
         
         <td class=\"total\">".number_format($rows['product_price'])."</td>
-        <td class=\"total\">".number_format($rows['price_center'])."</td>
-        <td class=\"total\">".number_format($shipping_one)."</td>
+        
+        <td class=\"total\">".number_format($shipping_one?? 0,2)."</td>
         <td class=\"total\">".number_format($rows['product_price']+$shipping_one)."</td>
+        <td class=\"total\">".number_format($rows['price_center'])."</td>
         <td class=\"total-blue\">".number_format($payback)."</td>
         <td class=\"total\">".number_format($payback_center)."</td>
         <td class=\"total-blue\">".number_format($difference)."</td>
@@ -161,23 +164,21 @@ $html = '
     </tbody>
         <tfoot>
           <tr style="background-color:#F5DEB3;">
-            <td class=\"name\">'.number_format($i).' รายการ</td>
+            <td class=\"fontboldtfoot name\">'.number_format($i).' รายการ</td>
             
-            <td class=\"qty\">'.number_format($sum_total_productsell).'</td>
+            <td class=\"fontboldtfoot qty\">'.number_format($sum_total_productsell).'</td>
             
-            <td class=\"qty\"></td>
-            <td class=\"total\"></td>
-            <td class=\"total\"></td>
-            <td class=\"total\"></td>
-            <td class=\"total-blue\">'.number_format($sum_payback).'</td>
-            <td class=\"total\">'.number_format($sum_payback_center).'</td>
-            
-            <td class=\"total-blue\">'.number_format($sum_difference).'</td>
-            
+            <td class=\"fontboldtfoot qty\"></td>
+            <td class=\"fontboldtfoot total\"></td>
+            <td class=\"fontboldtfoot total\"></td>
+            <td class=\"fontboldtfoot total\"></td>
+            <td class=\"fontboldtfoot total-blue\">'.number_format($sum_payback).'</td>
+            <td class=\"fontboldtfoot total\">'.number_format($sum_payback_center).'</td>
+            <td class=\"fontboldtfoot total-blue\">'.number_format($sum_difference).'</td>
           </tr>
         </tfoot>
-    
-</table>
+  </table>
+</div>
 <br/>
   <div style="width:100%;display:flex">
       <b>ปริ้นเมื่อ : '.$day_add.'</b>

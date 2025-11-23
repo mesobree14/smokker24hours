@@ -124,7 +124,7 @@ $html .='
     <div style="float: right; width: 40%;">
       <h3 style="text-align: right;">รายการในสต็อก(ล็อต)</h3>
     </div>
-        <div style="width:100%">
+    <div style="width:100%">
       <table class="slip-table">
         <thead>
           <tr style="background-color:#ff9933;">
