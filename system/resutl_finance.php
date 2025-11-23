@@ -36,7 +36,7 @@ if(!isset($_SESSION['users_data'])){
     <main class="page-content mt-0 mx-0">
       <?php navbar("สรุปการเงิน"); ?>
       <div class="container-fluid row">
-        <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_stocks.php" target="_blank">
+        <a class="ml-auto px-4 mx-4 py-1 w-22 text-success btn-print" href="details/PDF/PDF_financestock.php" target="_blank">
             <i class="fas fa-file-code px-2"></i> PDF สรุปสินค้าทั้งหมด
           </a>
           
