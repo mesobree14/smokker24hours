@@ -33,6 +33,9 @@ $mpdf = new \Mpdf\Mpdf([
     'margin_top' => 5,
 ]);
 
+date_default_timezone_set("Asia/Bangkok");
+$day_add = date('Y-m-d H:i:s');
+
 $conn = new mysqli("localhost", "root", "", "smokker_stock");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -66,8 +69,14 @@ $html = '
   table.slip-table td.name {
     width: 30%;
     text-align: left;
+    font-weight: bold;
   }
-  
+
+  table.slip-table th.total-blue,
+  table.slip-table td.total-blue {
+    width: 10%;
+    color:blue;
+  }
 
   table.slip-table th.price,
   table.slip-table td.price,
@@ -77,11 +86,7 @@ $html = '
   table.slip-table td.total {
     width: 12%;
   }
-  table.slip-table th.total-blue,
-  table.slip-table td.total-blue {
-    width: 10%;
-    color:blue;
-  }
+
   .footer {
     font-size:20px;
     font-weight: bold;
@@ -148,12 +153,15 @@ $html = '
         <td class=\"total-blue\">".number_format($difference)."</td>
         
       </tr>
+    
   ";
   $i++;
   }
   $html .= '
-      <tr style="background-color:#F5DEB3;">
-          <td class=\"name\">'.number_format($i).' รายการ</td>
+    </tbody>
+        <tfoot>
+          <tr style="background-color:#F5DEB3;">
+            <td class=\"name\">'.number_format($i).' รายการ</td>
             
             <td class=\"qty\">'.number_format($sum_total_productsell).'</td>
             
@@ -167,9 +175,13 @@ $html = '
             <td class=\"total-blue\">'.number_format($sum_difference).'</td>
             
           </tr>
-    </tbody>
+        </tfoot>
     
 </table>
+<br/>
+  <div style="width:100%;display:flex">
+      <b>ปริ้นเมื่อ : '.$day_add.'</b>
+  </div>
 ';
 
 $mpdf->WriteHTML($html);
