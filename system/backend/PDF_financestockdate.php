@@ -44,7 +44,11 @@ if ($conn->connect_error) {
 $start_date = $_POST['start_date'];
 $end_date = $_POST['end_date'];
 
-$sql = "SELECT SP.product_name,NP.product_name AS get_productname,SP.price_center,SP.product_price,SP.shipping_cost,SUM(SP.product_count ) AS total_count,
+$sql = "SELECT SP.product_name,NP.product_name AS get_productname,
+  SUM(SP.price_center * SP.product_count) / SUM(SP.product_count) AS avg_price_center,
+  SUM(SP.product_price * SP.product_count) / SUM(SP.product_count) AS avg_product_price,
+  SUM(SP.shipping_cost) / SUM(SP.product_count) AS avg_shipping,
+  -- SP.price_center,SP.product_price,SP.shipping_cost,SUM(SP.product_count ) AS total_count,
  SUM(SP.product_count * SP.product_price) AS resutl_price,SUM(SP.shipping_cost) AS sum_cost,
  COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay 
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
@@ -112,11 +116,11 @@ $html = '
         
         <th class="qty">จำนวนที่ขาย</th>
         
-        <th class="total">ราคาต่อชิ้น</th>
+        <th class="total">ราคาต่อลัง</th>
         
-        <th class="total">ค่าส่ง/ชิ้น</th>
+        <th class="total">ค่าส่ง/ลัง</th>
         <th class="total">ราคา+ค่าส่ง</th>
-        <th class="total">ราคากลางต่อชิ้น</th>
+        <th class="total">ราคากลางต่อลัง</th>
         <th class="total-blue">คืนทุน</th>
         <th class="total">รายรับ</th>
         <th class="total-blue">กำไร</th>
@@ -135,9 +139,12 @@ $html = '
   $sum_difference = 0;
   $sum_shipping = 0;
   while($rows = $selectStockProduct->fetch_assoc()){
-    $shipping_one = $rows['sum_cost'] / $rows['total_count'];
-    $payback = $rows['total_product'] * ($rows['product_price'] + $shipping_one);
-    $payback_center = $rows['total_product'] * $rows['price_center'];
+    $avg_price = $rows['avg_product_price'];
+    $avg_center = $rows['avg_price_center'];
+    $shipping_one = $rows['avg_shipping'];
+    //$shipping_one = $rows['sum_cost'] / $rows['total_count'];
+    $payback = $rows['total_product'] * ($avg_price + $shipping_one);
+    $payback_center = $rows['total_product'] * $avg_center;
     $difference = $payback_center - $payback;
     $remaining_amount = $rows['total_count'] - $rows['total_product'];
     $sum_totalcount += $rows['total_count'];
@@ -157,8 +164,8 @@ $html = '
         <td class=\"total\">".number_format($rows['product_price'])."</td>
         
         <td class=\"total\">".number_format($shipping_one?? 0,2)."</td>
-        <td class=\"total\">".number_format($rows['product_price']+$shipping_one)."</td>
-        <td class=\"total\">".number_format($rows['price_center'])."</td>
+        <td class=\"total\">".number_format($avg_price+$shipping_one)."</td>
+        <td class=\"total\">".number_format($avg_center)."</td>
         <td class=\"total-blue\">".number_format($payback)."</td>
         <td class=\"total\">".number_format($payback_center)."</td>
         <td class=\"total-blue\">".number_format($difference)."</td>
