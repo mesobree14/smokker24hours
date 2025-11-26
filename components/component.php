@@ -895,16 +895,16 @@ function detailLotProduct(
 }
 
 function detailLotFinance(
-  $num,$id,$p_name,$id_pname,$lot_no,$countin_lot,$total_sell,$remainQty,$price_def,$priceall_def,$price_center,
-  $priceall_center,$pricecenter_delcaptialshipping,$shipping_one,$shipping_all,$price_seller,$expenses,$totalsell,$profit,$date
+  $num,$id,$p_name,$id_pname,$lot_no,$countin_lot,$total_sell,$remainQty,$price_def,$priceall_def,$product_price,$price_center,
+  $priceall_center,$pricecenter_delcaptialshipping,$shipping_one,$shipping_all,$price_seller,$expenses,$date
 ){
   $list = "
     <tr>
       <td></td>
       <td class=\"font-weight-bold\">$p_name</td>
-      <td class=\"\">".number_format($countin_lot)." ลัง</td>
       <td class=\"\">".number_format($total_sell)." ลัง</td>
-      <td class=\"\">".number_format($remainQty)." ลัง</td>
+      <td class=\"\">".number_format($product_price)." บาท</td>
+      <td class=\"\">".number_format($price_center)." บาท</td>
       <td class=\"\">".number_format($price_def)." บาท</td>
 
       <td class=\"\">".number_format($priceall_def)." บาท</td>
