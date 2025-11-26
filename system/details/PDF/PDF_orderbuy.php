@@ -47,7 +47,9 @@ $sql_product = $conn->query("SELECT
   stock_product.product_name,stock_product.product_count,stock_product.product_price,stock_product.expenses,stock_product.id_order,name_product.product_name AS new_productname
   FROM stock_product LEFT JOIN name_product 
   ON name_product.id_name = stock_product.product_name 
-  WHERE id_order=$order_id");
+  WHERE id_order=$order_id
+  ORDER BY name_product.product_name ASC
+");
 $sql_count = $conn->query("SELECT COUNT(*) AS total, SUM(product_count) AS product_count, SUM(expenses) AS count_expenses FROM stock_product WHERE id_order=$order_id");
 $count_rows = $sql_count->fetch_assoc();
 
@@ -167,7 +169,7 @@ $html .='
               <small class="value">081-189-9578</small>
           </div>
         </div>
-        <div class="right" style="background-color:#ffb3ff;">
+        <div class="right" style="background-color:#ff9933;">
           <div class="doc">
               <b class="label" style="font-size:17px;">รหัสคำสั่งซื้อ :</b>
               <small class="value">'.$order['order_name'].'</small>
@@ -182,7 +184,7 @@ $html .='
   <div style="height: 150px;">
     <table class="slip-table">
       <thead>
-        <tr style="background-color:#ffb3ff;">
+        <tr style="background-color:#ff9933;">
           <th class="name">รายการสินค้า</th>
           <th class="price">ราคาต้นทุนต่อลัง</th>
           <th class="qty">จำนวน</th>

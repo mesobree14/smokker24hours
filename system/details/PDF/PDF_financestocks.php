@@ -87,7 +87,7 @@ $html = '
 <h2>รายการสินค้า</h2>
 <table class="slip-table">
   <thead>
-      <tr style="background-color:#ffb3ff;">
+      <tr style="background-color:#ff9933;">
         <th class="name">สินค้า</th>
         <th class="price">จำนวนทั้งหมด</th>
         <th class="qty">จำนวนที่ขาย</th>

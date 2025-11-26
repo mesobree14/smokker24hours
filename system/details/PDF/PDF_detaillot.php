@@ -121,7 +121,7 @@ $html .='
         <div style="width:100%">
       <table class="slip-table">
         <thead>
-          <tr style="background-color:#ffb3ff;">
+          <tr style="background-color:#ff9933;">
             <th class="price">สินค้า</th>
             <th class="qty">จำนวนซื้อ</th>
             <th class="total">จำนวนขาย</th>

@@ -176,7 +176,7 @@ $html .='
       FROM stock_product SP
       LEFT JOIN name_product NP ON SP.product_name = NP.id_name
       WHERE SP.lot_number = ?
-      ORDER BY SP.create_at ASC, SP.lot_number ASC, SP.product_id ASC
+      ORDER BY NP.product_name ASC,SP.create_at ASC, SP.lot_number ASC, SP.product_id ASC
       ";
 // GROUP BY SP.product_id, SP.product_name, SP.lot_number, SP.create_at, SP.product_price, SP.price_center, SP.shipping_cost, SP.expenses
     $stmt = $conn->prepare($get_products_in_lot_sql);
@@ -319,7 +319,7 @@ $html .='
   $stmtSold->close();
   $stmtPrior->close();
   $stmtRates->close();
-  
+
         $iscount_inlot = 0;
         $istotal_sell = 0;
         $isremain_qty = 0;

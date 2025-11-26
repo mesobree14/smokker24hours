@@ -64,7 +64,7 @@ if(!isset($_SESSION['users_data'])){
                                      COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay, NP.product_name AS is_productname
                                      FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name 
                                      LEFT JOIN ( SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell GROUP BY productname) PS 
-                                     ON SP.product_name = PS.productname GROUP BY SP.product_name, NP.product_name";
+                                     ON SP.product_name = PS.productname GROUP BY SP.product_name, NP.product_name ORDER BY NP.product_name ASC";
                                      $selectStockProduct = mysqli_query($conn,$sql) or die(mysqli_error($conn));
                                      $num_rows = mysqli_num_rows($selectStockProduct);
                                      if($num_rows > 0){

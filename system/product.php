@@ -63,7 +63,7 @@ if(!isset($_SESSION['users_data'])){
                       </thead>
                       <tbody>
                           <?php
-                              $get_productname = mysqli_query($conn, "SELECT * FROM name_product ORDER BY create_at DESC")or die(mysqli_error());
+                              $get_productname = mysqli_query($conn, "SELECT * FROM name_product ORDER BY product_name ASC")or die(mysqli_error());
                                 foreach($get_productname as $key => $res){
                                     tableNameProduct(
                                         ($key+1), $res['id_name'], $res['product_name'],$res['price'],$res['price_center'],$res['count_cord'],$res['shipping_cost']

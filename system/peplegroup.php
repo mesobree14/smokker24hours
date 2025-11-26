@@ -84,7 +84,7 @@ if(!isset($_SESSION['users_data'])){
                             ) AS op
                             JOIN orders_sell AS os ON os.id_ordersell = op.ordersell_id
                             GROUP BY os.sell_idpeplegroup
-                        ) AS p ON pg.id_peplegroup = p.sell_idpeplegroup
+                        ) AS p ON pg.id_peplegroup = p.sell_idpeplegroup ORDER BY name_peplegroup ASC
                         ";
 
                         // $get_peplegroup = "SELECT 

@@ -54,7 +54,9 @@ $querytypepay = $conn->query($typepay);
 $sql_items = "SELECT 
   LP.list_sellid,LP.ordersell_id,LP.productname,LP.rate_customertype,LP.type_custom,LP.tatol_product,LP.price_to_pay,
   NP.product_name,NP.id_name
-  FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name WHERE ordersell_id='$ordersell_id'";
+  FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name WHERE ordersell_id='$ordersell_id'
+  ORDER BY NP.product_name ASC
+";
 $query_item = $conn->query($sql_items);
 
 $sql_sun = "SELECT COUNT(*) AS total, SUM(tatol_product) AS totalproduct, SUM(price_to_pay) AS prices FROM list_productsell WHERE ordersell_id='$ordersell_id'";
@@ -204,7 +206,7 @@ $html = '
           <div class="doc">
           </div>
         </div>
-        <div class="right" style="background-color:#ffb3ff;">
+        <div class="right" style="background-color:#ff9933;">
           <div class="doc">
               <b class="label" style="font-size:17px;">รหัสการขาย :</b>
               <small class="value">'.$order['ordersell_name'].'</small>
@@ -219,7 +221,7 @@ $html = '
   <div style="height: 220px;">
   <table class="slip-table">
     <thead>
-      <tr style="background-color:#ffb3ff;">
+      <tr style="background-color:#ff9933;">
         <th class="name">รายการสินค้า</th>
         <th class="price">ราคาต่อลัง</th>
         <th class="qty">จำนวน</th>
@@ -268,7 +270,7 @@ $unique = array_unique($type_customer);
         </div>
       </div>
       <div style="float: right;width: 50%;box-sizing: border-box;">
-        <div class="doc" style="border:1px solid gray;background-color:#ffb3ff;padding:2%;">
+        <div class="doc" style="border:1px solid gray;background-color:#ff9933;padding:2%;">
             <b class="label">&nbsp; จำนวนเงินที่จ่าย : </b>
             <b class="value">'.$order['count_totalpays'].' บาท</b>
         </div>

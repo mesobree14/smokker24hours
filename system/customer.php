@@ -81,7 +81,7 @@ if(!isset($_SESSION['users_data'])){
                                 SUM(count_debtpaid) AS count_debt
                             FROM custom_debtpaid
                             GROUP BY name_customer
-                        ) d ON o.custome_name = d.custome_name;
+                        ) d ON o.custome_name = d.custome_name
                         ";
                         $query_sql = mysqli_query($conn,$sql) or die(mysqli_error($conn));
                         $nums = mysqli_num_rows($query_sql);

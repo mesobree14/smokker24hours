@@ -119,7 +119,7 @@ $html .='
         <div style="width:100%">
       <table class="slip-table">
         <thead>
-          <tr style="background-color:#ffb3ff;">
+          <tr style="background-color:#ff9933;">
             <th class="name">Lot No</th>
             <th class="price">รายการ</th>
             <th class="qty">จำนวนในล็อต</th>

@@ -43,7 +43,7 @@ $sql = "SELECT SP.product_name,NP.product_name AS get_productname,
  COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
  SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell GROUP BY productname) PS 
- ON SP.product_name = PS.productname GROUP BY SP.product_name";
+ ON SP.product_name = PS.productname GROUP BY SP.product_name ORDER BY NP.product_name ASC";
  $selectStockProduct = $conn->query($sql);
 
 $html = '
@@ -87,7 +87,7 @@ $html = '
 <h2>รายการสินค้า</h2>
 <table class="slip-table">
   <thead>
-      <tr style="background-color:#ffb3ff;">
+      <tr style="background-color:#ff9933;">
         <th class="name">สินค้า</th>
         <th class="price">จำนวนทั้งหมด</th>
         <th class="qty">จำนวนที่ขาย</th>

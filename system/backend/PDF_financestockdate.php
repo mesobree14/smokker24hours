@@ -55,7 +55,7 @@ $sql = "SELECT SP.product_name,NP.product_name AS get_productname,
  SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell 
  LEFT JOIN orders_sell ON orders_sell.id_ordersell = list_productsell.ordersell_id
  WHERE orders_sell.date_time_sell BETWEEN '$start_date' AND '$end_date' GROUP BY productname) PS 
- ON SP.product_name = PS.productname GROUP BY SP.product_name";
+ ON SP.product_name = PS.productname GROUP BY SP.product_name ORDER BY NP.product_name ASC";
  $selectStockProduct = $conn->query($sql);
 
 $html = '

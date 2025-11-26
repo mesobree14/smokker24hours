@@ -133,7 +133,7 @@ if ($conn->connect_error) {
     <div style="width:100%">
       <table class="slip-table">
         <thead>
-          <tr style="background-color:#ffb3ff;">
+          <tr style="background-color:#ff9933;">
             <th class="num">ลำดับ</th>
             <th class="name">สินค้า</th>
             <th class="price">ทุนเฉลี่ยต่อลัง <span style="color:red">*</span></th>
@@ -207,7 +207,7 @@ $html .= '
         <div style="width: 49%;float:left;">
           <table class="price-table" style="margin-top:5%;">
               <thead>
-                <tr style="background-color:#ffb3ff;">
+                <tr style="background-color:#ff9933;">
                   <th style="font-weight: bold;">รายการ</th>
                   <th style="font-weight: bold;">จำนวน</th>
                 </tr>
@@ -231,7 +231,7 @@ $html .= '
           <div style="width: 49%;float:right;">
           <table class="price-table" style="margin-top:5%;">
               <thead>
-                <tr style="background-color:#ffb3ff;">
+                <tr style="background-color:#ff9933;">
                   <th style="font-weight: bold;">รายการ</th>
                   <th style="font-weight: bold;">จำนวน</th>
                 </tr>
