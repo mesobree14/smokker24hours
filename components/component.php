@@ -8,7 +8,7 @@ function navigationOfiicer($path = ""){
         <nav id=\"sidebar\" class=\"sidebar-wrapper\">
             <div class=\"sidebar-content\">
                 <div class=\"sidebar-brand\">
-                    <a href=\"#\" class=\"text-primary\">สถานะ admin</a>
+                    <a href=\"#\" class=\"text-success\">สถานะ admin</a>
                     <div id=\"close-sidebar\">
                         <i class=\"fas fa-times\"></i>
                     </div>
@@ -88,7 +88,7 @@ function navigationOfiicer($path = ""){
 
 function navbar($logo, $path=""){
     $navList = "
-        <nav class=\"navbar navbar-tp navbar-expand-md navbar-dark bg-dark row\">
+        <nav class=\"navbar navbar-tp navbar-expand-md navbar-dark bg-set row\">
           <div class=\"container-fluid ml-4\">
               <a id=\"show-sidebar\" class=\"btn btn-primary mt-1\" href=\"#\">
                   <i class=\"fas fa-bars\"></i>

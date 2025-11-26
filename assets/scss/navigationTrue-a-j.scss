@@ -433,7 +433,11 @@ body {
 /*-----------------------------chiller-theme-------------------------------------------------*/
 
 .chiller-theme .sidebar-wrapper {
-  background: #31353d;
+  background: #47015b;
+}
+
+.bg-set {
+  background-color: #47015b !important;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-header,
@@ -491,7 +495,7 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
-  background: #3a3f48;
+  background: #392c3a;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu .header-menu span {
