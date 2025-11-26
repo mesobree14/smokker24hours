@@ -40,10 +40,12 @@ if(!isset($_SESSION['users_data'])){
            
             <div class="col-12 shadow-lg row">
               <div class="col-12 row">
-                <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="../details/PDF/PDF_financeinlot.php?lot_number=<?php echo $lot_number ?>" target="_blank">
-            <i class="fas fa-file-code px-2"></i> PDF
-          </a>
-               
+                <button type="button" class="ml-auto px-4 mx-2 py-1 w-20 btn-print" id="select_detailStcokDate" data-lotnumber="<?php echo $lot_number; ?>">
+                  PDF สรุปรายละเอียดสินค้าเป็นวัน
+                </button>
+                <a class="px-4 mx-4 py-1 w-22 btn-print" href="../details/PDF/PDF_financeinlot.php?lot_number=<?php echo $lot_number ?>" target="_blank">
+                  <i class="fas fa-file-code px-2"></i> PDF
+                </a>
               </div>
             </div>
           </div>
@@ -236,10 +238,6 @@ if(!isset($_SESSION['users_data'])){
                           detailLotFinance(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
                           $res['one_capital'],$res['capitalall_return'],$res['product_price'],$res['price_center'],$res['price_center_return'],$res['difference'],$res['shipping_one'],$res['shipping_cost'],
                           $res['profit_all'],$res['expenses'],$res['create_at']);
-
-                          // detailLotFinance(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
-                          // $res['product_price'],$res['product_priceAll'],$res['price_center'],$res['price_centerAll'],$res['pricecenter_delcaptialshipping'],$res['shipping_one'],$res['shipping_cost'],
-                          // $res['price_seller'],$res['expenses'],$res['total_sell_value'],$res['profit'],$res['create_at']);
                         }
                       ?>
                     </tbody>
@@ -252,6 +250,6 @@ if(!isset($_SESSION['users_data'])){
       </div>
     </main>
   </div>
-  
+  <script src="../../assets/scripts/result_finance.js"></script>
 </body>
 </html>

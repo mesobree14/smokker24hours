@@ -48,7 +48,7 @@ $sql = "SELECT SP.product_name,NP.product_name AS get_productname,
   SUM(SP.price_center * SP.product_count) / SUM(SP.product_count) AS avg_price_center,
   SUM(SP.product_price * SP.product_count) / SUM(SP.product_count) AS avg_product_price,
   SUM(SP.shipping_cost) / SUM(SP.product_count) AS avg_shipping,
-  -- SP.price_center,SP.product_price,SP.shipping_cost,SUM(SP.product_count ) AS total_count,
+  SP.price_center,SP.product_price,SP.shipping_cost,SUM(SP.product_count ) AS total_count,
  SUM(SP.product_count * SP.product_price) AS resutl_price,SUM(SP.shipping_cost) AS sum_cost,
  COALESCE(PS.tatol_product, 0) AS total_product, COALESCE(PS.price_to_pay, 0) AS total_pay 
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
@@ -161,7 +161,7 @@ $html = '
         
         <td class=\"qty\">".number_format($rows['total_product'])."</td>
         
-        <td class=\"total\">".number_format($rows['product_price'])."</td>
+        <td class=\"total\">".number_format($rows['avg_product_price'])."</td>
         
         <td class=\"total\">".number_format($shipping_one?? 0,2)."</td>
         <td class=\"total\">".number_format($avg_price+$shipping_one)."</td>

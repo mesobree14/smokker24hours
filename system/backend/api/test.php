@@ -173,6 +173,12 @@ while ($r = $res->fetch_assoc()) {
     $productsInLot[] = $r;
 }
 $stmt->close();
+echo "productsInLot <br/>";
+echo "<pre>";
+  print_r($productsInLot);
+  echo "</pre>";
+  echo "<br/><hr/>";
+
 
 // Prepare statement to get total sold for a product
 $get_total_sold_sql = "
@@ -202,6 +208,14 @@ WHERE productname = ?
 ORDER BY list_sellid ASC
 ";
 $stmtRates = $conn->prepare($get_sale_rates_sql);
+
+$get_sales_bydate_sql = "SELECT
+      create_at,tatol_product
+      FROM list_productsell
+      WHERE productname = ?
+      ORDER BY create_at ASC
+    ";
+    $stmtSalesByDate = $conn->prepare($get_sales_bydate_sql);
 
 $lot_resutl = [];
 
@@ -235,6 +249,22 @@ foreach ($productsInLot as $stock) {
 
     // sold in THIS lot = min(lotQty, remainingToAllocate)
     $soldInThisLot = min($lotQty, $remainingToAllocate);
+
+    $sold_out_date = null;
+    $stmtSalesByDate->bind_param("s",$p_idname);
+    $stmtSalesByDate->execute();
+    $resSales = $stmtSalesByDate->get_result();
+    $cumulativeSold = 0;
+
+    while($rs = $resSales->fetch_assoc()){
+      $saleDate = $rs['create_at'];
+      $saleQty = intval($rs['tatol_product']);
+      $cumulativeSold += $saleQty;
+      if($cumulativeSold >= ($priorLotQty + $lotQty)){
+        $sold_out_date = $saleDate;
+        break;
+      }
+    }
 
     // if remainingToAllocate <= 0 => soldInThisLot becomes 0 automatically
 
@@ -297,6 +327,7 @@ foreach ($productsInLot as $stock) {
         'total_sell_value' => $totalSellValue,
         'create_at' => $create_at,
         'prior_lots_qty' => $priorLotQty,
+        'sold_out_date' => $sold_out_date,
         'totalSold' => $totalSold,
     ];
 }
