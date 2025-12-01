@@ -80,9 +80,11 @@ if(!isset($_SESSION['users_data'])){
                   $stmt->close();
                 
               // Prepare statement to get total sold for a product
-                  $get_total_sold_sql = "
-                  SELECT COALESCE(SUM(tatol_product),0) AS total_sold
-                  FROM list_productsell
+                  $get_total_sold_sql = "SELECT 
+                  COALESCE(SUM(LP.tatol_product),0) AS total_sold,
+                  MIN(OS.date_time_sell) AS firstSellDate,
+                  MAX(OS.date_time_sell) AS lastSellDate
+                  FROM list_productsell LP LEFT JOIN orders_sell OS ON LP.ordersell_id= OS.id_ordersell
                   WHERE productname = ?
                   ";
                   $stmtSold = $conn->prepare($get_total_sold_sql);
@@ -107,6 +109,11 @@ if(!isset($_SESSION['users_data'])){
                   ORDER BY list_sellid ASC
                   ";
                   $stmtRates = $conn->prepare($get_sale_rates_sql);
+
+                  $get_sale_dateql = "SELECT OS.date_time_sell,LP.tatol_product FROM list_productsell LP 
+                  LEFT JOIN orders_sell OS ON LP.ordersell_id= OS.id_ordersell
+                  WHERE LP.productname = ? ORDER BY OS.date_time_sell ASC";
+                  $stmtDates = $conn->prepare($get_sale_dateql);
                 
                 $lot_resutl = [];
                 
@@ -123,6 +130,8 @@ if(!isset($_SESSION['users_data'])){
                   $stmtSold->bind_param("s", $p_idname);
                   $stmtSold->execute();
                   $rSold = $stmtSold->get_result()->fetch_assoc();
+                  // $firstSellDate = $rSold['firstSellDate'];
+                  // $lastSellDate = $rSold['lastSellDate'];
                   $totalSold = intval($rSold['total_sold']);
                 
                   // 2) priorLotQty = ผลรวมจำนวนในล็อตที่เก่ากว่า (สำหรับสินค้านี้)
@@ -131,6 +140,7 @@ if(!isset($_SESSION['users_data'])){
                   $stmtPrior->execute();
                   $rPrior = $stmtPrior->get_result()->fetch_assoc();
                   $priorLotQty = intval($rPrior['prior_qty']);
+                  $isPriorLotSetQty = intval($rPrior['prior_qty']);
                 
                   // sold allocated to previous lots = min(totalSold, priorLotQty)
                   $soldAllocatedToPrev = min($totalSold, $priorLotQty);
@@ -142,6 +152,55 @@ if(!isset($_SESSION['users_data'])){
                   $soldInThisLot = min($lotQty, $remainingToAllocate);
                 
                   // if remainingToAllocate <= 0 => soldInThisLot becomes 0 automatically
+
+                  $stmtDates->bind_param("s", $p_idname);
+                  $stmtDates->execute();
+                  $resDates = $stmtDates->get_result();
+                  $isNums =0;
+                  $dateSellList = [];
+                  $res_num = 0;
+                  while($rd = $resDates->fetch_assoc()){
+                    //$dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>intval($rd['tatol_product'])];
+                    $qtys = intval($rd['tatol_product']);
+                    $isNums +=$qtys;
+                    if($isPriorLotSetQty == 0){
+                      if($isNums > $soldInThisLot){
+                        $res_num = $isNums - $soldInThisLot;
+                      }else{
+                        $res_num = 0;
+                      }
+                      $dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>$qtys,'isnum'=>$isNums,'x'=>'if','m'=>$res_num,'sx'=>$qtys - $res_num];
+                    }else{
+                      if($isPriorLotSetQty > 0){
+                        if($qtys >= $isPriorLotSetQty){
+                          $isPriorLotSetQty = 0;
+                          $dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>$qtys,'isnum'=>$isNums,'x'=>'out','m'=>$res_num,'sx'=>$qtys - $res_num];
+                        }else{
+                          $isPriorLotSetQty -= $qtys;
+                        }
+                      }
+                    }
+                    if($isNums >= $soldInThisLot){
+                      break;
+                    }
+                  }
+
+                  $firstSellDate = count($dateSellList) > 0 ? $dateSellList[0] : null;
+                  $lastSellDate = count($dateSellList) > 0 ? end($dateSellList) : null;
+                  $start_date = "2025-10-30 09:20:00";
+                  $end_date = "2025-12-01 20:58:00";
+
+                     $filteredDateSellList = [];
+                     $result_num = 0;
+
+                      foreach($dateSellList as $isItem){
+                        $sellDate = $isItem['date'];
+                        if($sellDate >= $start_date && $sellDate <= $end_date){
+                          $filteredDateSellList[] = $isItem;
+                          $result_num += $isItem['sx'];
+                        }
+                      }
+
                 
                   // 3) คำนวณราคาขายต่อลัง (ตัวอย่างใช้ average rate จาก list_productsell)
                   $stmtRates->bind_param("s", $p_idname);
@@ -202,12 +261,38 @@ if(!isset($_SESSION['users_data'])){
                         'create_at' => $create_at, //date
                         'prior_lots_qty' => $priorLotQty, // จำนวนที่ซื้อก่อนหน้านี้
                         'totalSold' => $totalSold, //รวมจำนวนที่ขายไปแล้ว
+                        'dateSell' => $dateSellList,
+                        'dateSellFires' => $firstSellDate,
+                        'lastDate' => $lastSellDate,
+                        'filter_date' => $filteredDateSellList,
+                        'xs'=>$result_num,
                     ];
                 }
                   // free statements
   $stmtSold->close();
   $stmtPrior->close();
   $stmtRates->close();
+
+  $getInAllDate = [];
+  foreach($lot_resutl as $rs){
+    if(!empty($rs['dateSell'])){
+      foreach($rs['dateSell'] as $d){
+        $getInAllDate[] = $d;
+      }
+    }
+  }
+  if(empty($getInAllDate)){
+    $oldestDate = null;
+    $lastestDate = null;
+  }else{
+    $onlyDates = array_column($getInAllDate,'date');
+    sort($onlyDates);
+    $oldestDate = $onlyDates[0];
+    $lastestDate = end($onlyDates);
+  }
+  // echo "<pre>"; 
+  //   print_r($lot_resutl);
+  //   echo"</pre>";
                 ?>
                 <div class="table-responsive table-responsive-data2 mt-2">
                   <table class="table table-data2 mydataTablePatron">
@@ -235,6 +320,7 @@ if(!isset($_SESSION['users_data'])){
                     <tbody>
                       <?php
                         foreach($lot_resutl as $key => $res){
+                          
                           detailLotFinance(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
                           $res['one_capital'],$res['capitalall_return'],$res['product_price'],$res['price_center'],$res['price_center_return'],$res['difference'],$res['shipping_one'],$res['shipping_cost'],
                           $res['profit_all'],$res['expenses'],$res['create_at']);

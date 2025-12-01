@@ -303,7 +303,7 @@ function tableDetailStock($number, $product_id,$id_nameproduct,$is_product_name,
               <td class=\"font-weight-bold\">$lot_numbers</td>
               <td class=\"font-weight-bold\">$productprice บาท</td>
               <td class=\"font-weight-bold\">$price_center บาท</td>
-              <td class=\"font-weight-bold\">$productcount ลัง ($count_cord คอต)</td>
+              <td class=\"font-weight-bold\">$productcount ลัง</td>
               <td class=\"font-weight-bold\">$toal_all บาท</td> 
               <td class=\"font-weight-bold\">$shipping_cost บาท</td> 
               <td class=\"font-weight-bold\">$expenses บาท</td> 

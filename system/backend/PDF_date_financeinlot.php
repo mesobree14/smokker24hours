@@ -3,8 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $lot_number = $_POST['lot_number'];
-$start_date = $_POST['start_date'] ?? date('Y-m-01');
-$end_date = $_POST['end_date'] ?? date('Y-m-d');
+$start_date = date("Y-m-d H:i:s", strtotime($_POST['start_date']));//$_POST['start_date'] ?? date('Y-m-01');
+$end_date =  date("Y-m-d H:i:s", strtotime($_POST['end_date']));//$_POST['end_date'] ?? date('Y-m-d');
 
 
 
@@ -154,6 +154,7 @@ $html .='
             <th class="price">สินค้า</th>
             <th class="qty">ซื้อ</th>
             <th class="total">ขาย</th>
+            
             <th class="total">คงเหลือ</th>
             <th class="total">ราคา/ลัง</th>
             <th class="total">ค่าส่ง/ลัง</th>
@@ -198,11 +199,18 @@ $html .='
     $stmt->close();
 
 // Prepare statement to get total sold for a product
+    // $get_total_sold_sql = "SELECT 
+    // COALESCE(SUM(tatol_product),0) AS total_sold
+    // FROM list_productsell
+    // WHERE productname = ?
+    //   AND create_at BETWEEN ? AND ?
+    // ";
     $get_total_sold_sql = "SELECT 
-    COALESCE(SUM(tatol_product),0) AS total_sold
+    COALESCE(SUM(tatol_product),0) AS total_sold,
+    MIN(create_at) AS firstSellDate,
+    MAX(create_at) AS lastSellDate
     FROM list_productsell
     WHERE productname = ?
-      AND create_at BETWEEN ? AND ?
     ";
     $stmtSold = $conn->prepare($get_total_sold_sql);
 
@@ -227,13 +235,11 @@ $html .='
     ";
     $stmtRates = $conn->prepare($get_sale_rates_sql);
 
-    $get_sales_bydate_sql = "SELECT
-      create_at,tatol_product
-      FROM list_productsell
-      WHERE productname = ?
-      ORDER BY create_at ASC
-    ";
-    $stmtSalesByDate = $conn->prepare($get_sales_bydate_sql);
+
+    $get_sale_dateql = "SELECT OS.date_time_sell,LP.tatol_product FROM list_productsell LP 
+          LEFT JOIN orders_sell OS ON LP.ordersell_id= OS.id_ordersell
+          WHERE LP.productname = ? ORDER BY OS.date_time_sell ASC";
+    $stmtDates = $conn->prepare($get_sale_dateql);
 
   $lot_resutl = [];
 
@@ -247,10 +253,14 @@ $html .='
     $create_at = $stock['create_at'];
 
     // 1) totalSold ของสินค้านี้ (จาก list_productsell)
-    $stmtSold->bind_param("sss", $p_idname, $start_date, $end_date);
+    // $stmtSold->bind_param("sss", $p_idname, $start_date, $end_date);
+    $stmtSold->bind_param("s", $p_idname);
     $stmtSold->execute();
     $rSold = $stmtSold->get_result()->fetch_assoc();
     $totalSold = intval($rSold['total_sold']);
+    $lastSellDate = $rSold['lastSellDate'] ?? null;
+
+    
 
     // 2) priorLotQty = ผลรวมจำนวนในล็อตที่เก่ากว่า (สำหรับสินค้านี้)
     //    เงื่อนไขใช้ create_at และถ้าเวลาเท่ากัน ให้ใช้ lot_number เปรียบเทียบเป็น tie-breaker
@@ -258,6 +268,7 @@ $html .='
     $stmtPrior->execute();
     $rPrior = $stmtPrior->get_result()->fetch_assoc();
     $priorLotQty = intval($rPrior['prior_qty']);
+    $isPriorLotSetQty = intval($rPrior['prior_qty']);
     
 
     // sold allocated to previous lots = min(totalSold, priorLotQty)
@@ -269,21 +280,52 @@ $html .='
     // sold in THIS lot = min(lotQty, remainingToAllocate)
     $soldInThisLot = min($lotQty, $remainingToAllocate);
 
-    $sold_out_date = null;
-    $stmtSalesByDate->bind_param("s",$p_idname);
-    $stmtSalesByDate->execute();
-    $resSales = $stmtSalesByDate->get_result();
-    $cumulativeSold = 0;
-
-    while($rs = $resSales->fetch_assoc()){
-      $saleDate = $rs['create_at'];
-      $saleQty = intval($rs['tatol_product']);
-      $cumulativeSold += $saleQty;
-      if($cumulativeSold >= ($priorLotQty + $lotQty)){
-        $sold_out_date = $saleDate;
-        break;
+    $stmtDates->bind_param("s", $p_idname);
+      $stmtDates->execute();
+      $resDates = $stmtDates->get_result();
+      $isNums =0;
+      $dateSellList = [];
+      $res_num = 0;
+      while($rd = $resDates->fetch_assoc()){
+        //$dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>intval($rd['tatol_product'])];
+        $qtys = intval($rd['tatol_product']);
+        $isNums +=$qtys;
+        if($isPriorLotSetQty == 0){
+          if($isNums > $soldInThisLot){
+            $res_num = $isNums - $soldInThisLot;
+          }else{
+            $res_num = 0;
+          }
+          $dateSellList[] = ['date'=> $rd['date_time_sell'], 'in_qty'=>$qtys,'isnum'=>$isNums,'m'=>$res_num,'sx'=>$qtys - $res_num];
+        }else{
+          if($isPriorLotSetQty > 0){
+            if($qtys >= $isPriorLotSetQty){
+              $isPriorLotSetQty = 0;
+              $dateSellList[] = ['date'=> $rd['date_time_sell'], 'in_qty'=>$qtys,'isnum'=>$isNums,'m'=>$res_num,'sx'=>$qtys - $res_num];
+            }else{
+              $isPriorLotSetQty -= $qtys;
+            }
+          }
+        }
+        if($isNums >= $soldInThisLot){
+          break;
+        }
       }
-    }
+      $firstSellDate = count($dateSellList) > 0 ? $dateSellList[0] : null;
+      $lastSellDate = count($dateSellList) > 0 ? end($dateSellList) : null;
+
+      $filteredDateSellList = [];
+      $total_resfilter = 0;
+
+      foreach($dateSellList as $isItem){
+        $sellDate = $isItem['date'];
+        if($sellDate >= $start_date && $sellDate <= $end_date){
+          $filteredDateSellList[] = $isItem;
+          $total_resfilter += $isItem['sx'];
+        }
+      }
+
+
 
     // if remainingToAllocate <= 0 => soldInThisLot becomes 0 automatically
 
@@ -294,6 +336,10 @@ $html .='
     
     $sumRateQty = 0.0;
     $sumRateWeight = 0; // weighted by tatol_product
+
+    if($totalSold <= $totalSold){
+      $startSellDate = null;
+    }
 
     
     while ($rr = $resRates->fetch_assoc()) {
@@ -307,6 +353,7 @@ $html .='
     }
     $saleRateAvg = ($sumRateWeight > 0) ? ($sumRateQty / $sumRateWeight) : 0;
     $totalSellValue = $saleRateAvg * $soldInThisLot;
+    $totalSellValue_filter = $saleRateAvg * $total_resfilter;
 
     // 4) คำนวณต้นทุน / ค่าส่ง ต่อลัง
     $product_price = floatval($stock['product_price']);
@@ -317,11 +364,15 @@ $html .='
 
     $capital_all = $one_capital * $lotQty;
     $capital_using = $one_capital * ($lotQty - $soldInThisLot); // คงเหลือหลังหักการขายในล็อตนี้
+    $capital_using_filter = $one_capital * ($lotQty - $total_resfilter); // คงเหลือหลังหักการขายในล็อตนี้ date
     $capitalall_return = $one_capital * $soldInThisLot;
+    $capitalall_return_filter = $one_capital * $total_resfilter;
 
     $price_center = floatval($stock['price_center']);
     $price_center_return = $price_center * $soldInThisLot;
+    $price_center_return_filter = $price_center * $total_resfilter;
     $difference = ($price_center * $soldInThisLot) - ($one_capital * $soldInThisLot);
+    $difference_filter = ($price_center * $total_resfilter) - ($one_capital * $total_resfilter);
 
     $lot_resutl[] = [
         'id' => $p_id,
@@ -330,28 +381,38 @@ $html .='
         'lot_no'=> $lot_code,
         'count_inlot' => $lotQty,
         'total_sell' => $soldInThisLot,
+        'total_resfilter'=>$total_resfilter,
         'remain_qty' => $lotQty - $soldInThisLot,
+        'remain_qty_filter' => $lotQty - $total_resfilter,
         'product_price' => $product_price,
         'product_priceAll' => $product_price * $lotQty,
         'one_capital' => $one_capital,
         'difference_one' => $difference_one,
         'capital_all' => $capital_all,
         'capital_using' => $capital_using,
+        'capital_using_filter' => $capital_using_filter,
         'capitalall_return' => $capitalall_return,
+        'capitalall_return_filter' => $capitalall_return_filter,
         'price_center' => $price_center,
         'price_centerAll' => $price_center * $lotQty,
         'price_center_return' => $price_center_return,
+        'price_center_return_filter' => $price_center_return_filter,
         'difference' => $difference,
+        'difference_filter' => $difference_filter,
         'one_sell' => $saleRateAvg,
         'expenses' => $stock['expenses'],
         'profit_all' => ($saleRateAvg * $soldInThisLot) - ($price_center * $soldInThisLot),
+        'profit_all_filter' => ($saleRateAvg * $total_resfilter) - ($price_center * $total_resfilter),
         'shipping_one' => $shipping_one,
         'shipping_cost' => $shipping_cost_total,
         'total_sell_value' => $totalSellValue,
+        'total_sell_value_filter' => $totalSellValue_filter,
         'create_at' => $create_at,
         'prior_lots_qty' => $priorLotQty,
-        'sold_out_date' => $sold_out_date,
         'totalSold' => $totalSold,
+        'first_date'=>$firstSellDate,
+        'last_date'=>$lastSellDate,
+        'allDateSell'=>$dateSellList,
     ];
   }
   // free statements
@@ -361,6 +422,7 @@ $html .='
   
         $iscount_inlot = 0;
         $istotal_sell = 0;
+        $istotal_resfilter = 0;
         $isremain_qty = 0;
         $is_priceAll = 0;
         $is_shippingcost = 0;
@@ -370,13 +432,16 @@ $html .='
         $is_difference_one = 0;
         $is_pricecenter_return = 0;
         $is_profit_all = 0;
-        foreach($lot_resutl as $res){
+
+    foreach($lot_resutl as $res){
     $html .= '
             <tr>
               <td class="fontbold name-black" >'.$res['p_name'].'</td>
               <td class="fontbold total">'.$res['count_inlot'].'</td>
-              <td class="fontbold total">'.$res['total_sell'].'</td>
-              <td class="fontbold total">'.$res['remain_qty'].'</td>
+              
+              <td class="fontbold total">'.$res['total_resfilter'].'</td>
+              
+              <td class="fontbold total">'.$res['remain_qty_filter'].'</td>
               <td class="fontbold total">'.number_format($res['product_price'],2).'</td>
               <td class="fontbold total">'.number_format($res['shipping_one'],2).'</td>
               <td class="fontbold total">'.number_format($res['one_capital'],2).'</td>
@@ -385,23 +450,25 @@ $html .='
               <td class="fontbold total">'.number_format($res['product_priceAll']).'</td>
               <td class="fontbold total">'.number_format($res['shipping_cost']).'</td>
               <td class="fontbold total">'.number_format($res['capital_all']).'</td>
-              <td class="fontbold total">'.number_format($res['capital_using']).'</td>
-              <td class="fontbold total-blue">'.number_format($res['price_center_return']).'</td>
-              <td class="fontbold total">'.number_format($res['capitalall_return']).'</td>
-              <td class="fontbold total-blue">'.number_format($res['difference']).'  
+              <td class="fontbold total">'.number_format($res['capital_using_filter']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['price_center_return_filter']).'</td>
+              <td class="fontbold total">'.number_format($res['capitalall_return_filter']).'</td>
+              <td class="fontbold total-blue">'.number_format($res['difference_filter']).'  </td>
             </tr>';
             //$issum_count        += $res['count'];
             $iscount_inlot  += $res['count_inlot'];
             $istotal_sell   += $res['total_sell'];
+            $istotal_resfilter += $res['total_resfilter'];
             $isremain_qty       += $res['remain_qty'];
+            $isremain_qty_filter       += $res['remain_qty_filter'];
             $is_difference_one += $res['difference_one'];
             $is_priceAll        += $res['product_priceAll'];
             $is_shippingcost    += $res['shipping_cost'];
             $is_capitalall      += $res['capital_all'];
-            $is_capitalusing   += $res['capital_using'];
-            $is_capital_return  += $res['capitalall_return'];
-            $is_pricecenter_return += $res['price_center_return'];
-            $is_profit_all += $res['difference'];
+            $is_capitalusing   += $res['capital_using_filter'];
+            $is_capital_return  += $res['capitalall_return_filter'];
+            $is_pricecenter_return += $res['price_center_return_filter'];
+            $is_profit_all += $res['difference_filter']; //difference
       }
     $html .='
         </tbody>
@@ -409,8 +476,9 @@ $html .='
           <tr style="background-color:#F5DEB3;">
               <td class="fontboldtfoot name-black" >ทั้งหมด</td>
               <td class="fontboldtfoot total">'.number_format($iscount_inlot).'</td>
-              <td class="fontboldtfoot total">'.number_format($istotal_sell).'</td>
-              <td class="fontboldtfoot total">'.number_format($isremain_qty).'</td>
+              
+              <td class="fontboldtfoot total">'.number_format($istotal_resfilter).'</td>
+              <td class="fontboldtfoot total">'.number_format($isremain_qty_filter).'</td>
               <td class="fontboldtfoot total"></td>
               <td class="fontboldtfoot total"></td>
               <td class="fontboldtfoot total"></td>
@@ -433,6 +501,7 @@ $html .='
   <div style="width:100%;display:flex">
       <b>ปริ้นเมื่อ : '.$day_add.'</b>
   </div>
+  
   </div>
 </div>';
 
