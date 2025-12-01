@@ -120,6 +120,9 @@ if(!isset($_SESSION['users_data'])){
                 foreach ($productsInLot as $key => $stock) {
                   $row_id = intval($stock['product_id']); 
                   $p_idname = $stock['product_name'];        // key to match sales
+                  echo "isD: ";
+                  echo $p_idname;
+                  echo "<br/>";
                   $p_name = $stock['in_productname'];
                   $p_id = $stock['product_id'];
                   $lotQty = intval($stock['product_count']);
@@ -156,14 +159,106 @@ if(!isset($_SESSION['users_data'])){
                   $stmtDates->bind_param("s", $p_idname);
                   $stmtDates->execute();
                   $resDates = $stmtDates->get_result();
+
+                  $iisNum = 0;
+                  $isDateTestList = [];
+                  // while($rmd = $resDates->fetch_assoc()){
+                  //   if($iisNum >= $lotQty){
+                  //     break;
+                  //   }
+                  //   $sellQtys = intval($rmd['tatol_product']);
+                  //   $isRemian = $lotQty - $iisNum;
+                  //   if($sellQtys > $isRemian){
+                  //     $sellQtys = $isRemian;
+                  //   }
+                  //   $isDateTestList[] =[
+                  //     'date'=> $rmd['date_time_sell'],'qtys'=>$sellQtys
+                  //   ];
+                  //   $iisNum += $sellQtys;
+                  //   if($iisNum >= $lotQty){
+                  //     break;
+                  //   }
+                  // }
+                  
+                  $listSellTest = [];
+                  $countInlotQty = $lotQty;
+                  while($sd = $resDates->fetch_assoc()){
+                    $listSellTest[] = ['date'=> $sd['date_time_sell'],'total'=>$sd['tatol_product']];
+                  }
+                  $currentLotSales = [];
+
+                  foreach($listSellTest as $item){
+                    $qtys = $item['total'];
+                    
+                    if($priorLotQty > 0){
+                      if($qtys <= $priorLotQty){
+                        $priorLotQty -= $qtys;
+                         continue;
+                      }
+                      $remians = $qtys - $priorLotQty;
+                      $priorLotQty = 0;
+                      $qtys = $remians;
+                    }
+                    if($countInlotQty <= 0){
+                      break;
+                    }
+                    if($qtys > $countInlotQty){
+                      $qtys = $countInlotQty;
+                    }
+                    $currentLotSales[] = [
+                      'date' => $item['date'],
+                      'qty'  => $qtys
+                    ];
+
+                    $countInlotQty -= $qtys;
+                    if($countInlotQty <= 0){
+                      break;
+                    }
+                    // if($priorLotQty > 0){
+                    //   if($qtys <= $priorLotQty){
+                    //     $priorLotQty -= $qtys;
+                    //     continue;
+                    //   }
+                    //   $remians = $qtys - $priorLotQty;
+                    //   $currentLotSales[] = [
+                    //     'date' => $item['date'],
+                    //     'qty'  => $remians
+                    //   ];
+                    //   $priorLotQty = 0;
+                    // }else{
+                    //   $currentLotSales[] = [
+                    //     'date' => $item['date'],
+                    //     'qty'  => $qtys
+                    //   ];
+                    // }
+
+                  }
+
+                   $inputStart = "2025-11-09T00:00"; //2025-10-30 09:20:00
+$inputEnd   = "2025-11-27T00:00";
+
+// แปลง T → space และเติม :00 ถ้าไม่มี
+$startDateFilter = str_replace("T", " ", $inputStart) . ":00";
+$endDateFilter   = str_replace("T", " ", $inputEnd) . ":00";
+$filteredSales = [];
+$count_succ = 0;
+foreach ($currentLotSales as $sale) {
+
+    $saleDate = $sale['date']; // format Y-m-d H:i:s อยู่แล้ว
+
+    // ตรวจสอบว่าตกช่วง start–end
+    if ($saleDate >= $startDateFilter && $saleDate <= $endDateFilter) {
+        $count_succ += $sale['qty'];
+        $filteredSales[] = $sale;
+    }
+}
+
+
                   $isNums =0;
                   $dateSellList = [];
                   $test = [];
                   $res_num = 0;
-                   $listSellTest = [];
-                    while($sd = $resDates->fetch_assoc()){
-                      $listSellTest[] = ['date'=> $sd['date_time_sell'],'total'=>$sd['tatol_product']];
-                    }
+                   
                   while($rd = $resDates->fetch_assoc()){
                     $test[] = ['date'=> $rd['date_time_sell'], 'qty'=>intval($rd['tatol_product'])];
                     $qtys = intval($rd['tatol_product']);
@@ -190,21 +285,21 @@ if(!isset($_SESSION['users_data'])){
                     }
                   }
 
-                  $firstSellDate = count($dateSellList) > 0 ? $dateSellList[0] : null;
-                  $lastSellDate = count($dateSellList) > 0 ? end($dateSellList) : null;
-                  $start_date = "2025-10-30 00:00:00";
-                  $end_date = "2025-12-01 00:00:00";
+                  // $firstSellDate = count($dateSellList) > 0 ? $dateSellList[0] : null;
+                  // $lastSellDate = count($dateSellList) > 0 ? end($dateSellList) : null;
+                  // $start_date = "2025-10-30 00:00:00";
+                  // $end_date = "2025-12-01 00:00:00";
 
-                     $filteredDateSellList = [];
-                     $result_num = 0;
+                  //    $filteredDateSellList = [];
+                  //    $result_num = 0;
 
-                      foreach($dateSellList as $isItem){
-                        $sellDate = $isItem['date'];
-                        if($sellDate >= $start_date && $sellDate <= $end_date){
-                          $filteredDateSellList[] = $isItem;
-                          $result_num += $isItem['sx'];
-                        }
-                      }
+                  //     foreach($dateSellList as $isItem){
+                  //       $sellDate = $isItem['date'];
+                  //       if($sellDate >= $start_date && $sellDate <= $end_date){
+                  //         $filteredDateSellList[] = $isItem;
+                  //         $result_num += $isItem['sx'];
+                  //       }
+                  //     }
 
                 
                   // 3) คำนวณราคาขายต่อลัง (ตัวอย่างใช้ average rate จาก list_productsell)
@@ -245,33 +340,36 @@ if(!isset($_SESSION['users_data'])){
                         'lot_no'=> $lot_code,
                         'count_inlot' => $lotQty, //จำนวนที่ซื้อall
                         'total_sell' => $soldInThisLot, //จำนวนที่ขาย
+                        'total_sell_succ' => $count_succ,
                         'remain_qty' => $lotQty - $soldInThisLot, //จำนวนที่เหลือ
-                        'product_price' => $product_price, //สินค้าต่อลัง
-                        'product_priceAll' => $product_price * $lotQty, // ต้นทุนทั้งหมด สินค้าต่อลัง * จำนวนที่ซื้อall
-                        'one_capital' => $one_capital, // สินค้า + ค่าส่ง ต่อลัง
-                        'difference_one' => $difference_one, //ราคากลาง - (รา่คา+ค่าส่ง) ต่อลัง
-                        'capital_all' => $capital_all, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ซื้อ
-                        'capital_using' => $capital_using, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่เหลือ
-                        'capitalall_return' => $capitalall_return, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ขาย
-                        'price_center' => $price_center, //  ราคากลางต่อชิ้น
-                        'price_centerAll' => $price_center * $lotQty, // ราคากลางต่อชิ้น * จำนวนที่ซื้อall
-                        'price_center_return' => $price_center_return, // ราคากลางต่อชิ้น * จำนวนที่ขาย
-                        'difference' => $difference, // กำไรทั้งหมด (ราคากลางต่อชิ้น * จำนวนที่ขาย) * ( (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ขาย )
-                        'one_sell' => $saleRateAvg, // ราคาขายต่อชิ้น
-                        'expenses' => $stock['expenses'], // รวมราคาสั่งสื้อทั้งหมด  สินค้าต่อลัง+ค่าส่ง * จำนวนที่ซื้อall
-                        'profit_all' => ($saleRateAvg * $soldInThisLot) - ($price_center * $soldInThisLot), //(ราคาขาย * จำนวนขาย) - (ราคากลาง*จำนวนขาย)
-                        'shipping_one' => $shipping_one, //ค่าส่งต่อชิ้น
-                        'shipping_cost' => $shipping_cost_total, //ค่าส่งทั้งหมด
-                        'total_sell_value' => $totalSellValue,
-                        'create_at' => $create_at, //date
+                        // 'product_price' => $product_price, //สินค้าต่อลัง
+                        // 'product_priceAll' => $product_price * $lotQty, // ต้นทุนทั้งหมด สินค้าต่อลัง * จำนวนที่ซื้อall
+                        // 'one_capital' => $one_capital, // สินค้า + ค่าส่ง ต่อลัง
+                        // 'difference_one' => $difference_one, //ราคากลาง - (รา่คา+ค่าส่ง) ต่อลัง
+                        // 'capital_all' => $capital_all, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ซื้อ
+                        // 'capital_using' => $capital_using, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่เหลือ
+                        // 'capitalall_return' => $capitalall_return, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ขาย
+                        // 'price_center' => $price_center, //  ราคากลางต่อชิ้น
+                        // 'price_centerAll' => $price_center * $lotQty, // ราคากลางต่อชิ้น * จำนวนที่ซื้อall
+                        // 'price_center_return' => $price_center_return, // ราคากลางต่อชิ้น * จำนวนที่ขาย
+                        // 'difference' => $difference, // กำไรทั้งหมด (ราคากลางต่อชิ้น * จำนวนที่ขาย) * ( (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ขาย )
+                        // 'one_sell' => $saleRateAvg, // ราคาขายต่อชิ้น
+                        // 'expenses' => $stock['expenses'], // รวมราคาสั่งสื้อทั้งหมด  สินค้าต่อลัง+ค่าส่ง * จำนวนที่ซื้อall
+                        // 'profit_all' => ($saleRateAvg * $soldInThisLot) - ($price_center * $soldInThisLot), //(ราคาขาย * จำนวนขาย) - (ราคากลาง*จำนวนขาย)
+                        // 'shipping_one' => $shipping_one, //ค่าส่งต่อชิ้น
+                        // 'shipping_cost' => $shipping_cost_total, //ค่าส่งทั้งหมด
+                        // 'total_sell_value' => $totalSellValue,
+                        // 'create_at' => $create_at, //date
                         'prior_lots_qty' => $priorLotQty, // จำนวนที่ซื้อก่อนหน้านี้
                         'totalSold' => $totalSold, //รวมจำนวนที่ขายไปแล้ว
-                        //'dateSell' => $dateSellList,
+                        'currentLotSales' => $currentLotSales,
+                        'filteredSales' => $filteredSales,
+                        //'isDateTestList'=> $isDateTestList,
                         //'test'=>$test,
-                        'dateSellFires' => $firstSellDate,
-                        'lastDate' => $lastSellDate,
-                        'filter_date' => $filteredDateSellList,
-                        'xs'=>$result_num,
+                        // 'dateSellFires' => $firstSellDate,
+                        // 'lastDate' => $lastSellDate,
+                        //'filter_date' => $filteredDateSellList,
+                       // 'xs'=>$result_num,
                         'listSellTest'=>$listSellTest
                     ];
                 }
@@ -297,45 +395,11 @@ if(!isset($_SESSION['users_data'])){
   //   $oldestDate = $onlyDates[0];
   //   $lastestDate = end($onlyDates);
   // }
-  // echo "<pre>"; 
-  //   print_r($lot_resutl);
-  //   echo"</pre>";
+  echo "<pre>"; 
+    print_r($lot_resutl);
+    echo"</pre>";
                 ?>
-                <div class="table-responsive table-responsive-data2 mt-2">
-                  <table class="table table-data2 mydataTablePatron">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th style="width:15%;">สินค้า</th>
-                            <!-- <th>จำนวนซื้อ</th> -->
-                            <th>จำนวนขาย</th>
-                            <!-- <th>จำนวนคงเหลือ</th> -->
-                             <th>ราคา/ต่อลัง</th>
-                             <th>กลาง/ต่อลัง</th>
-                            <th>(ซื่อ+ค่าส่ง)ต่อลัง</th>
-                            <th>ราคาซื้อ + ค่าส่ง</th>
-                            <th>ราคากลาง</th>
-                            <th>กำไร</th>
-                            <!-- <th>ขายต่อลัง</th>
-                            
-                            
-                            <th>ราคาขาย</th>
-                            <th>กำไร</th> -->
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <?php
-                        foreach($lot_resutl as $key => $res){
-                          
-                          detailLotFinance(($key+1),$res['id'],$res['p_name'],$res['id_pname'],$res['lot_no'],$res['count_inlot'],$res['total_sell'],$res['remain_qty'],
-                          $res['one_capital'],$res['capitalall_return'],$res['product_price'],$res['price_center'],$res['price_center_return'],$res['difference'],$res['shipping_one'],$res['shipping_cost'],
-                          $res['profit_all'],$res['expenses'],$res['create_at']);
-                        }
-                      ?>
-                    </tbody>
-                  </table>
-                </div>
+                
               </div>
              
           </div>
