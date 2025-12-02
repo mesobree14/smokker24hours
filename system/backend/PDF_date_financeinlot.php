@@ -320,12 +320,7 @@ $html .='
                       break;
                     }
                   }
-                  $inputStart = "2025-10-30T00:00";
-                  $inputEnd   = "2025-11-10T00:00";
-
-                  // แปลง T → space และเติม :00 ถ้าไม่มี
-                  $startDateFilter = str_replace("T", " ", $inputStart) . ":00";
-                  $endDateFilter   = str_replace("T", " ", $inputEnd) . ":00";
+                  
                   $filteredSales = [];
                   $counts_sellsuccess = 0;
                   foreach ($currentLotSales as $sale) {
@@ -376,12 +371,15 @@ $html .='
     $capital_using = $one_capital * ($lotQty - $soldInThisLot); // คงเหลือหลังหักการขายในล็อตนี้
    // $capital_using_filter = $one_capital * ($lotQty - $total_resfilter); // คงเหลือหลังหักการขายในล็อตนี้ date
     $capitalall_return = $one_capital * $soldInThisLot;
+    $capitalall_return_succ = $one_capital * $counts_sellsuccess;
     //$capitalall_return_filter = $one_capital * $total_resfilter;
 
     $price_center = floatval($stock['price_center']);
     $price_center_return = $price_center * $soldInThisLot;
+    $price_center_return_succ = $price_center * $counts_sellsuccess;
     //$price_center_return_filter = $price_center * $total_resfilter;
     $difference = ($price_center * $soldInThisLot) - ($one_capital * $soldInThisLot);
+    $difference_succ = ($price_center * $counts_sellsuccess) - ($one_capital * $counts_sellsuccess);
     //$difference_filter = ($price_center * $total_resfilter) - ($one_capital * $total_resfilter);
 
     $lot_resutl[] = [
@@ -394,7 +392,7 @@ $html .='
         'total_sell_succ' => $counts_sellsuccess,
         //'total_resfilter'=>$total_resfilter,
         'remain_qty' => $lotQty - $soldInThisLot,
-        //'remain_qty_filter' => $lotQty - $total_resfilter,
+        'remain_qty_succ' => $lotQty - $counts_sellsuccess,
         'product_price' => $product_price,
         'product_priceAll' => $product_price * $lotQty,
         'one_capital' => $one_capital,
@@ -402,13 +400,13 @@ $html .='
         'capital_all' => $capital_all,
         'capital_using' => $capital_using,
         //'capital_using_filter' => $capital_using_filter,
-        'capitalall_return' => $capitalall_return,
+        'capitalall_return' => $capitalall_return_succ,//$capitalall_return,
        // 'capitalall_return_filter' => $capitalall_return_filter,
         'price_center' => $price_center,
         'price_centerAll' => $price_center * $lotQty,
-        'price_center_return' => $price_center_return,
+        'price_center_return' => $price_center_return_succ,
         //'price_center_return_filter' => $price_center_return_filter,
-        'difference' => $difference,
+        'difference' => $difference_succ,//$difference,
         //'difference_filter' => $difference_filter,
         'one_sell' => $saleRateAvg,
         'expenses' => $stock['expenses'],
