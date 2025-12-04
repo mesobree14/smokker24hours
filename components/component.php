@@ -37,6 +37,12 @@ function navigationOfiicer($path = ""){
                           </a>
                         </li>
                         <li>
+                          <a href=\"{$path}is_profit.php\" class=\"text-white\">
+                              <i class=\"fa-solid fa-money-bill-trend-up text-success\"></i>
+                              <span>รายรับรายจ่ายราคากลาง</span>
+                          </a>
+                        </li>
+                        <li>
                           <a href=\"{$path}product.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-cube\"></i>
                               <span>รายการสินค้า</span>
@@ -694,7 +700,7 @@ function listProductBuy($number,$product_id, $product_name, $cost_price,$price_c
       <td class=\"font-weight-bold \"> $product_name</td>
       <td class=\"font-weight-bold \"> $cost_price บาท</td>
       <td class=\"font-weight-bold \"> $price_center บาท</td>
-      <td class=\"font-weight-bold \"> $total_product ลัง($count_cord คอต)</td>
+      <td class=\"font-weight-bold \"> $total_product ลัง</td>
       <td class=\"font-weight-bold \">". $prices - $shipping_cost." บาท</td>
       <td class=\"font-weight-bold \"> $shipping_cost บาท</td>
       <td class=\"font-weight-bold \"> $prices บาท</td>

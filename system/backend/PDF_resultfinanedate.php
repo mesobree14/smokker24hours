@@ -41,8 +41,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$start_date = $_POST['start_date'];
-$end_date = $_POST['end_date'];
+$inputStart = $_POST['start_date'];
+$inputEnd = $_POST['end_date'];
+$startDateFilter = str_replace("T", " ", $inputStart) . ":00";
+$endDateFilter   = str_replace("T", " ", $inputEnd) . ":00";
 
 $html = '
  <style>
@@ -128,7 +130,7 @@ $html .='
       <h3 style="text-align: right;">รายการในสต็อก(ล็อต)</h3>
     </div>
       <div style="display:flex;width:100%;">
-        ข้อมูลระหว่างวันที่ '.$start_date.' ถึง '.$end_date.'
+        ข้อมูลระหว่างวันที่ '.$startDateFilter.' ถึง '.$endDateFilter.'
       </div>
       <div style="width:100%">
       <table class="slip-table">
@@ -150,105 +152,402 @@ $html .='
           </tr>
         </thead>
         <tbody>';
-      $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
-          SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
-          LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
-          $query = $conn->query($get_product);
-          $data = [];
-          while($row = $query->fetch_assoc()){
-            $data[] = $row;
-          }
+      // $get_product = "SELECT COUNT(*) AS total_lot, NP.product_name AS in_productname, SP.product_id, SP.product_name, 
+      //     SP.product_price,SP.price_center,SP.shipping_cost,SP.expenses, SUM(SP.product_count) AS sum_product, SP.lot_number FROM stock_product SP 
+      //     LEFT JOIN name_product NP ON SP.product_name = NP.id_name GROUP BY SP.product_id, SP.lot_number";
+      //     $query = $conn->query($get_product);
+      //     $data = [];
+      //     while($row = $query->fetch_assoc()){
+      //       $data[] = $row;
+      //     }
 
-          $get_productsell = "SELECT LP.list_sellid, LP.productname, NP.product_name,
-            LP.level_selltype,LP.rate_customertype,LP.tatol_product,LP.price_to_pay
-            FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name 
-            LEFT JOIN orders_sell OS ON OS.id_ordersell = LP.ordersell_id
-            WHERE OS.date_time_sell BETWEEN '$start_date' AND '$end_date'
-            ORDER BY LP.list_sellid ASC";
-            $query_sell = $conn->query($get_productsell);
-            $data_sell = [];
-            while($is_row = $query_sell->fetch_assoc()){
-              $data_sell[] = $is_row;
-            }
+      //     $get_productsell = "SELECT LP.list_sellid, LP.productname, NP.product_name,
+      //       LP.level_selltype,LP.rate_customertype,LP.tatol_product,LP.price_to_pay
+      //       FROM list_productsell LP LEFT JOIN name_product NP ON LP.productname = NP.id_name 
+      //       LEFT JOIN orders_sell OS ON OS.id_ordersell = LP.ordersell_id
+      //       WHERE OS.date_time_sell BETWEEN '$start_date' AND '$end_date'
+      //       ORDER BY LP.list_sellid ASC";
+      //       $query_sell = $conn->query($get_productsell);
+      //       $data_sell = [];
+      //       while($is_row = $query_sell->fetch_assoc()){
+      //         $data_sell[] = $is_row;
+      //       }
           
-            $lot_resutl = [];
+      //       $lot_resutl = [];
 
-        foreach($data as $stock){
-          $lotQty = $stock['sum_product'];
-          $remainQty = $lotQty;
-          $soldQtry = 0;
-          $totalSellValue = 0;
-          $rate_costometype = 0;
-          $lot_code = $stock['lot_number'];
-          $p_idname = $stock['product_name'];
-          $p_name = $stock['in_productname'];
-          $p_id = $stock['product_id'];
+      //   foreach($data as $stock){
+      //     $lotQty = $stock['sum_product'];
+      //     $remainQty = $lotQty;
+      //     $soldQtry = 0;
+      //     $totalSellValue = 0;
+      //     $rate_costometype = 0;
+      //     $lot_code = $stock['lot_number'];
+      //     $p_idname = $stock['product_name'];
+      //     $p_name = $stock['in_productname'];
+      //     $p_id = $stock['product_id'];
         
-          foreach($data_sell as &$sales){
-            if($sales['productname'] !== $p_idname) continue;
-            if($remainQty <= 0) break;
+      //     foreach($data_sell as &$sales){
+      //       if($sales['productname'] !== $p_idname) continue;
+      //       if($remainQty <= 0) break;
 
-            $saleQty = (int)$sales['tatol_product'];
-            $rate_costometype = (float)$sales['rate_customertype'];
-            if($saleQty > 0){
-              if($remainQty >= $saleQty){
-                $soldFromLot = $saleQty;
-                $remainQty -= $saleQty;
-                $sales['tatol_product'] = 0;
-              }else{
-                $soldFromLot = $remainQty;
-                $sales['tatol_product'] -= $remainQty;
-                $remainQty = 0;
-              }
-              $soldQtry += $soldFromLot;
-              $totalSellValue += $soldFromLot * $rate_costometype;
-            }
+      //       $saleQty = (int)$sales['tatol_product'];
+      //       $rate_costometype = (float)$sales['rate_customertype'];
+      //       if($saleQty > 0){
+      //         if($remainQty >= $saleQty){
+      //           $soldFromLot = $saleQty;
+      //           $remainQty -= $saleQty;
+      //           $sales['tatol_product'] = 0;
+      //         }else{
+      //           $soldFromLot = $remainQty;
+      //           $sales['tatol_product'] -= $remainQty;
+      //           $remainQty = 0;
+      //         }
+      //         $soldQtry += $soldFromLot;
+      //         $totalSellValue += $soldFromLot * $rate_costometype;
+      //       }
           
-          }
-          $product_shipping = $stock['product_price'] + ($stock['shipping_cost'] / $lotQty);
-          $capital_all = $product_shipping * $lotQty; //ต้นทุนรวมทั้งหมด
-          $capital_using = $product_shipping * $remainQty; //ทุนกำลังใช้
-          $capitalall_return = $product_shipping * $soldQtry; //ทุนที่ได้คืนมา
+      //     }
+      //     $product_shipping = $stock['product_price'] + ($stock['shipping_cost'] / $lotQty);
+      //     $capital_all = $product_shipping * $lotQty; //ต้นทุนรวมทั้งหมด
+      //     $capital_using = $product_shipping * $remainQty; //ทุนกำลังใช้
+      //     $capitalall_return = $product_shipping * $soldQtry; //ทุนที่ได้คืนมา
 
-          $price_center_all = $stock['price_center'] * $lotQty;
-          $price_cnter_using = $stock['price_center'] * $remainQty;
-          $price_center_return = $stock['price_center'] * $soldQtry;
+      //     $price_center_all = $stock['price_center'] * $lotQty;
+      //     $price_cnter_using = $stock['price_center'] * $remainQty;
+      //     $price_center_return = $stock['price_center'] * $soldQtry;
 
-          $pricecenter_delcaptialshiipin = $price_center_return - $capitalall_return; //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
-          $seller_all = $rate_costometype * $soldQtry; // รายได้จากการขายทั้งหมด
-          $profit_all = $seller_all - $price_center_return; //กำไรทั้งหมดหลังหักต้นทุนและค่าใช้จ่าย
+      //     $pricecenter_delcaptialshiipin = $price_center_return - $capitalall_return; //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
+      //     $seller_all = $rate_costometype * $soldQtry; // รายได้จากการขายทั้งหมด
+      //     $profit_all = $seller_all - $price_center_return; //กำไรทั้งหมดหลังหักต้นทุนและค่าใช้จ่าย
 
 
-          $lot_resutl[] = [
-            'id' => $p_id,
-            'p_name' =>$p_name,
-            'id_pname'=> $p_idname,
-            'lot_no'=> $lot_code,
-            'count_inlot' => $lotQty, //จำนวนฝน lot
-            'total_sell' => $soldQtry, // จำนวนขาย
-            'remain_qty' => $remainQty, //คงเหลือ
-            'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อลัง
-            'product_shipping' => $product_shipping, //ราคาต้นทุนต่อลัง รวมค่าขนส่ง
-            'product_priceAll' => $capital_all,//ต้นทุน + ค่าส่ง รวมทั้งหมด
-            'capital_using' => $capital_using, //ทุนกำลังใช้
-            'capitalall_return' => $capitalall_return, //ทุนที่ได้คืนมา
+      //     $lot_resutl[] = [
+      //       'id' => $p_id,
+      //       'p_name' =>$p_name,
+      //       'id_pname'=> $p_idname,
+      //       'lot_no'=> $lot_code,
+      //       'count_inlot' => $lotQty, //จำนวนฝน lot
+      //       'total_sell' => $soldQtry, // จำนวนขาย
+      //       'remain_qty' => $remainQty, //คงเหลือ
+      //       'product_price' => $stock['product_price'], //ราคาเริ่มต้นต่อลัง
+      //       'product_shipping' => $product_shipping, //ราคาต้นทุนต่อลัง รวมค่าขนส่ง
+      //       'product_priceAll' => $capital_all,//ต้นทุน + ค่าส่ง รวมทั้งหมด
+      //       'capital_using' => $capital_using, //ทุนกำลังใช้
+      //       'capitalall_return' => $capitalall_return, //ทุนที่ได้คืนมา
 
-            'price_center' => $stock['price_center'], // ราคากลางต่อลัง
-            'price_centerAll' => $stock['price_center'] * $lotQty, //ราคากลาง รวมทั้งหมด
-            'price_cnter_using' => $price_cnter_using, //ราคากลาง กำลังใช้
-            'price_center_return' => $price_center_return, //ราคากลาง ที่ได้คืนมา
-            'pricecenter_delcaptialshiipin' => $pricecenter_delcaptialshiipin, //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
-            'shipping_one' => $stock['shipping_cost'] / $lotQty, //ค่าขนส่งต่อลัง
-            'shipping_cost' => $stock['shipping_cost'], //ค่าขนส่งรวม
-            'rate_sell' => $rate_costometype,
-            'expenses' => $seller_all, //รายได้จากการขายทั้งหมด
-            'profit_all' => $profit_all, //กำไรทั้งหมดหลังหักต้นทุนและค่าใช้จ่าย
-            'sell' => 'sell',
-            'total_sell_value' => $totalSellValue
-          ];
-        }
+      //       'price_center' => $stock['price_center'], // ราคากลางต่อลัง
+      //       'price_centerAll' => $stock['price_center'] * $lotQty, //ราคากลาง รวมทั้งหมด
+      //       'price_cnter_using' => $price_cnter_using, //ราคากลาง กำลังใช้
+      //       'price_center_return' => $price_center_return, //ราคากลาง ที่ได้คืนมา
+      //       'pricecenter_delcaptialshiipin' => $pricecenter_delcaptialshiipin, //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
+      //       'shipping_one' => $stock['shipping_cost'] / $lotQty, //ค่าขนส่งต่อลัง
+      //       'shipping_cost' => $stock['shipping_cost'], //ค่าขนส่งรวม
+      //       'rate_sell' => $rate_costometype,
+      //       'expenses' => $seller_all, //รายได้จากการขายทั้งหมด
+      //       'profit_all' => $profit_all, //กำไรทั้งหมดหลังหักต้นทุนและค่าใช้จ่าย
+      //       'sell' => 'sell',
+      //       'total_sell_value' => $totalSellValue
+      //     ];
+      //   }
 
-        $grouped = [];
+      //   $grouped = [];
+      //   $lot_itemcount = [];
+      //   foreach($lot_resutl as $lot){
+      //     $code = $lot['lot_no'];
+      //     if(!isset($grouped[$code])){
+
+      //       $grouped[$code] = [
+      //         'lot_code' => $code,
+      //         'count' => 0,
+      //         'total_inlot' => 0,
+      //         'total_sell' => 0,
+      //         'remain' => 0,
+      //         'priceAll' =>0, // ต้นทุนรวมทั้งหมด
+      //         'capital_using' =>0, //ทุนกำลังใช้
+      //         'capitalall_return' =>0, //ทุนที่ได้คืนมา
+      //         'pricecenter_All' => 0,
+      //         'price_cnter_using' =>0,
+      //         'price_center_return' =>0,
+      //         'pricecenter_delcaptialshiipin' =>0, //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
+      //         'shipping_cost' =>0,
+      //         'expenses' => 0,
+      //         'profit_all' => 0,
+      //         'price_seller' => 0,
+      //       ];
+      //       $lot_itemcount[$code] = 0;
+      //     }
+      //     $lot_itemcount[$code]++;
+
+      //     $grouped[$code]['count'] = $lot_itemcount[$code];
+      //     $grouped[$code]['total_inlot'] += $lot['count_inlot'];
+      //     $grouped[$code]['total_sell'] += $lot['total_sell'];
+      //     $grouped[$code]['remain'] += $lot['remain_qty'];
+      //     $grouped[$code]['priceAll'] += $lot['product_priceAll'];
+      //     $grouped[$code]['capital_using'] += $lot['capital_using'];
+      //     $grouped[$code]['capitalall_return'] += $lot['capitalall_return'];
+      //     $grouped[$code]['pricecenter_All'] += $lot['price_centerAll'];
+      //     $grouped[$code]['price_cnter_using'] += $lot['price_cnter_using'];
+      //     $grouped[$code]['price_center_return'] += $lot['price_center_return'];
+      //     $grouped[$code]['pricecenter_delcaptialshiipin'] += $lot['pricecenter_delcaptialshiipin'];
+      //     $grouped[$code]['shipping_cost'] += $lot['shipping_cost'];
+      //     $grouped[$code]['expenses'] += $lot['expenses'];
+      //     $grouped[$code]['profit_all'] += $lot['profit_all'];
+      //     $grouped[$code]['price_seller'] += $lot['total_sell_value'];
+      //   }
+//$inputStart = "2025-11-01T00:00"; //2025-10-30 09:20:00
+//$inputEnd   = "2025-11-30T00:00";
+
+
+                $get_products_in_lot_sql = "SELECT 
+                      NP.product_name AS in_productname,
+                      SP.product_id,
+                      SP.product_name,
+                      SP.create_at,
+                      SP.product_price,
+                      SP.price_center,
+                      SP.shipping_cost,
+                      SP.expenses,
+                      SP.product_count,
+                      SP.lot_number
+                    FROM stock_product SP
+                    LEFT JOIN name_product NP ON SP.product_name = NP.id_name
+                    ORDER BY SP.create_at ASC, SP.lot_number ASC, SP.product_id ASC
+                    ";
+                  $stmt = $conn->prepare($get_products_in_lot_sql);
+                  //$stmt->bind_param("s", $lot_number);
+                  $stmt->execute();
+                  $res = $stmt->get_result();
+                  $productsInLot = [];
+                  while ($r = $res->fetch_assoc()) {
+                      $productsInLot[] = $r;
+                  }
+                  $stmt->close();
+
+                  $get_total_sold_sql = "SELECT 
+                  COALESCE(SUM(LP.tatol_product),0) AS total_sold,
+                  MIN(OS.date_time_sell) AS firstSellDate,
+                  MAX(OS.date_time_sell) AS lastSellDate
+                  FROM list_productsell LP LEFT JOIN orders_sell OS ON LP.ordersell_id= OS.id_ordersell
+                  WHERE productname = ?
+                  ";
+                  $stmtSold = $conn->prepare($get_total_sold_sql);
+
+                  $get_prior_lots_sql = "
+                  SELECT COALESCE(SUM(product_count),0) AS prior_qty
+                  FROM stock_product
+                  WHERE product_name = ?
+                    AND (
+                        create_at < ? 
+                        OR (create_at = ? AND product_id < ?)
+                    )
+                  ";
+                  $stmtPrior = $conn->prepare($get_prior_lots_sql);
+
+                  $get_sale_rates_sql = "
+                  SELECT rate_customertype, tatol_product
+                  FROM list_productsell
+                  WHERE productname = ?
+                  ORDER BY list_sellid ASC
+                  ";
+                  $stmtRates = $conn->prepare($get_sale_rates_sql);
+
+                  $get_sale_dateql = "SELECT OS.date_time_sell,LP.tatol_product FROM list_productsell LP 
+                  LEFT JOIN orders_sell OS ON LP.ordersell_id= OS.id_ordersell
+                  WHERE LP.productname = ? ORDER BY OS.date_time_sell ASC";
+                  $stmtDates = $conn->prepare($get_sale_dateql);
+
+                  $lot_resutl = [];
+
+                  foreach ($productsInLot as $key => $stock) {
+                  $row_id = intval($stock['product_id']); 
+                  $p_idname = $stock['product_name'];        // key to match sales
+                  $p_name = $stock['in_productname'];
+                  $p_id = $stock['product_id'];
+                  $lotQty = intval($stock['product_count']);
+                  $lot_code = $stock['lot_number'];
+                  $create_at = $stock['create_at'];
+                
+                  // 1) totalSold ของสินค้านี้ (จาก list_productsell)
+                  $stmtSold->bind_param("s", $p_idname);
+                  $stmtSold->execute();
+                  $rSold = $stmtSold->get_result()->fetch_assoc();
+                  
+                  $totalSold = intval($rSold['total_sold']);
+                
+                  // 2) priorLotQty = ผลรวมจำนวนในล็อตที่เก่ากว่า (สำหรับสินค้านี้)
+                  //    เงื่อนไขใช้ create_at และถ้าเวลาเท่ากัน ให้ใช้ lot_number เปรียบเทียบเป็น tie-breaker
+                  $stmtPrior->bind_param("sssi", $p_idname, $create_at, $create_at, $row_id);
+                  $stmtPrior->execute();
+                  $rPrior = $stmtPrior->get_result()->fetch_assoc();
+                  $priorLotQty = intval($rPrior['prior_qty']);
+                  $isPriorLotSetQty = intval($rPrior['prior_qty']);
+          
+                  // sold allocated to previous lots = min(totalSold, priorLotQty)
+                  $soldAllocatedToPrev = min($totalSold, $priorLotQty);
+                
+                  // remaining to allocate to this and later lots
+                  $remainingToAllocate = max(0, $totalSold - $soldAllocatedToPrev);
+                
+                  // sold in THIS lot = min(lotQty, remainingToAllocate)
+                  $soldInThisLot = min($lotQty, $remainingToAllocate);
+                
+                  // if remainingToAllocate <= 0 => soldInThisLot becomes 0 automatically
+
+                  $stmtDates->bind_param("s", $p_idname);
+                  $stmtDates->execute();
+                  $resDates = $stmtDates->get_result();
+
+                  $iisNum = 0;
+                  $isDateTestList = [];
+                  
+                  $listSellTest = [];
+                  $countInlotQty = $lotQty;
+                  while($sd = $resDates->fetch_assoc()){
+                    $listSellTest[] = ['date'=> $sd['date_time_sell'],'total'=>$sd['tatol_product']];
+                  }
+                  $currentLotSales = [];
+
+
+                  foreach($listSellTest as $item){
+                    $qtys = $item['total'];
+                    
+                    if($priorLotQty > 0){
+                      if($qtys <= $priorLotQty){
+                        $priorLotQty -= $qtys;
+                         continue;
+                      }
+                      $remians = $qtys - $priorLotQty;
+                      $priorLotQty = 0;
+                      $qtys = $remians;
+                    }
+                    if($countInlotQty <= 0){
+                      break;
+                    }
+                    if($qtys > $countInlotQty){
+                      $qtys = $countInlotQty;
+                    }
+                    $currentLotSales[] = [
+                      'date' => $item['date'],
+                      'qty'  => $qtys
+                    ];
+
+                    $countInlotQty -= $qtys;
+                    if($countInlotQty <= 0){
+                      break;
+                    }
+
+                  }
+
+
+$filteredSales = [];
+$total_sell_succ = 0;
+
+foreach ($currentLotSales as $sale) {
+
+    $saleDate = $sale['date']; // format Y-m-d H:i:s อยู่แล้ว
+
+    if ($saleDate >= $startDateFilter && $saleDate <= $endDateFilter) {
+        $total_sell_succ += $sale['qty'];
+        $filteredSales[] = $sale;
+    }
+}
+
+                  $isNums =0;
+                  $dateSellList = [];
+                  $test = [];
+                  $res_num = 0;
+
+                while($rd = $resDates->fetch_assoc()){
+                    $test[] = ['date'=> $rd['date_time_sell'], 'qty'=>intval($rd['tatol_product'])];
+                    $qtys = intval($rd['tatol_product']);
+                    $isNums +=$qtys;
+                    if($isPriorLotSetQty == 0){
+                      if($isNums > $soldInThisLot){
+                        $res_num = $isNums - $soldInThisLot;
+                      }else{
+                        $res_num = 0;
+                      }
+                      $dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>$qtys,'isnum'=>$isNums,'x'=>'if','m'=>$res_num,'sx'=>$qtys - $res_num];
+                    }else{
+                      if($isPriorLotSetQty > 0){
+                        if($qtys >= $isPriorLotSetQty){
+                          $isPriorLotSetQty = 0;
+                          $dateSellList[] = ['date'=> $rd['date_time_sell'], 'qty'=>$qtys,'isnum'=>$isNums,'x'=>'out','m'=>$res_num,'sx'=>$qtys - $res_num];
+                        }else{
+                          $isPriorLotSetQty -= $qtys;
+                        }
+                      }
+                    }
+                    if($isNums >= $soldInThisLot){
+                      break;
+                    }
+                  }
+
+                  $stmtRates->bind_param("s", $p_idname);
+                  $stmtRates->execute();
+                  $resRates = $stmtRates->get_result();
+                  $sumRateQty = 0.0;
+                  $sumRateWeight = 0; // weighted by tatol_product
+                  while ($rr = $resRates->fetch_assoc()) {
+                      $rate = floatval($rr['rate_customertype']);
+                      $qty = intval($rr['tatol_product']);
+                      if ($qty > 0) {
+                          $sumRateQty += $rate * $qty;
+                          $sumRateWeight += $qty;
+                      }
+                  }
+                  $saleRateAvg = ($sumRateWeight > 0) ? ($sumRateQty / $sumRateWeight) : 0;
+                  $totalSellValue = $saleRateAvg * $soldInThisLot;
+
+                  $product_price = floatval($stock['product_price']);
+                  $shipping_cost_total = floatval($stock['shipping_cost']);
+                  $shipping_one = ($lotQty > 0) ? ($shipping_cost_total / $lotQty) : 0;
+                  $one_capital = $product_price + $shipping_one;
+                  $difference_one = floatval($stock['price_center']) - $one_capital;
+                
+                  $capital_all = $one_capital * $lotQty;
+                  //$capital_using = $one_capital * ($lotQty - $soldInThisLot); // คงเหลือหลังหักการขายในล็อตนี้
+                  $capital_using = $one_capital * ($lotQty - $total_sell_succ); // คงเหลือหลังหักการขายในล็อตนี้
+                  //$capitalall_return = $one_capital * $soldInThisLot;
+                  $capitalall_return_succ = $one_capital * $total_sell_succ;
+                  
+
+                  $price_center = floatval($stock['price_center']);
+                  $price_cnter_using = $price_center *($lotQty - $total_sell_succ);
+                  $price_center_return_succ = $price_center * $total_sell_succ;
+                  $pricecenter_delcaptialshiipin = $price_center_return_succ - $capitalall_return_succ;
+
+                  $lot_resutl[] = [
+                        'id' => $p_id,
+                        'p_name' => $p_name,
+                        'id_pname'=> $p_idname,
+                        'lot_no'=> $lot_code,
+                        'count_inlot' => $lotQty, //จำนวนที่ซื้อall
+                        'total_sell' => $soldInThisLot, //จำนวนที่ขาย
+                        'total_sell_succ' => $total_sell_succ,
+                        'remain_qty' => $lotQty - $soldInThisLot, //จำนวนที่เหลือ
+                        'remain_qty_succ' => $lotQty - $total_sell_succ,
+                        'product_price' => $product_price, //สินค้าต่อลัง
+                        'product_priceAll' => $product_price * $lotQty, // ต้นทุนทั้งหมด สินค้าต่อลัง * จำนวนที่ซื้อall
+                        'one_capital' => $one_capital, // สินค้า + ค่าส่ง ต่อลัง
+                        'difference_one' => $difference_one, //ราคากลาง - (รา่คา+ค่าส่ง) ต่อลัง
+                        'capital_all' => $capital_all, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ซื้อ
+                        'capital_using' => $capital_using, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่เหลือ
+                        'capitalall_return' => $capitalall_return_succ, //ต้นทุนทั้งหมด (สินค้า + ค่าส่ง ต่อลัง) * จำนวนที่ขาย
+                        'price_center' => $price_center, //  ราคากลางต่อชิ้น
+                        'price_centerAll' => $price_center * $lotQty, // ราคากลางต่อชิ้น * จำนวนที่ซื้อall
+                        'price_center_return' => $price_center_return_succ, // ราคากลางต่อชิ้น * จำนวนที่ขาย
+                        'price_cnter_using' =>$price_cnter_using,
+                        'pricecenter_delcaptialshiipin' => $pricecenter_delcaptialshiipin,
+                        'prior_lots_qty' => $priorLotQty, // จำนวนที่ซื้อก่อนหน้านี้
+                        'totalSold' => $totalSold, //รวมจำนวนที่ขายไปแล้ว
+                        'currentLotSales' => $currentLotSales,
+                        'filteredSales' => $filteredSales,
+                        'listSellTest'=>$listSellTest
+                    ];
+              }
+
+ $grouped = [];
         $lot_itemcount = [];
         foreach($lot_resutl as $lot){
           $code = $lot['lot_no'];
@@ -268,9 +567,6 @@ $html .='
               'price_center_return' =>0,
               'pricecenter_delcaptialshiipin' =>0, //ส่วนต่างราคากลางกับต้นทุนที่ได้คืนมา
               'shipping_cost' =>0,
-              'expenses' => 0,
-              'profit_all' => 0,
-              'price_seller' => 0,
             ];
             $lot_itemcount[$code] = 0;
           }
@@ -278,8 +574,8 @@ $html .='
 
           $grouped[$code]['count'] = $lot_itemcount[$code];
           $grouped[$code]['total_inlot'] += $lot['count_inlot'];
-          $grouped[$code]['total_sell'] += $lot['total_sell'];
-          $grouped[$code]['remain'] += $lot['remain_qty'];
+          $grouped[$code]['total_sell'] += $lot['total_sell_succ'];
+          $grouped[$code]['remain'] += $lot['remain_qty_succ'];
           $grouped[$code]['priceAll'] += $lot['product_priceAll'];
           $grouped[$code]['capital_using'] += $lot['capital_using'];
           $grouped[$code]['capitalall_return'] += $lot['capitalall_return'];
@@ -287,13 +583,9 @@ $html .='
           $grouped[$code]['price_cnter_using'] += $lot['price_cnter_using'];
           $grouped[$code]['price_center_return'] += $lot['price_center_return'];
           $grouped[$code]['pricecenter_delcaptialshiipin'] += $lot['pricecenter_delcaptialshiipin'];
-          $grouped[$code]['shipping_cost'] += $lot['shipping_cost'];
-          $grouped[$code]['expenses'] += $lot['expenses'];
-          $grouped[$code]['profit_all'] += $lot['profit_all'];
-          $grouped[$code]['price_seller'] += $lot['total_sell_value'];
         }
 
-        $grouped = array_values($grouped);
+      $grouped = array_values($grouped);
        $issum_count = 0;
        $issum_inlot = 0;
        $issum_totalsell = 0;
@@ -323,7 +615,6 @@ $html .='
               <td class="fontbold total-blue">'.number_format($res['capitalall_return']).'</td>
               <td class="fontbold total">'.number_format($res['price_center_return']).'</td>
               <td class="fontbold total-blue">'.number_format($res['pricecenter_delcaptialshiipin']).'</td>
-              
             </tr>';
             $issum_count        += $res['count'];
             $issum_inlot  += $res['total_inlot'];
@@ -336,8 +627,8 @@ $html .='
             $ispricecenter_using+= $res['price_cnter_using'];
             $ispricecenter_return+= $res['price_center_return'];
             $ispricecenter_delcaptialshiipin += $res['pricecenter_delcaptialshiipin'];
-            $isseller_all       += $res['expenses'];
-            $isprofit_all       += $res['profit_all'];
+            //$isseller_all       += $res['expenses'];
+            //$isprofit_all       += $res['profit_all'];
       }
     $html .='
       

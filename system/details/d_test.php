@@ -68,7 +68,6 @@ if(!isset($_SESSION['users_data'])){
                     WHERE SP.lot_number = ?
                     ORDER BY SP.create_at ASC, SP.lot_number ASC, SP.product_id ASC
                     ";
-              // GROUP BY SP.product_id, SP.product_name, SP.lot_number, SP.create_at, SP.product_price, SP.price_center, SP.shipping_cost, SP.expenses
                   $stmt = $conn->prepare($get_products_in_lot_sql);
                   $stmt->bind_param("s", $lot_number);
                   $stmt->execute();
@@ -78,6 +77,7 @@ if(!isset($_SESSION['users_data'])){
                       $productsInLot[] = $r;
                   }
                   $stmt->close();
+                  echo "<pre>".print_r($productsInLot)."</pre>";
                 
               // Prepare statement to get total sold for a product
                   $get_total_sold_sql = "SELECT 
@@ -133,8 +133,7 @@ if(!isset($_SESSION['users_data'])){
                   $stmtSold->bind_param("s", $p_idname);
                   $stmtSold->execute();
                   $rSold = $stmtSold->get_result()->fetch_assoc();
-                  // $firstSellDate = $rSold['firstSellDate'];
-                  // $lastSellDate = $rSold['lastSellDate'];
+                  
                   $totalSold = intval($rSold['total_sold']);
                 
                   // 2) priorLotQty = ผลรวมจำนวนในล็อตที่เก่ากว่า (สำหรับสินค้านี้)
@@ -162,23 +161,6 @@ if(!isset($_SESSION['users_data'])){
 
                   $iisNum = 0;
                   $isDateTestList = [];
-                  // while($rmd = $resDates->fetch_assoc()){
-                  //   if($iisNum >= $lotQty){
-                  //     break;
-                  //   }
-                  //   $sellQtys = intval($rmd['tatol_product']);
-                  //   $isRemian = $lotQty - $iisNum;
-                  //   if($sellQtys > $isRemian){
-                  //     $sellQtys = $isRemian;
-                  //   }
-                  //   $isDateTestList[] =[
-                  //     'date'=> $rmd['date_time_sell'],'qtys'=>$sellQtys
-                  //   ];
-                  //   $iisNum += $sellQtys;
-                  //   if($iisNum >= $lotQty){
-                  //     break;
-                  //   }
-                  // }
                   
                   $listSellTest = [];
                   $countInlotQty = $lotQty;
@@ -186,6 +168,7 @@ if(!isset($_SESSION['users_data'])){
                     $listSellTest[] = ['date'=> $sd['date_time_sell'],'total'=>$sd['tatol_product']];
                   }
                   $currentLotSales = [];
+                  echo "<pre>".print_r($listSellTest)."</pre>";
 
                   foreach($listSellTest as $item){
                     $qtys = $item['total'];
@@ -214,27 +197,10 @@ if(!isset($_SESSION['users_data'])){
                     if($countInlotQty <= 0){
                       break;
                     }
-                    // if($priorLotQty > 0){
-                    //   if($qtys <= $priorLotQty){
-                    //     $priorLotQty -= $qtys;
-                    //     continue;
-                    //   }
-                    //   $remians = $qtys - $priorLotQty;
-                    //   $currentLotSales[] = [
-                    //     'date' => $item['date'],
-                    //     'qty'  => $remians
-                    //   ];
-                    //   $priorLotQty = 0;
-                    // }else{
-                    //   $currentLotSales[] = [
-                    //     'date' => $item['date'],
-                    //     'qty'  => $qtys
-                    //   ];
-                    // }
 
                   }
 
-                   $inputStart = "2025-11-09T00:00"; //2025-10-30 09:20:00
+$inputStart = "2025-11-09T00:00"; //2025-10-30 09:20:00
 $inputEnd   = "2025-11-27T00:00";
 
 // แปลง T → space และเติม :00 ถ้าไม่มี
@@ -285,21 +251,6 @@ foreach ($currentLotSales as $sale) {
                     }
                   }
 
-                  // $firstSellDate = count($dateSellList) > 0 ? $dateSellList[0] : null;
-                  // $lastSellDate = count($dateSellList) > 0 ? end($dateSellList) : null;
-                  // $start_date = "2025-10-30 00:00:00";
-                  // $end_date = "2025-12-01 00:00:00";
-
-                  //    $filteredDateSellList = [];
-                  //    $result_num = 0;
-
-                  //     foreach($dateSellList as $isItem){
-                  //       $sellDate = $isItem['date'];
-                  //       if($sellDate >= $start_date && $sellDate <= $end_date){
-                  //         $filteredDateSellList[] = $isItem;
-                  //         $result_num += $isItem['sx'];
-                  //       }
-                  //     }
 
                 
                   // 3) คำนวณราคาขายต่อลัง (ตัวอย่างใช้ average rate จาก list_productsell)
