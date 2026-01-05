@@ -257,9 +257,9 @@ $html .= '
           <tr style=\"font-weight:bold;background-color:#f2f2f2;\">
               <td class=\"fontboldtfoot name\"><b>รวมทั้งหมด</b></td>
               <td class=\"fontboldtfoot qty\">".number_format($total_qty)."</td>
-              <td class=\"fontboldtfoot price\">".number_format($total_cost_price,2,'.',',')."</td>
+              <td class=\"fontboldtfoot price\"></td>
               <td class=\"fontboldtfoot price\">".number_format($total_cost_all,2,'.',',')."</td>
-              <td class=\"fontboldtfoot price\">".number_format($total_shipping_per,2,'.',',')."</td>
+              <td class=\"fontboldtfoot price\"></td>
               <td class=\"fontboldtfoot price\">".number_format($total_shipping_all,2,'.',',')."</td>
               <td class=\"fontboldtfoot total\">".number_format($total_expenses,2,'.',',')."</td>
           </tr>"; 

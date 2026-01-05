@@ -43,20 +43,40 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$lot_product = $conn->query("
-        SELECT 
-            stock_product.id_order,
-            SUM(stock_product.product_count) AS total_product_count,
-            SUM(stock_product.product_price * stock_product.product_count) AS total_product_price,
-            SUM(stock_product.shipping_cost) AS total_shipping_cost,
-            SUM(stock_product.expenses) AS total_expenses,
-            order_box.lot_numbers
-        FROM stock_product
-        LEFT JOIN order_box 
-            ON order_box.order_id = stock_product.id_order
-        GROUP BY stock_product.id_order, order_box.lot_numbers
-        ORDER BY stock_product.id_order ASC
-        ");
+$stock_products = $conn->query("
+SELECT 
+    stock_product.product_name,
+    name_product.product_name AS new_productname,
+
+    SUM(stock_product.product_count) AS total_product_count,
+
+    SUM(stock_product.product_price * stock_product.product_count) 
+        AS total_product_price,
+
+    -- ราคาเฉลี่ยต่อชิ้น
+    (
+        SUM(stock_product.product_price * stock_product.product_count)
+        / NULLIF(SUM(stock_product.product_count), 0)
+    ) AS avg_price_per_piece,
+
+    SUM(stock_product.shipping_cost) AS total_shipping_cost,
+
+    -- ค่าส่งเฉลี่ยต่อชิ้น
+    (
+        SUM(stock_product.shipping_cost)
+        / NULLIF(SUM(stock_product.product_count), 0)
+    ) AS avg_shipping_per_piece,
+
+    SUM(stock_product.expenses) AS total_expenses
+
+FROM stock_product
+LEFT JOIN name_product 
+    ON name_product.id_name = stock_product.product_name
+
+GROUP BY stock_product.product_name, name_product.product_name
+ORDER BY name_product.product_name ASC
+");
+
 
 $html =' 
 <style>
@@ -195,9 +215,11 @@ $html .='
     <table class="slip-table">
       <thead>
         <tr style="background-color:#ff9933;">
-          <th class="name">รายการ</th>
+          <th class="name">รายการสินค้า</th>
           <th class="qty">จำนวน</th>
+          <th class="price">ราคาต้นทุนเฉลี่ย/ชิ้น</th>
           <th class="price">ราคาต้นทุนทั้งหมด</th>
+          <th class="price">ราคาค่าส่งเฉลี่ย/ชิ้น</th>
           <th class="price">ราคาค่าส่งทั่งหมด</th>
           <th class="total">รวมยอด</th>
         </tr>
@@ -209,9 +231,11 @@ $html .='
   $total_shipping_per = 0;
   $total_shipping_all = 0;
   $total_expenses = 0;
-  while($rows = $lot_product->fetch_assoc()){
+  while($rows = $stock_products->fetch_assoc()){
     $qty = (int)$rows['total_product_count'];
+    $price_one = (float)($rows['avg_price_per_piece'] ?? 0);
     $price = (float)($rows['total_product_price'] ?? 0);
+    $shipping_one = (float)($rows['avg_shipping_per_piece'] ?? 0);
     $shipping_all = (float)($rows['total_shipping_cost'] ?? 0);
     $expenses = (float)($rows['total_expenses'] ?? 0);
 
@@ -221,9 +245,11 @@ $html .='
     $total_expenses += $expenses;
     $html .= "
     <tr>
-        <td class=\"name\">{$rows['lot_numbers']}</td>
+        <td class=\"name\">{$rows['new_productname']}</td>
         <td class=\"qty\">{$qty}</td>
+        <td class=\"price\">".number_format( $price_one,2,'.',',')."</td>
         <td class=\"price\">".number_format($price,2,'.',',')."</td>
+        <td class=\"price\">".number_format($shipping_one ,2,'.',',')."</td>
         <td class=\"price\">".number_format($shipping_all,2,'.',',')."</td>
         <td class=\"total\">".number_format($expenses,2,'.',',')."</td>
       </tr>
@@ -237,7 +263,9 @@ $html .= '
           <tr style=\"font-weight:bold;background-color:#f2f2f2;\">
               <td class=\"fontboldtfoot name\"><b>รวมทั้งหมด</b></td>
               <td class=\"fontboldtfoot qty\">".number_format($total_shipping_qty)."</td>
+              <td class=\"fontboldtfoot name\"></td>
               <td class=\"fontboldtfoot price\">".number_format($total_shipping_per,2,'.',',')."</td>
+              <td class=\"fontboldtfoot name\"></td>
               <td class=\"fontboldtfoot price\">".number_format($total_shipping_all,2,'.',',')."</td>
               <td class=\"fontboldtfoot total\">".number_format($total_expenses,2,'.',',')."</td>
           </tr>"; 
