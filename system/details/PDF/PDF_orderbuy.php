@@ -44,7 +44,7 @@ $order_id = $_GET['order_id'];
 $sql_query = $conn->query("SELECT * FROM order_box WHERE order_id=$order_id");
 $order = $sql_query->fetch_assoc();
 $sql_product = $conn->query("SELECT 
-  stock_product.product_name,stock_product.product_count,stock_product.product_price,stock_product.expenses,stock_product.id_order,name_product.product_name AS new_productname
+  stock_product.product_name,stock_product.product_count,stock_product.product_price,stock_product.shipping_cost,stock_product.expenses,stock_product.id_order,name_product.product_name AS new_productname
   FROM stock_product LEFT JOIN name_product 
   ON name_product.id_name = stock_product.product_name 
   WHERE id_order=$order_id
@@ -151,7 +151,7 @@ $html .='
 <div>
   <div class="" style="">
     <div style="float: left; width: 55%; margin-left:5px">
-      <img src="../../../assets/img/Jbox-logo.jpg" width="40" height="40" />
+      
     </div>
     <div style="float: right; width: 40%;">
       <h3 style="text-align: right;">ใบเสร็จคำสั่งซื้อ</h3>
@@ -162,11 +162,11 @@ $html .='
         <div class="left">
           <div class="doc">
               <b class="label" style="font-size:17px;">ผู้ออกใบเสร็จ :</b>
-              <small class="value">JBok จำหน่ายกล่องพัศดุราคาโรงงาน</small>
+              <small class="value">SMOKKER 24 HOURS</small>
           </div>
           <div class="doc">
               <b class="label" style="font-size:17px;">เบอร์โทร :</b>
-              <small class="value">081-189-9578</small>
+              <small class="value">-</small>
           </div>
         </div>
         <div class="right" style="background-color:#ff9933;">
@@ -186,9 +186,11 @@ $html .='
       <thead>
         <tr style="background-color:#ff9933;">
           <th class="name">รายการสินค้า</th>
-          <th class="price">ราคาต้นทุนต่อลัง</th>
           <th class="qty">จำนวน</th>
-          <th class="total">ราคารวม</th>
+          <th class="price">ราคาต้นทุนต่อลัง</th>
+          <th class="price">ราคาค่าส่งต่อลัง</th>
+          <th class="price">ราคาค่าส่งทั่งหมด</th>
+          <th class="total">รวมยอด</th>
         </tr>
       </thead>
     ';
@@ -197,8 +199,10 @@ $html .='
     $html .= "
     <tr>
         <td class=\"name\">{$rows['new_productname']}</td>
-        <td class=\"price\">".number_format($rows['product_price'] ?? 0,2,'.',',')."</td>
         <td class=\"qty\">{$rows['product_count']}</td>
+        <td class=\"price\">".number_format($rows['product_price'] ?? 0,2,'.',',')."</td>
+        <td class=\"price\">".number_format($rows['shipping_cost'] / $rows['product_count'] ?? 0,2,'.',',')."</td>
+        <td class=\"price\">".number_format($rows['shipping_cost'] ?? 0,2,'.',',')."</td>
         <td class=\"total\">".number_format($rows['expenses'] ?? 0,2,'.',',')."</td>
       </tr>
   ";
