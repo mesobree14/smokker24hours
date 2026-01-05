@@ -35,7 +35,7 @@ if(!isset($_SESSION['users_data'])){
     <main class="page-content mt-0">
       <?php navbar("คำสั่งซื้อ"); ?>
       <div class="container-fluid row">
-          <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_finance.php" target="_blank">
+          <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="#" target="_blank">
                 <i class="fas fa-file-code px-2"></i> PDF
           </a>
           <div class="">
