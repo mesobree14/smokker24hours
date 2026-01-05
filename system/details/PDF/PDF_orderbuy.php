@@ -76,6 +76,12 @@ $html ='
     
 }
 
+  .fontboldtfoot{
+    font-weight: bold;
+    color:blue;
+    font-size:17px;
+  }
+
 .left-qr {
     float: left;
     width: 30%;
@@ -194,24 +200,71 @@ $html .='
           <th class="total">รวมยอด</th>
         </tr>
       </thead>
+      <tbody>
     ';
   $x = 1;
+  $total_qty = 0;
+  $total_cost_price = 0;
+  $total_cost_all = 0;
+  $total_shipping_per = 0;
+  $total_shipping_all = 0;
+  $total_expenses = 0;
+
   while($rows = $sql_product->fetch_assoc()){
-    $html .= "
-    <tr>
-        <td class=\"name\">{$rows['new_productname']}</td>
-        <td class=\"qty\">{$rows['product_count']}</td>
-        <td class=\"price\">".number_format($rows['product_price'] ?? 0,2,'.',',')."</td>
-        <td class=\"price\">".number_format($rows['product_price'] * $rows['product_count'] ?? 0,2,'.',',')."</td>
-        <td class=\"price\">".number_format($rows['shipping_cost'] / $rows['product_count'] ?? 0,2,'.',',')."</td>
-        <td class=\"price\">".number_format($rows['shipping_cost'] ?? 0,2,'.',',')."</td>
-        <td class=\"total\">".number_format($rows['expenses'] ?? 0,2,'.',',')."</td>
-      </tr>
-  ";
+    $qty = (int)$rows['product_count'];
+    $price = (float)($rows['product_price'] ?? 0);
+    $cost_all = $price * $qty;
+
+    $shipping_all = (float)($rows['shipping_cost'] ?? 0);
+    $shipping_per = $qty > 0 ? $shipping_all / $qty : 0;
+
+    $expenses = (float)($rows['expenses'] ?? 0);
+
+    // สะสมยอดรวม
+    $total_qty += $qty;
+    $total_cost_price += $price;
+    $total_cost_all += $cost_all;
+    $total_shipping_per += $shipping_per;
+    $total_shipping_all += $shipping_all;
+    $total_expenses += $expenses;
+     $html .= "
+          <tr>
+              <td class=\"name\">{$rows['new_productname']}</td>
+              <td class=\"qty\">{$qty}</td>
+              <td class=\"price\">".number_format($price,2,'.',',')."</td>
+              <td class=\"price\">".number_format($cost_all,2,'.',',')."</td>
+              <td class=\"price\">".number_format($shipping_per,2,'.',',')."</td>
+              <td class=\"price\">".number_format($shipping_all,2,'.',',')."</td>
+              <td class=\"total\">".number_format($expenses,2,'.',',')."</td>
+          </tr>";
+  //   $html .= "
+  //   <tr>
+  //       <td class=\"name\">{$rows['new_productname']}</td>
+  //       <td class=\"qty\">{$rows['product_count']}</td>
+  //       <td class=\"price\">".number_format($rows['product_price'] ?? 0,2,'.',',')."</td>
+  //       <td class=\"price\">".number_format($rows['product_price'] * $rows['product_count'] ?? 0,2,'.',',')."</td>
+  //       <td class=\"price\">".number_format($rows['shipping_cost'] / $rows['product_count'] ?? 0,2,'.',',')."</td>
+  //       <td class=\"price\">".number_format($rows['shipping_cost'] ?? 0,2,'.',',')."</td>
+  //       <td class=\"total\">".number_format($rows['expenses'] ?? 0,2,'.',',')."</td>
+  //     </tr>
+  // ";
   }
 $html .= '
-      <tbody>
       </tbody>
+      <tfoot>
+      ';
+        $html .= "
+          <tr style=\"font-weight:bold;background-color:#f2f2f2;\">
+              <td class=\"fontboldtfoot name\"><b>รวมทั้งหมด</b></td>
+              <td class=\"fontboldtfoot qty\">".number_format($total_qty)."</td>
+              <td class=\"fontboldtfoot price\">".number_format($total_cost_price,2,'.',',')."</td>
+              <td class=\"fontboldtfoot price\">".number_format($total_cost_all,2,'.',',')."</td>
+              <td class=\"fontboldtfoot price\">".number_format($total_shipping_per,2,'.',',')."</td>
+              <td class=\"fontboldtfoot price\">".number_format($total_shipping_all,2,'.',',')."</td>
+              <td class=\"fontboldtfoot total\">".number_format($total_expenses,2,'.',',')."</td>
+          </tr>"; 
+$html .= '
+      </tfoot>
     </table>
   </div>
   <b class="footer">รวม</b>
