@@ -32,7 +32,7 @@ function navigationOfiicer($path = ""){
                               <li>
                                 <a href=\"{$path}finance.php\" class=\"text-white pr-0\">
                                     <i class=\"fab fa-bitcoin text-warning\"></i>
-                                    <span>รายรับรายจ่าย</span>
+                                    <span>กำไร / ต้นทุน</span>
                                 </a>
                               </li>
                                       <li>

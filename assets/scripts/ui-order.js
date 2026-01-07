@@ -1373,3 +1373,14 @@ $(document).on("click", "#confirmTrashOrder", function (e) {
     }
   });
 });
+
+class ModelPaymentOrder extends HTMLElement {
+  connectedCallback() {
+    this.renderHtml();
+  }
+  renderHtml() {
+    this.innerHTML = `xxxx`;
+  }
+}
+
+customElements.define("main-payment-order", ModelPaymentOrder);
