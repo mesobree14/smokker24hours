@@ -20,70 +20,95 @@ function navigationOfiicer($path = ""){
                         </li>
                         <li>
                           <a href=\"{$path}index.php\" class=\"text-white\">
-                              <i class=\"fa fa-tachometer-alt text-primary\"></i>
+                              <i class=\"fa fa-tachometer-alt \"></i>
                               <span>หน้าแรก</span>
                           </a>
                         </li>
-                        <li>
-                          <a href=\"{$path}finance.php\" class=\"text-white\">
-                              <i class=\"fab fa-bitcoin text-warning\"></i>
-                              <span>รายรับรายจ่าย</span>
-                          </a>
+                        <li class=\"\">
+                            <a href=\"#PaymentSubmenu\" data-toggle=\"collapse\" aria-expanded=\"false\" class=\"text-white dropdown-toggle\">
+                             <i class=\"fa-solid fa-wallet \"></i>  การเงิน
+                            </a>
+                            <ul class=\"collapse list-unstyled pl-4\" id=\"PaymentSubmenu\">
+                              <li>
+                                <a href=\"{$path}finance.php\" class=\"text-white pr-0\">
+                                    <i class=\"fab fa-bitcoin text-warning\"></i>
+                                    <span>รายรับรายจ่าย</span>
+                                </a>
+                              </li>
+                                      <li>
+                                <a href=\"{$path}resutl_finance.php\" class=\"text-white pr-0\">
+                                    <i class=\"fa-solid fa-comments-dollar text-warning\"></i>
+                                    <span>สรุปการเงิน</span>
+                                </a>
+                              </li>
+                              <li>
+                                <a href=\"{$path}is_profit.php\" class=\"text-white pr-0\">
+                                    <i class=\"fa-solid fa-money-bill-trend-up text-warning\"></i>
+                                    <span>รายรับรายจ่ายราคากลาง</span>
+                                </a>
+                              </li>
+                            </ul>
                         </li>
-                        <li>
-                          <a href=\"{$path}resutl_finance.php\" class=\"text-white\">
-                              <i class=\"fa-solid fa-comments-dollar text-warning\"></i>
-                              <span>สรุปการเงิน</span>
-                          </a>
+                        <li class=\"\">
+                            <a href=\"#ProductSubmenu\" data-toggle=\"collapse\" aria-expanded=\"false\" class=\"text-white dropdown-toggle\">
+                             <i class=\"fa-solid fa-warehouse\"></i>  สินค้า รายการ
+                            </a>
+                            <ul class=\"collapse list-unstyled pl-4\" id=\"ProductSubmenu\">
+                              <li>
+                                <a href=\"{$path}product.php\" class=\"text-white\">
+                                    <i class=\"fa-solid fa-cube text-success\"></i>
+                                    <span>รายการสินค้า</span>
+                                </a>
+                              </li>
+                              <li>
+                                <a href=\"{$path}stock.php\" class=\"text-white\">
+                                    <i class=\"fas fa-store text-success\"></i>
+                                    <span>คลังสินค้า</span>
+                                </a>
+                              </li> 
+                              <li>
+                                <a href=\"{$path}lot.php\" class=\"text-white\">
+                                    <i class=\"fa-solid fa-cubes text-success\"></i>
+                                    <span>สต็อกสินค้า</span>
+                                </a>
+                              </li>
+
+                            </ul>
                         </li>
-                        <li>
-                          <a href=\"{$path}is_profit.php\" class=\"text-white\">
-                              <i class=\"fa-solid fa-money-bill-trend-up text-success\"></i>
-                              <span>รายรับรายจ่ายราคากลาง</span>
+                        <li class=\"\">
+                          <a href=\"#PepleSubmenu\" data-toggle=\"collapse\" aria-expanded=\"false\" class=\"text-white dropdown-toggle\">
+                           <i class=\"fa-solid fa-user-group\"></i>  ผู้คน
                           </a>
+                          <ul class=\"collapse list-unstyled pl-4\" id=\"PepleSubmenu\">
+                            <li>
+                              <a href=\"{$path}peplegroup.php\" class=\"text-white\">
+                                <i class=\"fa-solid fa-users-rectangle text-info\"></i>
+                                  <span>ข้อมูลสมาชิก</span>
+                              </a>
+                            </li>
+                            <li>
+                              <a href=\"{$path}customer.php\" class=\"text-white\">
+                                <i class=\"fa-solid fa-people-group text-info\"></i>
+                                  <span>ข้อมูลลูกค้า</span>
+                              </a>
+                            </li>
+                          </ul>
                         </li>
-                        <li>
-                          <a href=\"{$path}product.php\" class=\"text-white\">
-                              <i class=\"fa-solid fa-cube\"></i>
-                              <span>รายการสินค้า</span>
-                          </a>
-                        </li>
+                        
                         <li>
                           <a href=\"{$path}orders.php\" class=\"text-white\">
                               <i class=\"fa-solid fa-truck\"></i>
                               <span>คำสั่งซื้อ</span>
                           </a>
                         </li>
-                        <li>
-                          <a href=\"{$path}stock.php\" class=\"text-white\">
-                              <i class=\"fas fa-store\"></i>
-                              <span>คลังสินค้า</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href=\"{$path}lot.php\" class=\"text-white\">
-                              <i class=\"fa-solid fa-cubes\"></i>
-                              <span>สต็อกสินค้า</span>
-                          </a>
-                        </li>
+                       
                         <li>
                           <a href=\"{$path}ordersell.php\" class=\"text-white\">
                             <i class=\"fa-solid fa-truck-fast\"></i>
                               <span>สินค้าที่ขาย</span>
                           </a>
                         </li>
-                        <li>
-                          <a href=\"{$path}peplegroup.php\" class=\"text-white\">
-                            <i class=\"fa-solid fa-users-rectangle\"></i>
-                              <span>ข้อมูลสมาชิก</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href=\"{$path}customer.php\" class=\"text-white\">
-                            <i class=\"fa-solid fa-people-group\"></i>
-                              <span>ข้อมูลลูกค้า</span>
-                          </a>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -237,7 +262,7 @@ function tableNameProduct($number,$id_product,$product_name,$price_default,$pric
   echo $list;
 }
 
-function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalcost_order, $price_order, $sliptImg, $date_time_order){
+function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalcost_order, $price_order, $sliptImg, $date_time_order,$pay_times,$paid_total,$balance){
   $listOrder = "
   <form>
     <tr>
@@ -245,8 +270,9 @@ function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalco
       <td class=\"font-weight-bold\">$ordername</td>
       <td class=\"font-weight-bold\">$lot_numbers</td>
       <td class=\"font-weight-bold\">$totalcost_order บาท</td>
-      <td class=\"font-weight-bold\">$price_order รายการ</td> 
-      <td class=\"font-weight-bold\">$date_time_order</td> 
+      <td class=\"font-weight-bold\">$paid_total บาท</td>
+      <td class=\"font-weight-bold\">$balance บาท</td>
+      <td class=\"font-weight-bold\">$pay_times งวด</td>
       <td>
           <div class=\"account-item account-item--style2 clearfix js-item-menu\">
               <div class=\"image\">
@@ -259,6 +285,10 @@ function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalco
             <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"จัดสรรทุน\" href=\"details/detail_orderbuy.php?orderbuy_id=$orderid \">
               <i class=\"fas fa-list-alt\"></i>
             </a>
+            
+            <button type=\"button\" class=\"item\" id=\"payment_order\" data-id=\"$orderid\" data-ordername=\"$ordername\">
+              <i class=\"fa-solid fa-wallet\"></i>
+            </button>
             <button type=\"button\" id=\"update_order\" data-target=\"#modalFormUpdateOrder\" data-toggle=\"modal\"  
                    class=\"item\" data-id=\"$orderid\" data-ordername=\"$ordername\" data-totalcost=\"$totalcost_order\" 
                    data-priceorder=\"$price_order\" data-slipimage=\"$sliptImg\" data-dateorder=\"$date_time_order\" data-lot=\"$lot_numbers\"

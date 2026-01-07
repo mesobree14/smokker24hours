@@ -61,15 +61,33 @@ if(!isset($_SESSION['users_data'])){
                             <th style="">คำสั่งซื้อ</th>
                             <th style="">ล็อตสินค้าที่</th>
                             <th>ค่าใช้จ่าย</th>
-                            <th>รายการสินค้า</th>
-                            <th>วันที่สั่งซื้อ <i class="fa-solid fa-arrow-up"></i></th>
+                            <th>จ่ายแล้ว</th>
+                            <th>คงเหลือ</th>
+                            <th>งวด</th>
+                            <!-- <th>วันที่สั่งซื้อ <i class="fa-solid fa-arrow-up"></i></th> -->
                             <th>สลิปเงินทุน</th>
                             <th>จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            $get_order = mysqli_query($conn, "SELECT * FROM order_box ORDER BY create_at DESC")or die(mysqli_error());
+                            $get_ql = "SELECT 
+                                OB.order_id,OB.order_name,OB.lot_numbers,OB.slip_order,OB.totalcost_order,OB.count_order,OB.date_time_order,
+                                COUNT(PRD.payorder_debtpaid_id) AS pay_times,
+                                COALESCE(SUM(PRD.total_payment), 0) AS paid_total,
+                                (OB.totalcost_order - COALESCE(SUM(PRD.total_payment), 0)) AS balance
+                                FROM order_box OB LEFT JOIN payorder_debtpaid PRD ON OB.order_id = PRD.orders_id 
+                                GROUP BY
+                                  OB.order_id,
+                                  OB.order_name,
+                                  OB.lot_numbers,
+                                  OB.slip_order,
+                                  OB.totalcost_order,
+                                  OB.count_order,
+                                  OB.date_time_order,
+                                  OB.create_at
+                                ORDER BY OB.create_at DESC";
+                            $get_order = mysqli_query($conn, $get_ql)or die(mysqli_error());
                               $result_order = [];
                               while($row = mysqli_fetch_assoc($get_order)){
                                 $result_order[] = $row;
@@ -77,7 +95,7 @@ if(!isset($_SESSION['users_data'])){
                               foreach($result_order as $key => $res){
                                   tablelistsetOrder(
                                       ($key+1), $res['order_id'], $res['order_name'],$res['lot_numbers'],$res['totalcost_order'],$res['count_order'],
-                                      $res['slip_order'],$res['date_time_order']
+                                      $res['slip_order'],$res['date_time_order'],$res['pay_times'],$res['paid_total'],$res['balance'],
                                     );
                               }
                         ?>

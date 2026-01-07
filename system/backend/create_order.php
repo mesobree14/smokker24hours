@@ -57,10 +57,11 @@
 
           $order_name = $_POST['order_name'];
           $lot_number = $_POST['lot_number'];
-          echo $lot_number;
           $totalcost_order = $_POST['totalcost_order'];
           $date_time_order = $_POST['date_time_order'];
           $count_order = count($_POST['product_name']);
+
+          $totalprice_sell = $_POST['totalprice_sell'];
 
           $product_id = $_POST['product_id'];
           $product_name = $_POST['product_name'];
@@ -78,6 +79,10 @@
               $queryOrder = mysqli_query($conn,$insertOrder) or die(mysqli_error($conn));
               if($queryOrder){
                 $id_order = mysqli_insert_id($conn);
+
+                mysqli_query($conn,"INSERT INTO payorder_debtpaid 
+                  (orders_id,total_payment,type_pay,adder_id,create_at)
+                  VALUES ($id_order,$totalprice_sell,'ยังไม่ใช้',$id_user,'$day_add')");
               
               
                   for($i=0; $i< count($product_name); $i++){

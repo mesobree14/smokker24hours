@@ -531,16 +531,23 @@ class modelCreateOrder extends HTMLElement {
                       </div>
 
                       <div class="col-md-12 row">
-                        <div class="col-md-7">
+                        <div class="col-md-4">
+                          <div class="form-group text-center">
+                            <label class="mt-0 mb-0 font-weight-bold text-dark align-self-center mt-4 text-center"> <span id="funds_that_can_be_used"></span> บาท</label>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
                           <div class="form-group mb-2">
-                            <label class="mt-0 mb-0 font-weight-bold text-dark">ค่าใช้จ่ายทั้งหมด</label>
+                            <label class="mt-0 mb-0 font-weight-bold text-dark">ค่าใช้จ่ายทั้งหมด /THA</label>
                             <input type="text" class="form-control" name="totalcost_order" id="totalcost_order" placeholder="ค่าใช้จ่าย" required>
                           </div> 
                         </div>
-                        <div class="col-md-5">
-                          <div class="form-group">
-                            <label class="mt-0 mb-0 font-weight-bold text-dark align-self-center mt-4">บาท <span id="funds_that_can_be_used"></span></label>
-                          </div>
+                        
+                        <div class="col-md-4">
+                          <div class="form-group mb-2">
+                            <label class="mt-0 mb-0 font-weight-bold text-dark">จำนวนเงินที่ต้องการจ่าย /THA</label>
+                            <input type="text" class="form-control" name="totalprice_sell" id="totalprice_sell" placeholder="จำนวนเงินที่ต้องการจ่าย" required>
+                          </div> 
                         </div>
                       </div>
                       <div class="col-md-12">
