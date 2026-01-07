@@ -3,8 +3,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $lot_number = $_POST['lot_number'];
-$start_date = date("Y-m-d H:i:s", strtotime($_POST['start_date']));//$_POST['start_date'] ?? date('Y-m-01');
-$end_date =  date("Y-m-d H:i:s", strtotime($_POST['end_date']));//$_POST['end_date'] ?? date('Y-m-d');
+$start_date = date("Y-m-d", strtotime($_POST['start_date']));//$_POST['start_date'] ?? date('Y-m-01');
+$end_date =  date("Y-m-d", strtotime($_POST['end_date']));//$_POST['end_date'] ?? date('Y-m-d');
+$startDateFilter = DateTime::createFromFormat('Y-m-d', $start_date)->format('Y-m-d 00:00:00');
+$endDateFilter   = DateTime::createFromFormat('Y-m-d', $end_date)->format('Y-m-d 23:59:59');
 
 
 
@@ -144,7 +146,7 @@ $html .='
     <div style="float: left; width: 100%;">
       <h2 style="text-align: left;">รายการในสต็อก('.$lot_number.')</h2>
       <div style="display:flex;width:100%;">
-        ข้อมูลระหว่างวันที่ '.$start_date.' ถึง '.$end_date.'
+        ข้อมูลระหว่างวันที่ '.$startDateFilter.' ถึง '.$endDateFilter.'
       </div>
     </div>
         <div style="width:100%">
@@ -328,7 +330,7 @@ $html .='
                       $saleDate = $sale['date']; // format Y-m-d H:i:s อยู่แล้ว
                   
                       // ตรวจสอบว่าตกช่วง start–end
-                      if ($saleDate >= $start_date && $saleDate <= $end_date) {
+                      if ($saleDate >= $startDateFilter && $saleDate <= $endDateFilter) {
                         $counts_sellsuccess += $sale['qty'];
                           $filteredSales[] = $sale;
                       }

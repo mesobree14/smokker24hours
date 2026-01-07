@@ -43,8 +43,10 @@ if ($conn->connect_error) {
 
 $inputStart = $_POST['start_date'];
 $inputEnd = $_POST['end_date'];
-$startDateFilter = str_replace("T", " ", $inputStart) . ":00";
-$endDateFilter   = str_replace("T", " ", $inputEnd) . ":00";
+//$startDateFilter = str_replace("T", " ", $inputStart) . ":00";
+//$endDateFilter   = str_replace("T", " ", $inputEnd) . ":00";
+$startDateFilter = DateTime::createFromFormat('Y-m-d', $inputStart)->format('Y-m-d 00:00:00');
+$endDateFilter   = DateTime::createFromFormat('Y-m-d', $inputEnd)->format('Y-m-d 23:59:59');
 
 $html = '
  <style>

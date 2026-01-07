@@ -39,10 +39,20 @@ $day_add = date('Y-m-d H:i:s');
 $conn = new mysqli("localhost", "root", "", "smokker_stock");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
+} 
 
 $start_date = $_POST['start_date'];
 $end_date = $_POST['end_date'];
+echo $start_date ."<br/>";
+echo $end_date ."<br/>";
+echo "<hr/><br/>";
+
+$set_start = DateTime::createFromFormat('Y-m-d', $start_date)->format('Y-m-d 00:00:00');
+$set_end   = DateTime::createFromFormat('Y-m-d', $end_date)->format('Y-m-d 23:59:59');
+
+echo $set_start ."<br/>";
+echo $set_end ."<br/>";
+
 
 $sql = "SELECT SP.product_name,NP.product_name AS get_productname,
   SUM(SP.price_center * SP.product_count) / SUM(SP.product_count) AS avg_price_center,
@@ -54,7 +64,7 @@ $sql = "SELECT SP.product_name,NP.product_name AS get_productname,
  FROM stock_product SP LEFT JOIN name_product NP ON SP.product_name = NP.id_name LEFT JOIN (
  SELECT productname, SUM(tatol_product) AS tatol_product, SUM(price_to_pay) AS price_to_pay FROM list_productsell 
  LEFT JOIN orders_sell ON orders_sell.id_ordersell = list_productsell.ordersell_id
- WHERE orders_sell.date_time_sell BETWEEN '$start_date' AND '$end_date' GROUP BY productname) PS 
+ WHERE orders_sell.date_time_sell BETWEEN '$set_start' AND '$set_end' GROUP BY productname) PS 
  ON SP.product_name = PS.productname GROUP BY SP.product_name ORDER BY NP.product_name ASC";
  $selectStockProduct = $conn->query($sql);
 
@@ -106,7 +116,7 @@ $html = '
 
 <h2>รายการสินค้า</h2>
 <div style="display:flex;width:100%;">
-  ข้อมูลระหว่างวันที่ '.$start_date.' ถึง '.$end_date.'
+  ข้อมูลระหว่างวันที่ '.$set_start.' ถึง '.$set_end.'
 </div>
 <div style="width:100%;">
   <table class="slip-table">
