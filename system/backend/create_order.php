@@ -311,10 +311,24 @@
 
                   $tableHtml .= '
                     </tbody>
-                  </table>';
+                  </table>
+                  <div style="margin-top:15px;text-align:right">
+                    <button id="btnPrintPdf" 
+                      style="padding:8px 15px;background:#3085d6;color:#fff;border:none;border-radius:4px;cursor:pointer">
+                      📄 ส่งข้อมูลไปพิมพ์ PDF
+                    </button>
+                  </div>
+                  ';
+                  $_SESSION['check_secc_count_order'] = $check_secc_count_order;
 
                   echo "
                     <script>
+                    document.addEventListener('click', function(e){
+                        if(e.target && e.target.id === 'btnPrintPdf'){
+                            window.location.href = 'PDF_Payorderlist.php';
+                        }
+                    });
+
                     Swal.fire({
                         icon: 'success',
                         title: 'รายละเอียดการชำระเงิน',
