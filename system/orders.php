@@ -35,7 +35,7 @@ if(!isset($_SESSION['users_data'])){
     <main class="page-content mt-0">
       <?php navbar("คำสั่งซื้อ"); ?>
       <div class="container-fluid row">
-        <a class="ml-auto px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_orderby_all.php" target="_blank">
+        <a class="px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_orderby_all.php" target="_blank">
                 <i class="fas fa-file-code px-2"></i> PDF
           </a>
         <a class=" px-4 mx-4 py-1 w-22 btn-print" href="details/PDF/PDF_stockbuy_all.php" target="_blank">
@@ -44,7 +44,13 @@ if(!isset($_SESSION['users_data'])){
           <a class=" px-4 mx-4 py-1 w-22 btn-print" href="" target="_blank">
                 <i class="fas fa-file-code px-2"></i> PDF สิ้นค้า ระบุวัน
           </a>
-          <div class="">
+          <div class="ml-auto flex">
+            <button class="bd-none au-btn au-btn-icon au-btn-orange au-btn--small" data-toggle="modal" 
+                data-target="#modalFormPayDebtOrder"
+            >
+                <i class="fa-solid fa-wallet"></i>
+                  จ่ายงวดที่ค้าง
+            </button>
             <button class="bd-none au-btn au-btn-icon au-btn--green au-btn--small" data-toggle="modal" 
                 data-target="#modalFormCreateOrder"
             >
@@ -107,6 +113,7 @@ if(!isset($_SESSION['users_data'])){
       </div>
       <main-create-order></main-create-order>
       <main-update-order></main-update-order>
+      <main-payment-order></main-payment-order>
     </main>
   </div>
   <script src="../assets/scripts/ui-order.js"></script>

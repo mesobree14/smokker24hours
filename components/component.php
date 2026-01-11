@@ -269,9 +269,9 @@ function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalco
       <td>$number</td>
       <td class=\"font-weight-bold\">$ordername</td>
       <td class=\"font-weight-bold\">$lot_numbers</td>
-      <td class=\"font-weight-bold\">$totalcost_order บาท</td>
-      <td class=\"font-weight-bold\">$paid_total บาท</td>
-      <td class=\"font-weight-bold\">$balance บาท</td>
+      <td class=\"font-weight-bold\">".number_format($totalcost_order ?? 0,2,'.',',')." บาท</td>
+      <td class=\"font-weight-bold\">".number_format($paid_total ?? 0,2,'.',',')." บาท</td>
+      <td class=\"font-weight-bold\">".number_format($balance ?? 0,2,'.',',')." บาท</td>
       <td class=\"font-weight-bold\">$pay_times งวด</td>
       <td>
           <div class=\"account-item account-item--style2 clearfix js-item-menu\">
@@ -337,12 +337,12 @@ function tableDetailStock($number, $product_id,$id_nameproduct,$is_product_name,
               <td class=\"font-weight-bold\">$number</td>
               <td class=\"font-weight-bold\">$is_product_name</td>
               <td class=\"font-weight-bold\">$lot_numbers</td>
-              <td class=\"font-weight-bold\">$productprice บาท</td>
-              <td class=\"font-weight-bold\">$price_center บาท</td>
-              <td class=\"font-weight-bold\">$productcount ลัง</td>
-              <td class=\"font-weight-bold\">$toal_all บาท</td> 
-              <td class=\"font-weight-bold\">$shipping_cost บาท</td> 
-              <td class=\"font-weight-bold\">$expenses บาท</td> 
+              <td class=\"font-weight-bold\">".number_format($productprice ?? 0,2,'.',',')." บาท</td>
+              <td class=\"font-weight-bold\">".number_format($price_center ?? 0,2,'.',',')." บาท</td>
+              <td class=\"font-weight-bold\">".number_format($productcount ?? 0)." ลัง</td>
+              <td class=\"font-weight-bold\">".number_format($toal_all ?? 0,2,'.',',')." บาท</td> 
+              <td class=\"font-weight-bold\">".number_format($shipping_cost ?? 0,2,'.',',')." บาท</td> 
+              <td class=\"font-weight-bold\">".number_format($expenses ?? 0,2,'.',',')." บาท</td> 
               <td class=\"font-weight-bold\">$datetime_order</td> 
             </tr>
         </form>
@@ -373,8 +373,8 @@ function tableDetailStockSell($number, $product_id,$productname,$ordername, $pro
               <td class=\"font-weight-bold\">$productname</td>
               <td class=\"font-weight-bold\">$ordername</td>
               <td class=\"font-weight-bold\">". typecustomse($rate_custom) ."</td> 
-              <td class=\"font-weight-bold\">$productprice บาท</td> 
-              <td class=\"font-weight-bold\">$productcount ลัง</td> 
+              <td class=\"font-weight-bold\">".number_format($productprice ?? 0,2,'.',',')." บาท</td> 
+              <td class=\"font-weight-bold\">".number_format($productcount ?? 0)." ลัง</td> 
               <td class=\"font-weight-bold\">$toal_all</td> 
               <td class=\"font-weight-bold\">$datetime_order</td> 
             </tr>
@@ -487,11 +487,11 @@ function listOrderSell($number, $ordersell_id, $ordersell_name,$count_item, $pri
         <td class=\"font-weight-bold \"> $number</td>
         <td class=\"font-weight-bold\">$ordersell_name</td>
         <td class=\"font-weight-bold\">$count_item รายการ</td> 
-        <td class=\"font-weight-bold\">$price_total บาท</td> 
-        <td class=\"font-weight-bold\">$sum_amount_paid บาท</td> 
+        <td class=\"font-weight-bold\">".number_format($price_total ?? 0,2,'.',',')." บาท</td> 
+        <td class=\"font-weight-bold\">".number_format($sum_amount_paid ?? 0,2,'.',',')." บาท</td> 
         <td class=\"font-weight-bold\">$customer_name</td> 
         <td class=\"font-weight-bold\">$list_typepays</td> 
-        <td class=\"font-weight-bold\">$date_sell</td> 
+        
         <td class='text-center'>
             <div class=\"table-data-feature\" >
               <a class=\"item\" data-toggle=\"tootip\" data-placement=\"top\" title=\"จัดสรรทุน\" href=\"details/detail_ordersell.php?ordersell_id=".$ordersell_id." \">

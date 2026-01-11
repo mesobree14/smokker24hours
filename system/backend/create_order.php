@@ -54,23 +54,24 @@
         
           $issucess = false;
           $countInsert = 0; 
+          if($_POST['status_form'] != "PayInstallments"){
+            $order_name = $_POST['order_name'];
+            $lot_number = $_POST['lot_number'];
+            $totalcost_order = $_POST['totalcost_order'];
+            $date_time_order = $_POST['date_time_order'];
+            $count_order = count($_POST['product_name']);
 
-          $order_name = $_POST['order_name'];
-          $lot_number = $_POST['lot_number'];
-          $totalcost_order = $_POST['totalcost_order'];
-          $date_time_order = $_POST['date_time_order'];
-          $count_order = count($_POST['product_name']);
+            $totalprice_sell = $_POST['totalprice_sell'];
 
-          $totalprice_sell = $_POST['totalprice_sell'];
-
-          $product_id = $_POST['product_id'];
-          $product_name = $_POST['product_name'];
-          $count_product = $_POST['count_product'];
-          $price_center = $_POST['price_center'];
-          $price_product = $_POST['price_product'];
-          $count_cord = $_POST['count_cord'];
-          $shipping_cost = $_POST['shipping_cost'];
-          $expenses = $_POST['expenses'];
+            $product_id = $_POST['product_id'];
+            $product_name = $_POST['product_name'];
+            $count_product = $_POST['count_product'];
+            $price_center = $_POST['price_center'];
+            $price_product = $_POST['price_product'];
+            $count_cord = $_POST['count_cord'];
+            $shipping_cost = $_POST['shipping_cost'];
+            $expenses = $_POST['expenses'];
+          }
           if($_POST['status_form'] == "create"){
 
 
@@ -81,8 +82,8 @@
                 $id_order = mysqli_insert_id($conn);
 
                 mysqli_query($conn,"INSERT INTO payorder_debtpaid 
-                  (orders_id,total_payment,type_pay,adder_id,create_at)
-                  VALUES ($id_order,$totalprice_sell,'ยังไม่ใช้',$id_user,'$day_add')");
+                  (orders_id,total_payment,type_pay,slip,adder_id,create_at)
+                  VALUES ($id_order,$totalprice_sell,'ยังไม่ใช้','n',$id_user,'$day_add')");
               
               
                   for($i=0; $i< count($product_name); $i++){
@@ -133,6 +134,9 @@
             }
               $query_update = mysqli_query($conn,$update_order) or die(mysqli_error($conn));
             if($query_update){
+              mysqli_query($conn,"INSERT INTO payorder_debtpaid 
+                  (orders_id,total_payment,type_pay,slip,adder_id,create_at)
+                  VALUES ($order_id,$totalprice_sell,'ยังไม่ใช้','n',$id_user,'$day_add')");
               if(isset($_FILES['order_Slip']) && $_FILES['order_Slip']['error'] == 0){
                 unlink(__DIR__  . '/../../db/slip-orders/' . $default_img);
               }
@@ -219,6 +223,109 @@
               </script>";
               exit;
             }
+          }elseif($_POST['status_form'] == "PayInstallments"){
+
+              $is_order_id = $_POST['is_order_id'];
+              $count_paydebt = $_POST['count_paydebt'];
+              $payment_option = $_POST['payment_option'];
+
+              $remaining = $count_paydebt;
+              $check_secc_count_order = [];
+              foreach($is_order_id as $key => $val){
+                list($idorder, $price, $lot) = explode("|",$val);
+                if($remaining <= 0){
+                  $paid = 0;
+                }elseif($remaining >= $price){
+                  $paid = $price;
+                  $remaining -= $price;
+                }else{
+                  $paid = $remaining;
+                  $remaining = 0;
+                }
+                $staus = ($paid == $price) ? 'ครบถ้วน' : 'จ่ายไม่ครบ';
+                
+                if($paid != 0){
+                  $insertPay = "INSERT INTO payorder_debtpaid 
+                  (orders_id,total_payment,type_pay,slip,adder_id,create_at)
+                  VALUES ($idorder,$paid,'ยังไม่ใช้','n',$id_user,'$day_add')";
+                  $query_pay = mysqli_query($conn,$insertPay) or die(mysqli_error($conn));
+                    if($query_pay){
+                      $check_secc_count_order[] = [
+                        'lot'=>$lot,
+                        'status'=>'บันทึกเรียบร้อย',
+                        'price' => $price,
+                        'pay' => $paid,
+                        'balance' => $price - $paid,
+                      ];
+                    }else{
+                      $check_secc_count_order[] = [
+                        'lot'=>$lot,
+                        'status'=>'error',
+                        'price' => $price,
+                        'pay' => $paid,
+                        'balance' => $price - $paid,
+                      ];
+                    }
+                }else{
+                    $check_secc_count_order[] = [
+                    'lot'=>$lot,
+                    'status'=>'ไม่บันทึก ค่าใช้จ่ายไม่พอ',
+                    'price' => $price,
+                    'pay' => $paid,
+                    'balance' => $price - $paid,
+                  ];
+                }
+
+              }
+                              $tableHtml = '
+                  <table border="1" width="100%" style="border-collapse:collapse;text-align:center">
+                    <thead>
+                      <tr style="background:#f1f1f1">
+                        <th>Lot</th>
+                        <th>ยอดทั้งหมด</th>
+                        <th>ยอดที่จ่าย</th>
+                        <th>คงเหลือ</th>
+                        <th>สถานะ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  ';
+
+                  foreach ($check_secc_count_order as $row) {
+
+                      // $statusText = match ($row['status']) {
+                      //     'success' => '✅ success',
+                      //     'error' => '❌ error',
+                      //     default => '⚠️ not insert'
+                      // };
+
+                      $tableHtml .= "
+                      <tr>
+                        <td>{$row['lot']}</td>
+                        <td>".number_format($row['price'],2)."</td>
+                        <td>".number_format($row['pay'],2)."</td>
+                        <td>".number_format($row['balance'],2)."</td>
+                        <td>{$row['status']}</td>
+                      </tr>";
+                  }
+
+                  $tableHtml .= '
+                    </tbody>
+                  </table>';
+
+                  echo "
+                    <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'รายละเอียดการชำระเงิน',
+                        width: 700,
+                        html: ".json_encode($tableHtml).",
+                        confirmButtonText: 'ตกลง'
+                    }).then(() => {
+                        window.location.href = '../orders.php';
+                    });
+                    </script>
+                    ";
           }
         
       }

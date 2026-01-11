@@ -1375,11 +1375,195 @@ $(document).on("click", "#confirmTrashOrder", function (e) {
 });
 
 class ModelPaymentOrder extends HTMLElement {
-  connectedCallback() {
+  async connectedCallback() {
     this.renderHtml();
+    await this.getApiPaymentOrdering();
+  }
+  async getApiPaymentOrdering() {
+    let total_order = document.getElementById("total_order");
+    let SelectedItem = document.getElementById("SelectedItem");
+    let buttom_issubmit = document.getElementById("buttom_issubmit");
+    let message_dis = document.getElementById("message_dis");
+
+    let count_paydebt = document.getElementById("count_paydebt");
+    let count_debt = document.getElementById("count_debt");
+    let debtpaid_balance = document.getElementById("debtpaid_balance");
+    count_paydebt.disabled = true;
+    const hiddenCountOrdersell = document.getElementById(
+      "hidden-count-ordersell"
+    );
+    hiddenCountOrdersell.innerHTML = "";
+    const $seleted = $("#Is_orders_id");
+    try {
+      const response = await fetch(
+        `http://localhost/smokker24hours/system/backend/api/api_payordering.php`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const responsedata = await response.json();
+      count_debt.innerHTML = responsedata.outstandingAmount.toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      );
+      const optionData = responsedata.data.map((item) => ({
+        id: item.order_id,
+        lot_numbers: item.lot_numbers,
+        totalcost_order: item.totalcost_order, //ราคาทั้งหมด
+        paid_total: item.paid_total, //จ่ายแล้ว
+        balance: item.balance, // คงเหลือ
+      }));
+      $seleted.multipleSelect("uncheckAll");
+      $seleted.empty();
+
+      optionData.forEach((item) => {
+        $seleted.append(
+          `<option value="${item.id}|${item.balance}|${
+            item.lot_numbers
+          }" data-text="${item.lot_numbers}" data-amount="${item.balance}" ${
+            Number(item.balance) === 0 ? "disabled" : ""
+          }>
+            ${
+              item.lot_numbers
+            } <span class="text-danger font-weight-bold">(ค้าง:${Number(
+            item.balance
+          ).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })} บาท )</span>
+          </option>`
+        );
+      });
+      $seleted.multipleSelect("refresh");
+
+      $seleted.change(function () {
+        var result = $(this).multipleSelect("getSelects");
+        let datas = [];
+        let responses = 0;
+        result.map((id) => {
+          let inputs = document.createElement("input");
+          inputs.type = "hidden";
+          inputs.name = "priceordersell[]";
+
+          hiddenCountOrdersell.appendChild(inputs);
+          let text = $(this).find(`option[value="${id}"]`).data("text");
+          let amount = $(this).find(`option[value="${id}"]`).data("amount");
+          datas.push(amount);
+          console.log({ datas });
+          responses += Number(amount);
+          inputs.value = amount;
+          return text;
+        });
+        SelectedItem.textContent = `จำนวนที่ต้องจ่าย ${responses.toLocaleString(
+          "en-US",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        )} บ.`;
+
+        total_order.textContent = `${result.length} รายการ`;
+        if (datas.length > 0) {
+          count_paydebt.disabled = false;
+          buttom_issubmit.disabled = false;
+        } else {
+          count_paydebt.disabled = true;
+          buttom_issubmit.disabled = true;
+        }
+        count_paydebt.addEventListener("input", function () {
+          let result =
+            Number(count_debt.textContent) - Number(count_paydebt.value);
+          console.log({ result, x: count_debt.textContent });
+          debtpaid_balance.value = result;
+          if (responses === Number(count_paydebt.value)) {
+            count_paydebt.classList.add("input-border-success");
+            count_paydebt.classList.remove("input-border-danger");
+          } else {
+            count_paydebt.classList.add("input-border-danger");
+            count_paydebt.classList.remove("input-border-success");
+          }
+          if (Number(count_paydebt.value) > responses) {
+            buttom_issubmit.disabled = true;
+            message_dis.textContent = `ห้ามจ่ายเกิน ${responses} บาท`;
+          } else {
+            buttom_issubmit.disabled = false;
+            message_dis.textContent = "";
+          }
+          //debtpaid_balance_html.textContent = `เหลืออีก ${result} บาท`;
+        });
+      });
+    } catch (e) {
+      throw new Error(`Is Error : ${e}`);
+    }
   }
   renderHtml() {
-    this.innerHTML = `xxxx`;
+    this.innerHTML = `
+      <div class="modal fade bd-example-modal-xl" id="modalFormPayDebtOrder" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+          <div class="modal-content" id="">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มการจ่ายงวดที่ติดค้างจากคำส่งซื้อ</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="myFormCustom" action="backend/create_order.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="status_form" value="PayInstallments" />
+              <input type="hidden" name="type_page" id="type_page"/>
+              <input type="hidden" name="debtpaid_balance" id="debtpaid_balance" />
+              <div class="modal-body">
+                <div class="modal-body">
+                    <div class="col-md-12 row mb-3">
+                      <div class="col-md-7 row py-2">
+                        <span class=" text-primary font-weight-bold">จำนวนเงินค้างที่เหลืออยู่ <span id="count_debt"></span> บาท</span>
+                      </div>
+                      <div class="col-md-5"></div>
+                      <div class="col-md-9">
+                        <label class="mt-0 mb-0 font-weight-bold text-dark">เลือกรายการที่ต้องการจ่าย <span class="text-danger">*</span></label>
+                          <select class="form-control multiple-select" name="is_order_id[]" id="Is_orders_id" placeholder="เลือกรายการที่ต้องการจ่าย" multiple="multiple" required></select>
+                          <div id="hidden-count-ordersell"></div>
+                      </div>
+                      <div class="col-md-3">
+                          <label class="mt-0 mb-0 font-weight-bold text-dark">รายการที่เลือก</label>
+                          <div class="form-control py-2">
+                            <span id="total_order" class="py-1">0 รายการ</span>
+                          </div>
+                      </div>
+                      <div class="col-md-12 mt-3">
+                        <div class="form-group mb-2">
+                          <label class="mt-0 mb-0 font-weight-bold text-dark">จำนวนเงินที่ต้องการจ่าย / .บ  <span id="SelectedItem" class="text-success"></span></label>
+                          <input type="text" class="form-control" name="count_paydebt" id="count_paydebt" placeholder="จำนวนเงิน" required>
+                        </div>  
+                      </div>
+                      <div class="col-md-7">
+                          <label class="mt-0 mb-0 font-weight-bold text-dark">ตัวเลือกการจ่าย <span class="text-danger">*</span></label>
+                          <select class="form-control" name="payment_option" id="payment_options" placeholder="ตัวเลือกการจ่าย" required>
+                            <option value="โอน">โอน</option>
+                            <option value="จ่ายสด">จ่ายสด</option>
+                          </select>
+                      </div>
+                      <div class="col-md-5">
+                          <mian-add-image id="slip_payoffdebt" count="payoffdebt_slip" wrapper="ux-wrap" filenames="uimgname" cancles="ux-cancle"
+                            names="หลักฐานโอนเงิน" custom="btn_payoffdebt" setdefault="setDefaultImgCapital"></mian-add-image>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <div class="row w-100">
+                    <div class="ml-auto d-flex align-items-center px-4 text-danger font-bold" id="message_dis"></div>
+                    <button type="submit" class="btn btn-primary mr-4 border" id="buttom_issubmit">บันทึกข้อมูล</button>
+                  </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
   }
 }
 
