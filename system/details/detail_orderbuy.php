@@ -15,12 +15,30 @@ if(!isset($_SESSION['users_data'])){
           </script>
       ";
 }
-$sql = mysqli_query($conn,"SELECT * FROM order_box WHERE order_id=$ordersell_id") or die(mysqli_error($conn));
+
+$select_orders = "SELECT 
+    OB.order_id,
+    OB.order_name,
+    OB.lot_numbers,
+    OB.slip_order,
+    OB.totalcost_order,
+    OB.count_order,
+    OB.id_adder,
+    OB.date_time_order,
+    COUNT(PRD.payorder_debtpaid_id) AS pay_times,
+    COALESCE(SUM(PRD.total_payment),0) AS paid_total,
+    (OB.totalcost_order - COALESCE(SUM(PRD.total_payment),0)) AS balance
+
+FROM order_box OB
+LEFT JOIN payorder_debtpaid PRD 
+    ON OB.order_id = PRD.orders_id
+
+WHERE OB.order_id = $ordersell_id
+GROUP BY OB.order_id";
+$sql = mysqli_query($conn,$select_orders) or die(mysqli_error($conn));
 $row_sql = mysqli_fetch_assoc($sql);
 $count = mysqli_query($conn,"SELECT COUNT(*) AS totals, SUM(product_count) AS counts,SUM(count_cord) AS count_cord FROM stock_product WHERE id_order=$ordersell_id") or die(mysqli_error($conn));
 $row_count = mysqli_fetch_assoc($count);
-$total_item = $row_count['totals'];
-$total_price = $row_count['counts'];
 
 ?>
 <!DOCTYPE html>
@@ -40,11 +58,11 @@ $total_price = $row_count['counts'];
   <div class="page-wrapper chiller-theme toggled">
       <?php  navigationOfiicer("../"); ?>
        <main class="page-content mt-0">
-      <?php navbar("รายละเอียดคำสั่งซื้อ / ".$row_sql['order_name']."", "../"); ?>
+      <?php navbar("รายละเอียดคำสั่งซื้อ / ".$row_sql['lot_numbers']."", "../"); ?>
       <div class="container-fluid row">
           <div class="col-md-12 mt-4 card shadow-lg rounded">
             <?php listDetailOrderBuy(
-                  $row_sql['order_id'], $row_sql['order_name'], $row_sql['totalcost_order'],$row_sql['date_time_order'],
+                  $row_sql['order_id'], $row_sql['lot_numbers'], $row_sql['totalcost_order'],$row_sql['date_time_order'],
                   $row_sql['slip_order'],$row_count['totals'],$row_count['counts'],$row_count['count_cord']
                   ) ?>
           </div>

@@ -71,7 +71,7 @@ if(!isset($_SESSION['users_data'])){
                             <th>คงเหลือ</th>
                             <th>งวด</th>
                             <!-- <th>วันที่สั่งซื้อ <i class="fa-solid fa-arrow-up"></i></th> -->
-                            <th>สลิปเงินทุน</th>
+                            <th>สลิป</th>
                             <th>จัดการ</th>
                         </tr>
                     </thead>
