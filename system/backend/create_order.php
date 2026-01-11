@@ -319,7 +319,7 @@
                     </button>
                   </div>
                   ';
-                  $_SESSION['check_secc_count_order'] = $check_secc_count_order;
+                  //$_SESSION['check_secc_count_order'] = $check_secc_count_order;
 
                   echo "
                     <script>
