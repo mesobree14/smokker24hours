@@ -4,7 +4,7 @@ session_name("session_smokker");
 include_once("../../backend/config.php");
 include_once("../../link/link-2.php");
 include_once("../../components/component.php");
-$lot_number = $_GET['lot_number'];
+$lot_number =  $_GET['lot_number'];
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
 if(!isset($_SESSION['users_data'])){
@@ -77,7 +77,7 @@ if(!isset($_SESSION['users_data'])){
                       $productsInLot[] = $r;
                   }
                   $stmt->close();
-                  echo "<pre>".print_r($productsInLot)."</pre>";
+                  // echo "<pre>".print_r($productsInLot)."</pre>";
                 
               // Prepare statement to get total sold for a product
                   $get_total_sold_sql = "SELECT 
@@ -120,9 +120,9 @@ if(!isset($_SESSION['users_data'])){
                 foreach ($productsInLot as $key => $stock) {
                   $row_id = intval($stock['product_id']); 
                   $p_idname = $stock['product_name'];        // key to match sales
-                  echo "isD: ";
-                  echo $p_idname;
-                  echo "<br/>";
+                  //echo "isD: ";
+                  //echo $p_idname;
+                  //echo "<br/>";
                   $p_name = $stock['in_productname'];
                   $p_id = $stock['product_id'];
                   $lotQty = intval($stock['product_count']);
@@ -200,8 +200,8 @@ if(!isset($_SESSION['users_data'])){
 
                   }
 
-$inputStart = "2025-11-09T00:00"; //2025-10-30 09:20:00
-$inputEnd   = "2025-11-27T00:00";
+$inputStart = "2026-01-01T00:00"; //2025-10-30 09:20:00
+$inputEnd   = "2026-01-31T20:00";
 
 // แปลง T → space และเติม :00 ถ้าไม่มี
 $startDateFilter = str_replace("T", " ", $inputStart) . ":00";

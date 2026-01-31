@@ -289,6 +289,7 @@ function tablelistsetOrder ($number, $orderid, $ordername,$lot_numbers, $totalco
             <button type=\"button\" id=\"update_order\" data-target=\"#modalFormUpdateOrder\" data-toggle=\"modal\"  
                    class=\"item\" data-id=\"$orderid\" data-ordername=\"$ordername\" data-totalcost=\"$totalcost_order\" 
                    data-priceorder=\"$price_order\" data-slipimage=\"$sliptImg\" data-dateorder=\"$date_time_order\" data-lot=\"$lot_numbers\"
+                   data-paidtotal=\"$paid_total\" data-balance=\"$balance\"
             >
                 <i class=\"fas fa-pencil-alt text-warning\"></i>
             </button>

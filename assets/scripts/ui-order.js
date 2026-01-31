@@ -198,7 +198,7 @@ class modelCreateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
       const response = await api_finance.json();
       this.financedata.push(response.data);
@@ -230,7 +230,7 @@ class modelCreateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
       const response = await api_data.json();
       this.stockproducts.push(...response.data);
@@ -246,7 +246,7 @@ class modelCreateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
       const responsedata = await api_lotcode.json();
       console.log({ lot: responsedata });
@@ -273,7 +273,7 @@ class modelCreateOrder extends HTMLElement {
     let selectedData = group.querySelector(`.IsselectedData-${index}`);
     let selectId = group.querySelector(`.IsSelectId-${index}`);
     let customInputContainer = group.querySelector(
-      `.IscustomInputContainer-${index}`
+      `.IscustomInputContainer-${index}`,
     );
     const ul = group.querySelector("ul");
     //code
@@ -283,7 +283,7 @@ class modelCreateOrder extends HTMLElement {
       li.classList.remove("selected");
     }
     const clickedLi = [...ul.children].find(
-      (li) => li.innerText === data_product
+      (li) => li.innerText === data_product,
     );
     if (clickedLi) clickedLi.classList.add("selected");
     customInputContainer.classList.toggle("show");
@@ -388,7 +388,7 @@ class modelCreateOrder extends HTMLElement {
         serchInput.addEventListener("keyup", () => {
           let searchedVal = serchInput.value.toLowerCase();
           let searched_product = this.stockproducts.filter((data) =>
-            data.product_name.toLowerCase().includes(searchedVal)
+            data.product_name.toLowerCase().includes(searchedVal),
           );
           ul.innerHTML = "";
           if (searched_product.length === 0) {
@@ -431,13 +431,13 @@ class modelCreateOrder extends HTMLElement {
           //price_product.value = Number((expenses.value / value).toFixed(2));
           count_cord.value = Number(value * Number(is_countcord.textContent));
           shippingcost.value = Number(
-            value * Number(is_shipping.textContent)
+            value * Number(is_shipping.textContent),
           ).toFixed(2);
           expenses.value =
             Number((price_product.value * value).toFixed(2)) +
             Number(shippingcost.value);
           res_expenses.textContent = `สินค้า(${Number(
-            (price_product.value * value).toFixed(2)
+            (price_product.value * value).toFixed(2),
           )}) + ค่าส่ง(${Number(shippingcost.value).toFixed(2)})`;
           createGrandTotal(this.financedata);
         });
@@ -448,7 +448,7 @@ class modelCreateOrder extends HTMLElement {
             Number((count_product.value * value).toFixed(2)) +
             Number(shippingcost.value);
           res_expenses.textContent = `สินค้า(${Number(
-            (count_product.value * value).toFixed(2)
+            (count_product.value * value).toFixed(2),
           )}) + ค่าส่ง(${Number(shippingcost.value).toFixed(2)})`;
           createGrandTotal(this.financedata);
         });
@@ -458,7 +458,7 @@ class modelCreateOrder extends HTMLElement {
             Number((count_product.value * price_product.value).toFixed(2)) +
             Number(value);
           res_expenses.textContent = `สินค้า(${Number(
-            (count_product.value * price_product.value).toFixed(2)
+            (count_product.value * price_product.value).toFixed(2),
           )}) + ค่าส่ง(${Number(shippingcost.value).toFixed(2)})`;
         });
 
@@ -466,7 +466,7 @@ class modelCreateOrder extends HTMLElement {
           let value =
             Number(e.target.value) - Number(shippingcost.value).toFixed(2);
           price_product.value = Number(
-            (value / count_product.value).toFixed(2)
+            (value / count_product.value).toFixed(2),
           );
           createGrandTotal(this.financedata);
         });
@@ -499,7 +499,7 @@ class modelCreateOrder extends HTMLElement {
     //is_expenses.id = `is_expenses-${indexs}`;
     is_shipping.id = `is_shipping-${indexs}`;
     let dataproduct = this.stockproducts.filter((data) =>
-      data.id_name.toLowerCase().includes(idProductName.toLowerCase())
+      data.id_name.toLowerCase().includes(idProductName.toLowerCase()),
     );
     price_product.value = dataproduct[0].price;
     price_center.value = dataproduct[0].price_center;
@@ -719,10 +719,16 @@ const updateGrandTotal = (capital = []) => {
 
   if (del > Number(capital[0].funds_that_can_be_used.replace(/[^\d.-]/g, ""))) {
     valueInput.style.color = "red";
-    valueInput.textContent = `เพิ่มมา ${del} บาท เกินงบ`;
+    valueInput.textContent = `เพิ่มมา ${del.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} บาท เกินงบ`;
   } else {
     valueInput.style.color = "green";
-    valueInput.textContent = `เพิ่มมา ${del} บาท`;
+    valueInput.textContent = `เพิ่มมา ${del.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} บาท`;
   }
 
   document.getElementById("totalcost_orders").value = totalPrice;
@@ -752,12 +758,18 @@ class modelUpdateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
       const response = await api_finance.json();
       this.financedata.push(response.data);
       let span = document.getElementById("u_funds_that_can_be_used");
-      span.textContent = `ทุนที่มี ${response.data.funds_that_can_be_used}`;
+      span.textContent = `ทุนที่มี ${response.data.funds_that_can_be_used.toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        },
+      )} บาท`;
 
       if (
         Number(response.data?.funds_that_can_be_used.replace(/,/g, "").trim()) >
@@ -784,7 +796,7 @@ class modelUpdateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
 
       const responsedata = await api_data.json();
@@ -816,7 +828,7 @@ class modelUpdateOrder extends HTMLElement {
     let selectedData = group.querySelector(`.IsselectedData-${index}`);
     let IsSelectId = group.querySelector(`.IsSelectId-${index}`);
     let customInputContainer = group.querySelector(
-      `.IscustomInputContainer-${index}`
+      `.IscustomInputContainer-${index}`,
     );
     const ul = group.querySelector("ul");
     selectedData.value = data_product ?? "";
@@ -825,7 +837,7 @@ class modelUpdateOrder extends HTMLElement {
       li.classList.remove("selected");
     }
     const clickedLi = [...ul.children].find(
-      (li) => li.innerText === data_product
+      (li) => li.innerText === data_product,
     );
     if (clickedLi) clickedLi.classList.add("selected");
     customInputContainer.classList.toggle("show");
@@ -928,7 +940,7 @@ class modelUpdateOrder extends HTMLElement {
       serchInput.addEventListener("keyup", () => {
         let searchedVal = serchInput.value.toLowerCase();
         let searched_product = this.stockproductAll.filter((data) =>
-          data.product_name.toLowerCase().includes(searchedVal)
+          data.product_name.toLowerCase().includes(searchedVal),
         );
         ul.innerHTML = "";
         if (searched_product.length === 0) {
@@ -971,13 +983,13 @@ class modelUpdateOrder extends HTMLElement {
         //price_product.value = Number((expenses.value / value).toFixed(2));
         count_cords.value = Number(value * Number(uis_countcord.textContent));
         shippings_cost.value = Number(
-          value * Number(uis_shipping.textContent)
+          value * Number(uis_shipping.textContent),
         ).toFixed(2);
         expenses.value =
           Number((price_product.value * value).toFixed(2)) +
           Number(shippings_cost.value);
         ures_expenses.textContent = `สินค้า(${Number(
-          (price_product.value * value).toFixed(2)
+          (price_product.value * value).toFixed(2),
         )}) + ค่าส่ง(${Number(shippings_cost.value).toFixed(2)})`;
         updateGrandTotal(this.financedata);
       });
@@ -989,7 +1001,7 @@ class modelUpdateOrder extends HTMLElement {
           Number((count_product.value * value).toFixed(2)) +
           Number(shippings_cost.value);
         ures_expenses.textContent = `สินค้า(${Number(
-          (count_product.value * value).toFixed(2)
+          (count_product.value * value).toFixed(2),
         )}) + ค่าส่ง(${Number(shippings_cost.value).toFixed(2)})`;
         updateGrandTotal(this.financedata);
       });
@@ -999,7 +1011,7 @@ class modelUpdateOrder extends HTMLElement {
           Number((count_product.value * price_product.value).toFixed(2)) +
           Number(value);
         ures_expenses.textContent = `สินค้า(${Number(
-          (count_product.value * price_product.value).toFixed(2)
+          (count_product.value * price_product.value).toFixed(2),
         )}) + ค่าส่ง(${Number(value).toFixed(2)})`;
       });
 
@@ -1019,7 +1031,7 @@ class modelUpdateOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
 
       const data = await response.json();
@@ -1142,10 +1154,10 @@ class modelUpdateOrder extends HTMLElement {
             let value = e.target.value;
             //price_product.value = Number((expenses.value / value).toFixed(2));
             count_cords.value = Number(
-              value * Number(is_countcords.textContent)
+              value * Number(is_countcords.textContent),
             );
             u_shippingcost.value = Number(
-              value * Number(is_shipping.textContent)
+              value * Number(is_shipping.textContent),
             ).toFixed(2);
 
             expenses.value =
@@ -1165,7 +1177,7 @@ class modelUpdateOrder extends HTMLElement {
           expenses.addEventListener("input", (e) => {
             let value = e.target.value;
             price_product.value = Number(
-              (value / count_product.value).toFixed(2)
+              (value / count_product.value).toFixed(2),
             );
             updateGrandTotal(this.financedata);
           });
@@ -1173,7 +1185,7 @@ class modelUpdateOrder extends HTMLElement {
             if (e.target.classList.contains("remove-btn-2")) {
               const index = e.target.dataset.index;
               const targetDiv = document.querySelector(
-                `[data-index="${index}"]`
+                `[data-index="${index}"]`,
               );
               if (targetDiv) targetDiv.remove();
               updateGrandTotal(this.financedata);
@@ -1214,7 +1226,7 @@ class modelUpdateOrder extends HTMLElement {
     is_countcord.id = `ui-count_cords-${indexs}`;
     is_shipping.id = `ui-is_shipping-${indexs}`;
     let isDataProduct = this.stockproductAll.filter((data) =>
-      data.id_name.toLowerCase().includes(ProductName_Id.toLowerCase())
+      data.id_name.toLowerCase().includes(ProductName_Id.toLowerCase()),
     );
     price_product.value = isDataProduct[0].price;
     price_center.value = isDataProduct[0].price_center;
@@ -1225,7 +1237,7 @@ class modelUpdateOrder extends HTMLElement {
   renderUpdateOrder() {
     this.innerHTML = `
       <div class="modal fade bd-example-modal-xl " id="modalFormUpdateOrder" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-        <div class="modal-dialog modal-xl2 modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl2 modal-lg modal-dialog-scrollable" role="document">
           <div class="modal-content" id="">
             <div class="modal-header px-4">
               <h5 class="modal-title row mx-4" id="exampleModalLongTitle">สินค้าที่สั่งซื้อ</p></h5>
@@ -1249,18 +1261,19 @@ class modelUpdateOrder extends HTMLElement {
                       </div>
 
                       <div class="col-md-12 row">
-                        <div class="col-md-7">
+                        <div class="col-md-4">
                           <div class="form-group mb-2">
                             <label class="mt-0 mb-0 font-weight-bold text-dark">ค่าใช้จ่าย</label>
                             <input type="text" class="form-control" name="totalcost_order" id="totalcost_orders" placeholder="ค่าใช้จ่าย" required>
                           </div> 
                         </div>
-                        <div class="col-md-5 row"> 
-                          <div class="form-group">
-                            <label class="mt-0 mb-0 font-weight-bold text-dark align-self-center mt-4">บาท</label>
-                          </div>
-                        </div>
                         
+                         <div class="col-md-5">
+                          <div class="form-group mb-2">
+                            <label class="mt-0 mb-0 font-weight-bold text-dark">จำนวนที่ต้องการจ่าย /THA</label>
+                            <input type="text" class="form-control" name="totalprice_sell" id="paid_total_edit" placeholder="จำนวนเงินที่ต้องการจ่าย" required>
+                          </div> 
+                        </div>
                       </div>
                       <div class="col-md-12">
                       <div class="form-group">
@@ -1313,6 +1326,8 @@ $(document).on("click", "#update_order", function (e) {
   let order_name = $(this).data("ordername");
   let lot_codes = $(this).data("lot");
   let total_cost = $(this).data("totalcost");
+  let paid_total = $(this).data("paidtotal");
+  let balance = $(this).data("balance");
 
   let priceorder = $(this).data("priceorder");
   let slipimage = $(this).data("slipimage");
@@ -1321,10 +1336,17 @@ $(document).on("click", "#update_order", function (e) {
   $("#order_name").val(order_name);
   $("#lot_codes").val(lot_codes);
   $("#totalcost_orders").val(total_cost);
-  $("#defult-price").html(`เดิม ${total_cost} บาท`);
+  $("#defult-price").html(
+    `เดิม ${total_cost.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} บาท`,
+  );
   $("#priceorder").html(priceorder);
   $("#date_time_order").val(dateorder);
   $("#img_default").val(slipimage);
+  $("#paid_total_edit").val(paid_total);
+  $("#balance_edit").val(balance);
 
   e.preventDefault();
   $("#slip_order").val(slipimage);
@@ -1353,7 +1375,7 @@ $(document).on("click", "#confirmTrashOrder", function (e) {
           {
             method: "DELETE",
             credentials: "include",
-          }
+          },
         );
         const responsedata = await responseapi.json();
 
@@ -1390,7 +1412,7 @@ class ModelPaymentOrder extends HTMLElement {
     let debtpaid_balance = document.getElementById("debtpaid_balance");
     count_paydebt.disabled = true;
     const hiddenCountOrdersell = document.getElementById(
-      "hidden-count-ordersell"
+      "hidden-count-ordersell",
     );
     hiddenCountOrdersell.innerHTML = "";
     const $seleted = $("#Is_orders_id");
@@ -1400,7 +1422,7 @@ class ModelPaymentOrder extends HTMLElement {
         {
           method: "GET",
           credentials: "include",
-        }
+        },
       );
       const responsedata = await response.json();
       count_debt.innerHTML = responsedata.outstandingAmount.toLocaleString(
@@ -1408,7 +1430,7 @@ class ModelPaymentOrder extends HTMLElement {
         {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        }
+        },
       );
       const optionData = responsedata.data.map((item) => ({
         id: item.order_id,
@@ -1430,12 +1452,12 @@ class ModelPaymentOrder extends HTMLElement {
             ${
               item.lot_numbers
             } <span class="text-danger font-weight-bold">(ค้าง:${Number(
-            item.balance
-          ).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })} บาท )</span>
-          </option>`
+              item.balance,
+            ).toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })} บาท )</span>
+          </option>`,
         );
       });
       $seleted.multipleSelect("refresh");
@@ -1463,7 +1485,7 @@ class ModelPaymentOrder extends HTMLElement {
           {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-          }
+          },
         )} บ.`;
 
         total_order.textContent = `${result.length} รายการ`;

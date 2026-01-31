@@ -3,8 +3,11 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $lot_number = $_POST['lot_number'];
+//$lot_number = "LOT-A0004";
 $start_date = date("Y-m-d", strtotime($_POST['start_date']));//$_POST['start_date'] ?? date('Y-m-01');
 $end_date =  date("Y-m-d", strtotime($_POST['end_date']));//$_POST['end_date'] ?? date('Y-m-d');
+//$start_date = "2025-10-01";
+//$end_date =  "2026-01-26";
 $startDateFilter = DateTime::createFromFormat('Y-m-d', $start_date)->format('Y-m-d 00:00:00');
 $endDateFilter   = DateTime::createFromFormat('Y-m-d', $end_date)->format('Y-m-d 23:59:59');
 
@@ -295,8 +298,8 @@ $html .='
 
                   foreach($listSellTest as $item){
                     $qtys = $item['total'];
-                    echo "<br/>II:";
-                    echo $qtys;
+                    //echo "<br/>II:";
+                    //echo $qtys;
                     if($priorLotQty > 0){
                       if($qtys <= $priorLotQty){
                         $priorLotQty -= $qtys;
@@ -498,11 +501,11 @@ $html .='
             </tr>
         </tfoot>
       </table>
-  </div>
-  <br/>
-  <div style="width:100%;display:flex">
-      <b>ปริ้นเมื่อ : '.$day_add.'</b>
-  </div>
+    </div>
+    <br/>
+    <div style="width:100%;display:flex">
+        <b>ปริ้นเมื่อ : '.$day_add.'</b>
+    </div>
   
   </div>
 </div>';
